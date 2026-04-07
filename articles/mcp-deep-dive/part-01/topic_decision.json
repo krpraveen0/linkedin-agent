@@ -1,0 +1,6 @@
+{
+  "seed_topic": "Model Context Protocol (MCP)",
+  "selected_topic": "Introduction to Model Context Protocol (MCP)",
+  "selection_reason": "The recent advancements in AI, such as the introduction of new inference tiers in the Gemini API and the development of ADeLe for predicting AI performance, highlight the need for a standardized protocol like MCP. This part provides a timely and valuable introduction to MCP, setting the stage for the rest of the series.",
+  "title_suggestion": "What is MCP and why does it matter?"
+}
