@@ -8,22 +8,9 @@
     "heuristic_score": 0.05,
     "llm_relevance": 0.9,
     "llm_freshness": 0.9,
-    "llm_practicality": 0.8,
-    "final_score": 0.5875,
-    "rationale": "Accelerating agentic tool calling with serverless model customization, highly relevant to AI agents and model serving"
-  },
-  {
-    "source": "https://blog.google/technology/ai/rss/",
-    "title": "New ways to balance cost and reliability in the Gemini API",
-    "link": "https://blog.google/innovation-and-ai/technology/developers-tools/introducing-flex-and-priority-inference/",
-    "published": "Thu, 02 Apr 2026 16:00:00 +0000",
-    "summary": "<img src=\"https://storage.googleapis.com/gweb-uniblog-publish-prod/images/cost_reliability_Gemini_API-soc.max-600x600.format-webp.webp\">Google is introducing two new inference tiers to the Gemini API, Flex and Priority,\n",
-    "heuristic_score": 0.175,
-    "llm_relevance": 0.8,
-    "llm_freshness": 0.8,
-    "llm_practicality": 0.7,
-    "final_score": 0.5662,
-    "rationale": "New inference tiers in Gemini API, relevant to model serving and inference"
+    "llm_practicality": 0.9,
+    "final_score": 0.6025,
+    "rationale": "Accelerating agentic tool calling with serverless model customization, highly relevant to priority keywords"
   },
   {
     "source": "https://www.microsoft.com/en-us/research/feed/",
@@ -33,10 +20,10 @@
     "summary": "<p>AI benchmarks report how large language models (LLMs) perform on specific tasks but provide little insight into their underlying capabilities that drive their performance. They do not explain failures or reliably pred",
     "heuristic_score": 0.05,
     "llm_relevance": 0.8,
-    "llm_freshness": 0.8,
-    "llm_practicality": 0.7,
-    "final_score": 0.5225,
-    "rationale": "ADeLe release, relevant to LLM engineering and model evaluation"
+    "llm_freshness": 0.9,
+    "llm_practicality": 0.8,
+    "final_score": 0.5525,
+    "rationale": "Predicting and explaining AI performance, relevant to LLM engineering and evals"
   },
   {
     "source": "https://aws.amazon.com/blogs/machine-learning/feed/",
@@ -46,10 +33,36 @@
     "summary": "In this post, we show how to implement a generative AI agentic assistant that uses both semantic and text-based search using Amazon Bedrock, Amazon Bedrock AgentCore, Strands Agents and Amazon OpenSearch.",
     "heuristic_score": 0.05,
     "llm_relevance": 0.8,
+    "llm_freshness": 0.9,
+    "llm_practicality": 0.8,
+    "final_score": 0.5525,
+    "rationale": "Building Intelligent Search with Amazon Bedrock and OpenSearch, relevant to AI infrastructure and protocols"
+  },
+  {
+    "source": "https://blog.google/technology/ai/rss/",
+    "title": "New ways to balance cost and reliability in the Gemini API",
+    "link": "https://blog.google/innovation-and-ai/technology/developers-tools/introducing-flex-and-priority-inference/",
+    "published": "Thu, 02 Apr 2026 16:00:00 +0000",
+    "summary": "<img src=\"https://storage.googleapis.com/gweb-uniblog-publish-prod/images/cost_reliability_Gemini_API-soc.max-600x600.format-webp.webp\">Google is introducing two new inference tiers to the Gemini API, Flex and Priority,\n",
+    "heuristic_score": 0.175,
+    "llm_relevance": 0.7,
     "llm_freshness": 0.8,
-    "llm_practicality": 0.7,
-    "final_score": 0.5225,
-    "rationale": "Building Intelligent Search with Amazon Bedrock and OpenSearch, relevant to AI agents and developer tools"
+    "llm_practicality": 0.8,
+    "final_score": 0.5462,
+    "rationale": "New inference tiers in Gemini API, relevant to model serving and inference"
+  },
+  {
+    "source": "https://huggingface.co/blog/feed.xml",
+    "title": "Any Custom Frontend with Gradio's Backend",
+    "link": "https://huggingface.co/blog/introducing-gradio-server",
+    "published": "Wed, 01 Apr 2026 00:00:00 GMT",
+    "summary": "",
+    "heuristic_score": 0.05,
+    "llm_relevance": 0.7,
+    "llm_freshness": 0.8,
+    "llm_practicality": 0.8,
+    "final_score": 0.5025,
+    "rationale": "Custom frontend with Gradio's Backend, relevant to developer tools"
   },
   {
     "source": "https://aws.amazon.com/blogs/machine-learning/feed/",
@@ -60,8 +73,8 @@
     "heuristic_score": 0.05,
     "llm_relevance": 0.7,
     "llm_freshness": 0.8,
-    "llm_practicality": 0.7,
-    "final_score": 0.4875,
+    "llm_practicality": 0.8,
+    "final_score": 0.5025,
     "rationale": "Building AI-powered employee onboarding agents, relevant to AI agents and developer tools"
   },
   {
@@ -71,24 +84,11 @@
     "published": "Thu, 02 Apr 2026 00:00:00 GMT",
     "summary": "",
     "heuristic_score": 0.05,
-    "llm_relevance": 0.7,
-    "llm_freshness": 0.8,
-    "llm_practicality": 0.6,
-    "final_score": 0.4725,
-    "rationale": "Gemma 4 release, relevant to multimodal intelligence and AI agents"
-  },
-  {
-    "source": "https://huggingface.co/blog/feed.xml",
-    "title": "Any Custom Frontend with Gradio's Backend",
-    "link": "https://huggingface.co/blog/introducing-gradio-server",
-    "published": "Wed, 01 Apr 2026 00:00:00 GMT",
-    "summary": "",
-    "heuristic_score": 0.05,
     "llm_relevance": 0.6,
-    "llm_freshness": 0.7,
-    "llm_practicality": 0.6,
-    "final_score": 0.4225,
-    "rationale": "Gradio's Backend update, relevant to developer tools and AI infrastructure"
+    "llm_freshness": 0.8,
+    "llm_practicality": 0.7,
+    "final_score": 0.4525,
+    "rationale": "New multimodal intelligence model, relevant to LLM engineering"
   },
   {
     "source": "https://www.microsoft.com/en-us/research/feed/",
@@ -98,9 +98,9 @@
     "summary": "<p>Vision-language models (VLMs) use images and text to plan robot actions, but they still struggle to decide what actions to take and where to take them. Most systems split these decisions into two steps: a VLM generate",
     "heuristic_score": 0.05,
     "llm_relevance": 0.6,
-    "llm_freshness": 0.7,
-    "llm_practicality": 0.6,
-    "final_score": 0.4225,
-    "rationale": "GroundedPlanBench release, relevant to robot manipulation and AI agents"
+    "llm_freshness": 0.8,
+    "llm_practicality": 0.7,
+    "final_score": 0.4525,
+    "rationale": "Spatially grounded long-horizon task planning, relevant to AI agents and LLM engineering"
   }
 ]
