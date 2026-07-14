@@ -1,0 +1,3 @@
+This file keeps this directory present in git even before any article's code
+walkthrough has landed here. Each article's code lives in its own dated
+subfolder (see the medium-daily plugin's repo-publisher agent).
