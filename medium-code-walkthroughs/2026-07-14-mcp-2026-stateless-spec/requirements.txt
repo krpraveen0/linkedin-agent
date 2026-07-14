@@ -1,0 +1,5 @@
+httpx==0.28.1
+httpx-sse==0.4.3
+mcp==2.0.0b1
+mcp-types==2.0.0b1
+uvicorn==0.51.0
