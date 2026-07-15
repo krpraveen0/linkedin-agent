@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="720" height="340" fill="#ffffff"/>
+  <text x="360" y="30" font-size="17" font-weight="bold" fill="#333333" text-anchor="middle">A capability is a portable value</text>
+
+  <defs>
+    <marker id="arrow2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 z" fill="#333333"/>
+    </marker>
+  </defs>
+
+  <!-- shared capability -->
+  <rect x="40" y="130" width="180" height="80" fill="#f0f0f0" stroke="#333333" stroke-width="2" rx="6"/>
+  <text x="130" y="160" font-size="14" font-weight="bold" fill="#333333" text-anchor="middle">audit_cap</text>
+  <text x="130" y="182" font-size="12" fill="#333333" text-anchor="middle">Hooks(before_</text>
+  <text x="130" y="198" font-size="12" fill="#333333" text-anchor="middle">model_request)</text>
+
+  <!-- two agents -->
+  <rect x="360" y="70" width="180" height="70" fill="#e0e0e0" stroke="#333333" stroke-width="1.5" rx="6"/>
+  <text x="450" y="100" font-size="14" font-weight="bold" fill="#333333" text-anchor="middle">translator agent</text>
+  <text x="450" y="122" font-size="12" fill="#333333" text-anchor="middle">output: "bonjour"</text>
+
+  <rect x="360" y="200" width="180" height="70" fill="#e0e0e0" stroke="#333333" stroke-width="1.5" rx="6"/>
+  <text x="450" y="230" font-size="14" font-weight="bold" fill="#333333" text-anchor="middle">summarizer agent</text>
+  <text x="450" y="252" font-size="12" fill="#333333" text-anchor="middle">output: "tl;dr"</text>
+
+  <!-- shared counter -->
+  <rect x="600" y="130" width="90" height="80" fill="#ffffff" stroke="#333333" stroke-width="1.5" rx="6"/>
+  <text x="645" y="162" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">shared</text>
+  <text x="645" y="180" font-size="13" fill="#333333" text-anchor="middle">counter</text>
+  <text x="645" y="200" font-size="14" font-weight="bold" fill="#333333" text-anchor="middle">n = 2</text>
+
+  <!-- arrows from capability to both agents -->
+  <line x1="220" y1="160" x2="356" y2="105" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow2)"/>
+  <line x1="220" y1="180" x2="356" y2="235" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow2)"/>
+  <!-- arrows from agents to counter -->
+  <line x1="540" y1="105" x2="620" y2="150" stroke="#333333" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arrow2)"/>
+  <line x1="540" y1="235" x2="620" y2="190" stroke="#333333" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arrow2)"/>
+
+  <text x="360" y="315" font-size="12" fill="#333333" text-anchor="middle" font-style="italic">The same capability object plugs into unrelated agents and shares its state.</text>
+</svg>

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 380" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="720" height="380" fill="#ffffff"/>
+  <text x="360" y="30" font-size="17" font-weight="bold" fill="#333333" text-anchor="middle">One list, every extension point</text>
+
+  <!-- Capability 1: Toolset -->
+  <rect x="30" y="70" width="230" height="120" fill="#f0f0f0" stroke="#333333" stroke-width="1.5" rx="6"/>
+  <text x="145" y="94" font-size="14" font-weight="bold" fill="#333333" text-anchor="middle">Toolset capability</text>
+  <rect x="48" y="108" width="194" height="30" fill="#e0e0e0" stroke="#333333" stroke-width="1" rx="4"/>
+  <text x="145" y="128" font-size="12" fill="#333333" text-anchor="middle">tool: word_count()</text>
+  <rect x="48" y="146" width="194" height="30" fill="#e0e0e0" stroke="#333333" stroke-width="1" rx="4"/>
+  <text x="145" y="166" font-size="12" fill="#333333" text-anchor="middle">instructions: "call word_count"</text>
+
+  <!-- Capability 2: Hooks -->
+  <rect x="30" y="210" width="230" height="80" fill="#f0f0f0" stroke="#333333" stroke-width="1.5" rx="6"/>
+  <text x="145" y="234" font-size="14" font-weight="bold" fill="#333333" text-anchor="middle">Hooks capability</text>
+  <rect x="48" y="248" width="194" height="30" fill="#e0e0e0" stroke="#333333" stroke-width="1" rx="4"/>
+  <text x="145" y="268" font-size="12" fill="#333333" text-anchor="middle">before_model_request()</text>
+
+  <!-- capabilities list -->
+  <rect x="330" y="140" width="140" height="90" fill="#ffffff" stroke="#333333" stroke-width="1.5" rx="6"/>
+  <text x="400" y="180" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">capabilities=</text>
+  <text x="400" y="200" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">[ ... ]</text>
+
+  <!-- Agent -->
+  <rect x="540" y="140" width="150" height="90" fill="#f0f0f0" stroke="#333333" stroke-width="2" rx="6"/>
+  <text x="615" y="180" font-size="15" font-weight="bold" fill="#333333" text-anchor="middle">Agent</text>
+  <text x="615" y="202" font-size="12" fill="#333333" text-anchor="middle">(one line)</text>
+
+  <!-- arrows -->
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 z" fill="#333333"/>
+    </marker>
+  </defs>
+  <line x1="260" y1="130" x2="326" y2="165" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="260" y1="250" x2="326" y2="205" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="470" y1="185" x2="536" y2="185" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <text x="360" y="345" font-size="12" fill="#333333" text-anchor="middle" font-style="italic">Tools, instructions, and hooks all enter the agent through the same list.</text>
+</svg>
