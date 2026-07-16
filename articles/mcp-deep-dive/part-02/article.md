@@ -100,7 +100,40 @@ of steps 1–4 above using the real MCP wire format. It intentionally does
 role, and billable GPU/Inferentia capacity, none of which exist in this
 repo's CI sandbox) — instead, `tool_calling_model.py` is an explicitly
 labeled, deterministic stand-in for that hosted model's decision step, so
-the rest of the code is exactly what it would be against a real endpoint:
+the rest of the code is exactly what it would be against a real endpoint.
+
+Runtime flow for each sample message, end to end:
+
+```mermaid
+sequenceDiagram
+    participant U as User message
+    participant A as Agent (mcp_agent.py)
+    participant M as tool_calling_model.py
+    participant S as MCP server (subprocess, STDIO)
+
+    A->>S: spawn subprocess
+    A->>S: initialize
+    S-->>A: protocolVersion, serverInfo
+    A->>S: tools/list
+    S-->>A: [get_order_status, convert_currency]
+
+    loop each sample message
+        U->>A: user_message
+        A->>M: decide_tool_call(user_message, tools)
+        M-->>A: {name, arguments} or None
+        alt tool matched
+            A->>S: tools/call {name, arguments}
+            S-->>A: result
+            A-->>U: synthesized answer
+        else no match
+            A-->>U: fallback message
+        end
+    end
+```
+
+(Source: [`assets/diagrams/sequence.mmd`](assets/diagrams/sequence.mmd).)
+The handshake (`initialize`/`tools/list`) happens once per process; the
+decide→call→answer loop repeats per message. Now the code for each step:
 
 ```python
 # project/tool_calling_model.py
@@ -129,7 +162,7 @@ def _handle(message: dict) -> dict:
     method = message.get("method")
     msg_id = message.get("id")
     if method == "initialize":
-        result = {"protocolVersion": "2025-06-18", "serverInfo": {"name": "support-tools", "version": "0.1.0"}}
+        result = {"protocolVersion": "2025-11-25", "serverInfo": {"name": "support-tools", "version": "0.1.0"}}
     elif method == "tools/list":
         result = {"tools": TOOLS}
     elif method == "tools/call":
@@ -164,17 +197,18 @@ It runs three sample user messages through the loop: one that resolves to
 `get_order_status`, one that resolves to `convert_currency`, and one with no
 matching tool (to show the fallback path).
 
-**Honest execution status:** this draft was authored in a sandboxed session
-where all local command execution (`python3`, including retried directly and
-via a subagent) was blocked with `This command requires approval`, with no
-interactive user available to grant it. The code has been manually traced
-line-by-line for correctness (see the walkthrough above and
-`project/build-artifact.json`, which records the attempted run and why it
-didn't execute), but per this repo's constitution — "never publish
-unexecuted code" (`aep/README.md`) — that trace is **not** a substitute for
-an actual run. Before this PR merges, a human reviewer or CI should run
-`python3 project/mcp_agent.py` and confirm the output; this is called out
-explicitly rather than fabricating a transcript.
+**Execution status: verified.** This draft was originally authored in a
+sandboxed session where all local command execution was blocked with `This
+command requires approval`, with no interactive user available to grant it —
+the code was traced line-by-line but not run, and that gap was disclosed
+rather than papered over with a fabricated transcript. A follow-up review,
+outside that sandbox, ran it for real (`python3 project/mcp_agent.py`,
+`exit_code=0`) and confirmed the output matches what this walkthrough
+claims — see `project/README.md`'s Execution status section for the full
+transcript and `project/evidence/run-mcp_agent.log` for the raw log.
+`project/build-artifact.json`'s `build_status` now reflects that real run,
+per this repo's constitution — "never publish unexecuted code"
+(`aep/README.md`).
 
 ## Trade-offs
 
