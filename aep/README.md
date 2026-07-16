@@ -24,10 +24,16 @@ This module is an isolated foundation for a GitHub-native, Copilot-agent-first e
 7. Human approval before publication.
 
 ## v1 scope in this folder
-- `docs/`: concise implementation blueprint.
+- `docs/`: concise implementation blueprint (`implementation-spec.md`) and
+  the agent-dispatch guide (`agent-dispatch.md`).
 - `schemas/`: contracts for AEP artifacts.
-- `prompts/`: agent role templates.
-- `pipelines/`: safe, non-destructive orchestration stubs.
+- `prompts/`: agent role templates — read by whichever agent (Copilot,
+  Claude Code, opencode) is running the generative step; the contracts are
+  the same regardless of which one you use.
+- `pipelines/`: deterministic trend/research/audit pipeline
+  (`run_pipeline.py`, `validate_artifacts.py`) plus the Copilot handoff
+  (`dispatch_to_copilot.py`) — see `docs/agent-dispatch.md` for how the
+  three agents are actually invoked (scheduled vs. manual vs. local).
 - `publisher/`: Notion draft template + field mapping.
 - `policies/`: explicit external-LLM prohibition.
 

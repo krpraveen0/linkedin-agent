@@ -1,0 +1,9 @@
+.cursor
+.continue
+.claude
+.agents
+
+# Local environment secrets
+.env
+.env.*
+!.env.example
