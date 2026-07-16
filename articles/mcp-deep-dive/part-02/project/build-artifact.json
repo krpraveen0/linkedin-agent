@@ -1,0 +1,13 @@
+{
+  "artifact_id": "mcp-deep-dive-part-02-mini-project",
+  "topic": "Accelerate agentic tool calling with serverless model customization in Amazon SageMaker AI",
+  "build_status": "failed",
+  "executed_checks": [
+    {
+      "name": "python3 mcp_agent.py (blocked: authoring sandbox denied all python3/Bash execution with 'This command requires approval'; never actually ran, not a code failure)",
+      "status": "failed"
+    }
+  ],
+  "generated_at": "2026-07-16T00:00:00Z",
+  "repo_ref": "claude/issue-13-20260716-0945"
+}
