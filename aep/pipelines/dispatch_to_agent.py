@@ -1,13 +1,24 @@
 #!/usr/bin/env python3
-"""Hand the latest deterministic AEP run off to GitHub Copilot coding agent.
+"""Hand the latest deterministic AEP run off to a coding agent: Copilot first,
+Claude Code as fallback if Copilot can't take the job (e.g. premium-request
+quota exhausted on the Copilot plan).
 
-Creates a GitHub issue describing the top-ranked topic and the exact prompt
-contracts to follow, then assigns it to Copilot's cloud agent via the Issues
-API. This is the only network call in aep/pipelines/ — it talks to the
-GitHub API only (issue creation + assignment), never to an LLM provider, so
-it stays compliant with aep/policies/no-external-llm-policy.md. The actual
-writing happens inside GitHub's own Copilot coding agent infrastructure,
-asynchronously, and lands as a PR for human review.
+Flow:
+1. Create a GitHub issue describing the top-ranked topic, target folder, and
+   the exact prompt contracts + deliverables to follow.
+2. Try to assign it to Copilot's cloud coding agent via the Issues API.
+3. If assignment fails for any reason (quota exhaustion, auth, API change),
+   post an `@claude` comment on the same issue instead. That comment is a
+   normal `issue_comment` event, which triggers aep-claude-manual.yml
+   reliably (unlike a `schedule:` trigger — see
+   https://github.com/anthropics/claude-code-action/issues/814 — which is
+   why this fallback goes through a comment rather than invoking Claude
+   Code directly inside this same scheduled job).
+
+The only network calls here are to the GitHub REST API (issue create/assign/
+comment) — never to an LLM provider, so this stays compliant with
+aep/policies/no-external-llm-policy.md regardless of which agent ends up
+doing the work.
 """
 import argparse
 import json
@@ -19,6 +30,8 @@ import urllib.request
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
 AEP_DIR = REPO_ROOT / "aep"
 COPILOT_ASSIGNEE = "copilot-swe-agent[bot]"
+
+QUOTA_HINT_KEYWORDS = ("quota", "premium request", "rate limit", "limit exceeded", "insufficient")
 
 
 def load_json(path: pathlib.Path):
@@ -111,14 +124,65 @@ with the new part.
     return {"title": title, "body": body}
 
 
-def dispatch(mode: str, dry_run: bool) -> None:
+def _github_request(method: str, url: str, token: str, payload: dict | None = None) -> dict:
+    req = urllib.request.Request(
+        url=url,
+        data=json.dumps(payload).encode("utf-8") if payload is not None else None,
+        method=method,
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Accept": "application/vnd.github+json",
+            "X-GitHub-Api-Version": "2022-11-28",
+            "Content-Type": "application/json",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        detail = e.read().decode("utf-8", "replace")
+        raise RuntimeError(f"GitHub API {method} {url} -> {e.code}: {detail}") from e
+
+
+def create_issue(title: str, body: str, token: str, repo: str) -> dict:
+    return _github_request("POST", f"https://api.github.com/repos/{repo}/issues", token, {"title": title, "body": body})
+
+
+def assign_to_copilot(issue_number: int, token: str, repo: str) -> None:
+    _github_request(
+        "PATCH",
+        f"https://api.github.com/repos/{repo}/issues/{issue_number}",
+        token,
+        {"assignees": [COPILOT_ASSIGNEE]},
+    )
+
+
+def comment_at_claude(issue_number: int, note: str, token: str, repo: str) -> dict:
+    body = f"@claude {note}"
+    return _github_request(
+        "POST",
+        f"https://api.github.com/repos/{repo}/issues/{issue_number}/comments",
+        token,
+        {"body": body},
+    )
+
+
+def looks_like_quota_exhaustion(error_message: str) -> bool:
+    lowered = error_message.lower()
+    return any(kw in lowered for kw in QUOTA_HINT_KEYWORDS)
+
+
+def dispatch(mode: str, dry_run: bool, simulate_copilot_failure: bool = False) -> None:
     run_dir = latest_run_dir(mode)
     issue = build_issue(mode, run_dir)
 
     if dry_run:
-        print("--- DRY RUN: would create+assign this issue ---")
+        print("--- DRY RUN: would create issue, try Copilot, fall back to @claude on failure ---")
         print(f"title: {issue['title']}")
         print(issue["body"])
+        if simulate_copilot_failure:
+            print("--- simulated Copilot failure -> fallback comment would be ---")
+            print(f"@claude {_fallback_note('simulated quota exhaustion for --dry-run testing')}")
         return
 
     token = os.environ.get("COPILOT_DISPATCH_PAT", "")
@@ -129,37 +193,47 @@ def dispatch(mode: str, dry_run: bool) -> None:
             "(use --dry-run to preview without them)."
         )
 
-    payload = {
-        "title": issue["title"],
-        "body": issue["body"],
-        "assignees": [COPILOT_ASSIGNEE],
-    }
-    req = urllib.request.Request(
-        url=f"https://api.github.com/repos/{repo}/issues",
-        data=json.dumps(payload).encode("utf-8"),
-        method="POST",
-        headers={
-            "Authorization": f"Bearer {token}",
-            "Accept": "application/vnd.github+json",
-            "X-GitHub-Api-Version": "2022-11-28",
-            "Content-Type": "application/json",
-        },
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            result = json.loads(resp.read().decode("utf-8"))
-    except urllib.error.HTTPError as e:
-        raise RuntimeError(f"GitHub API error {e.code}: {e.read().decode('utf-8', 'replace')}") from e
+    created = create_issue(issue["title"], issue["body"], token, repo)
+    issue_number = created["number"]
+    print(f"Created issue #{issue_number}: {created['html_url']}")
 
-    print(f"Created issue #{result['number']} assigned to {COPILOT_ASSIGNEE}: {result['html_url']}")
+    if simulate_copilot_failure:
+        assign_error = "simulated failure via --simulate-copilot-failure"
+    else:
+        try:
+            assign_to_copilot(issue_number, token, repo)
+            print(f"Assigned to {COPILOT_ASSIGNEE}")
+            return
+        except RuntimeError as exc:
+            assign_error = str(exc)
+
+    reason = "premium-request quota likely exhausted" if looks_like_quota_exhaustion(assign_error) else "assignment failed"
+    print(f"Copilot dispatch failed ({reason}): {assign_error}")
+    print("Falling back to Claude Code via @claude comment...")
+    comment = comment_at_claude(issue_number, _fallback_note(reason), token, repo)
+    print(f"Posted fallback comment: {comment['html_url']}")
+
+
+def _fallback_note(reason: str) -> str:
+    return (
+        f"Copilot coding agent could not take this issue ({reason}). Please pick it up instead — "
+        "the full task, target folder, and required deliverables are in the issue description above. "
+        "Follow aep/prompts/writer.md and run `python3 aep/pipelines/validate_article.py <target-dir>` "
+        "before opening the PR."
+    )
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Dispatch latest AEP run to Copilot coding agent.")
+    parser = argparse.ArgumentParser(description="Dispatch latest AEP run to Copilot, falling back to Claude Code.")
     parser.add_argument("--mode", choices=["morning", "evening"], required=True)
-    parser.add_argument("--dry-run", action="store_true", help="Print the issue instead of creating it")
+    parser.add_argument("--dry-run", action="store_true", help="Print instead of calling the GitHub API")
+    parser.add_argument(
+        "--simulate-copilot-failure",
+        action="store_true",
+        help="Force the Claude fallback path (for testing the fallback without waiting on real quota exhaustion)",
+    )
     args = parser.parse_args()
-    dispatch(args.mode, args.dry_run)
+    dispatch(args.mode, args.dry_run, args.simulate_copilot_failure)
 
 
 if __name__ == "__main__":

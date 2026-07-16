@@ -31,9 +31,10 @@ This module is an isolated foundation for a GitHub-native, Copilot-agent-first e
   Claude Code, opencode) is running the generative step; the contracts are
   the same regardless of which one you use.
 - `pipelines/`: deterministic trend/research/audit pipeline
-  (`run_pipeline.py`, `validate_artifacts.py`) plus the Copilot handoff
-  (`dispatch_to_copilot.py`) — see `docs/agent-dispatch.md` for how the
-  three agents are actually invoked (scheduled vs. manual vs. local) — plus
+  (`run_pipeline.py`, `validate_artifacts.py`) plus the agent handoff
+  (`dispatch_to_agent.py`: Copilot primary, auto-falls back to an `@claude`
+  comment if Copilot can't take the job) — see `docs/agent-dispatch.md` for
+  how the three agents are actually invoked (scheduled vs. manual vs. local) — plus
   `generate_hero_image.py` (code-rendered hero images, no external API) and
   `validate_article.py` (the publish-readiness gate for `articles/**`,
   also run in CI via `aep-article-check.yml`).
