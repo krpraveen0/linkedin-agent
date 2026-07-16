@@ -15,7 +15,18 @@
       "minItems": 1
     },
     "human_approval_required": { "type": "boolean", "const": true },
-    "notion_page_id": { "type": "string" }
+    "notion_page_id": { "type": "string" },
+    "article_path": { "type": "string", "description": "Path to the final article.md (publish-ready content)" },
+    "hero_image_path": { "type": "string", "description": "Path to the hero/cover image, code-generated (no external image API)" },
+    "diagram_paths": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "description": "Diagram source files (e.g. Mermaid .mmd) specific to this article's topic"
+    },
+    "project_path": { "type": "string", "description": "Path to the runnable mini-project folder for this article" },
+    "series_name": { "type": ["string", "null"] },
+    "series_part": { "type": ["integer", "null"] }
   },
   "additionalProperties": false
 }

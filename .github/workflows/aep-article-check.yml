@@ -1,0 +1,44 @@
+name: aep-article-check
+
+# Publishing-readiness gate: runs whenever a PR touches articles/**, whether
+# opened by a human, Copilot coding agent, or Claude Code. Checks every
+# top-level article folder that changed (each series's own folder, or a
+# standalone article folder) against aep/pipelines/validate_article.py.
+
+on:
+  pull_request:
+    paths:
+      - 'articles/**'
+
+jobs:
+  validate-articles:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Find changed article folders
+        id: changed
+        run: |
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- 'articles/**' \
+            | python3 aep/pipelines/list_changed_article_dirs.py > changed_dirs.txt
+          cat changed_dirs.txt
+          echo "count=$(wc -l < changed_dirs.txt | tr -d ' ')" >> "$GITHUB_OUTPUT"
+
+      - name: Validate each changed article folder
+        if: steps.changed.outputs.count != '0'
+        run: |
+          status=0
+          while IFS= read -r dir; do
+            [ -z "$dir" ] && continue
+            echo "::group::validate $dir"
+            python3 aep/pipelines/validate_article.py "$dir" || status=1
+            echo "::endgroup::"
+          done < changed_dirs.txt
+          exit $status

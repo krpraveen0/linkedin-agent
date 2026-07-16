@@ -5,12 +5,14 @@ import json
 import pathlib
 import re
 import subprocess
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
+import generate_hero_image
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
 SERIES_DIR = REPO_ROOT / "articles" / "mcp-deep-dive" / "part-01"
 AEP_DIR = REPO_ROOT / "aep"
+ARTICLES_DIR = REPO_ROOT / "articles"
 
 
 def utc_now() -> str:
@@ -19,6 +21,49 @@ def utc_now() -> str:
 
 def slugify(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
+
+
+def find_active_series(articles_dir: pathlib.Path) -> Optional[Tuple[str, int, dict]]:
+    """First series under articles/ with parts remaining per its own series_plan.json, else None.
+
+    Best-effort only: the agent that actually writes the article has full repo
+    context and should override this if a better continuation/new-series call applies.
+    """
+    if not articles_dir.exists():
+        return None
+    for series_dir in sorted(p for p in articles_dir.iterdir() if p.is_dir()):
+        part_dirs = sorted(p for p in series_dir.glob("part-*") if p.is_dir())
+        if not part_dirs:
+            continue
+        plan_path = part_dirs[-1] / "series_plan.json"
+        if not plan_path.exists():
+            continue
+        try:
+            plan = json.loads(plan_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            continue
+        total_parts = len(plan.get("series_titles", {})) or len(part_dirs)
+        next_part = len(part_dirs) + 1
+        if next_part <= total_parts:
+            return series_dir.name, next_part, plan
+    return None
+
+
+def resolve_target_article_dir(topic: str, articles_dir: pathlib.Path) -> Tuple[pathlib.Path, dict]:
+    """Propose (not create) the publish-ready folder this article belongs in."""
+    active = find_active_series(articles_dir)
+    if active:
+        series_name, next_part, plan = active
+        target = articles_dir / series_name / f"part-{next_part:02d}"
+        return target, {
+            "kind": "series-continuation",
+            "series_name": series_name,
+            "series_part": next_part,
+            "series_title": plan.get("series_titles", {}).get(str(next_part), ""),
+        }
+    slug = slugify(topic)[:60] or "untitled-article"
+    target = articles_dir / slug
+    return target, {"kind": "standalone", "series_name": None, "series_part": None, "series_title": None}
 
 
 def load_json(path: pathlib.Path):
@@ -320,7 +365,12 @@ def build_publish_bundle(
     technical_audit: dict,
     platform_audit: dict,
     out_dir: pathlib.Path,
+    target_dir: pathlib.Path,
+    target_meta: dict,
 ) -> Tuple[dict, pathlib.Path]:
+    # Proposed final locations (not yet created here — the agent that writes the
+    # real article is responsible for actually producing these files; see
+    # aep/docs/agent-dispatch.md and aep/prompts/writer.md for the required layout).
     publish_draft = {
         "external_id": run_id,
         "title": f"{topic} — EngineeringCoders Draft",
@@ -328,6 +378,12 @@ def build_publish_bundle(
         "body_path": str(article_path.relative_to(REPO_ROOT)),
         "references": references if references else ["https://example.com/placeholder-reference"],
         "human_approval_required": True,
+        "article_path": str((target_dir / "article.md").relative_to(REPO_ROOT)),
+        "hero_image_path": str((target_dir / "assets" / "hero.png").relative_to(REPO_ROOT)),
+        "diagram_paths": [str((target_dir / "assets" / "diagrams" / "architecture.mmd").relative_to(REPO_ROOT))],
+        "project_path": str((target_dir / "project").relative_to(REPO_ROOT)),
+        "series_name": target_meta["series_name"],
+        "series_part": target_meta["series_part"],
     }
     template = (AEP_DIR / "publisher" / "notion-page-template.md").read_text(encoding="utf-8")
     notion_body = render_template(
@@ -336,12 +392,14 @@ def build_publish_bundle(
             "title": publish_draft["title"],
             "external_id": publish_draft["external_id"],
             "topic": topic,
-            "series_name": "mcp-deep-dive",
+            "series_name": target_meta["series_name"] or "(standalone article)",
+            "hero_image_path": publish_draft["hero_image_path"],
             "problem_statement": "Explain practical MCP architecture choices for engineering teams.",
             "trend_summary": f"Top ranked topic score confirms current relevance for {topic}.",
             "architecture_summary": "Pipeline stages are deterministic and auditable across trend, research, build, audit, and packaging.",
             "build_steps": "Trend scoring -> research bundle -> build evidence -> audits -> draft packaging.",
             "diagram_links": f"- {str((out_dir / 'architecture.mmd').relative_to(REPO_ROOT))}",
+            "project_path": publish_draft["project_path"],
             "execution_evidence": f"- Build status: {technical_audit['status']}\n- Platform status: {platform_audit['status']}",
             "tradeoffs": "Deterministic logic is reliable and testable, but less adaptive than model-generated content.",
             "references": "\n".join(f"- {url}" for url in publish_draft["references"]),
@@ -384,6 +442,15 @@ def run_pipeline(mode: str) -> pathlib.Path:
     research_bundle = build_research_bundle(research_source, ranked_topics)
     build_artifact, article_output, diagram_output = build_phase_artifacts(mode, run_ts, out_dir, research_bundle, ranked_topics)
     technical_audit, platform_audit = build_audits(build_artifact, research_bundle, article_output, run_ts)
+
+    target_dir, target_meta = resolve_target_article_dir(research_bundle["topic"], ARTICLES_DIR)
+    hero_preview_path = out_dir / "hero_preview.png"
+    generate_hero_image.generate(
+        title=research_bundle["topic"],
+        kicker=target_meta["series_name"] or "engineering deep dive",
+        out_path=hero_preview_path,
+    )
+
     publish_draft, notion_draft = build_publish_bundle(
         run_id,
         research_bundle["topic"],
@@ -392,6 +459,8 @@ def run_pipeline(mode: str) -> pathlib.Path:
         technical_audit,
         platform_audit,
         out_dir,
+        target_dir,
+        target_meta,
     )
     analytics = build_analytics(run_ts, ranked_topics, technical_audit, platform_audit)
 
@@ -428,7 +497,17 @@ def run_pipeline(mode: str) -> pathlib.Path:
                 "publish_draft": str((out_dir / "publish-draft.json").relative_to(REPO_ROOT)),
                 "notion_draft": str(notion_draft.relative_to(REPO_ROOT)),
                 "diagram_source": str(diagram_output.relative_to(REPO_ROOT)),
+                "hero_image_preview": str(hero_preview_path.relative_to(REPO_ROOT)),
                 "analytics": str((out_dir / "analytics.json").relative_to(REPO_ROOT)),
+            },
+            "target_article": {
+                "kind": target_meta["kind"],
+                "dir": str(target_dir.relative_to(REPO_ROOT)),
+                "series_name": target_meta["series_name"],
+                "series_part": target_meta["series_part"],
+                "series_title": target_meta["series_title"],
+                "note": "Proposed only — not created by this deterministic run. The agent "
+                "writing the real article creates these files; see aep/prompts/writer.md.",
             },
         },
     )

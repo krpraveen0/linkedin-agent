@@ -5,6 +5,21 @@ actual coding agent for the generative steps (research expansion, writing,
 audits) — and why three different agents get three different trigger
 mechanisms, not one uniform one.
 
+## What "publish-ready" actually requires
+
+Every article — regardless of which agent writes it — must land as a complete
+folder under `articles/**` (a series `part-NN/`, or a standalone slug):
+hero image, content with an embedded topic-specific diagram and real code
+snippets, and a runnable `project/` mini-project. The full spec is
+`aep/prompts/writer.md`; it's not optional or prose-only. Two mechanical
+enforcements exist so this isn't just a prompt suggestion:
+
+- `python3 aep/pipelines/validate_article.py <article-dir>` — run this
+  yourself before opening a PR (the dispatch issue and the Claude Code prompt
+  both tell the agent to do this).
+- `.github/workflows/aep-article-check.yml` — runs the same check
+  automatically on any PR touching `articles/**`, whoever opened it.
+
 ## Why not identical for all three
 
 All three read the exact same contracts — `aep/prompts/*.md` (role/output

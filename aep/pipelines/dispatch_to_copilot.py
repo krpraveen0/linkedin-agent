@@ -34,28 +34,53 @@ def latest_run_dir(mode: str) -> pathlib.Path:
 def build_issue(mode: str, run_dir: pathlib.Path) -> dict:
     research_bundle = load_json(run_dir / "research-bundle.json")
     ranked_topics = load_json(run_dir / "ranked-topics.json")["ranked_topics"]
+    run_summary = load_json(run_dir / "run-summary.json")
     top = ranked_topics[0]
     rel_run_dir = run_dir.relative_to(REPO_ROOT)
+    target = run_summary.get("target_article", {})
+    target_dir = target.get("dir", "articles/<topic-slug>")
 
     references = "\n".join(
         f"- {url}" for url in research_bundle["official_references"] + research_bundle.get("supporting_references", [])
     )
     claims = "\n".join(f"- {c['statement']}" for c in research_bundle.get("claims", []))
 
+    if target.get("kind") == "series-continuation":
+        target_note = (
+            f"Proposed as **part {target['series_part']}** of the `{target['series_name']}` series "
+            f"(\"{target.get('series_title', '')}\") — verify this is still correct against "
+            f"`articles/{target['series_name']}/` before committing to it."
+        )
+    else:
+        target_note = "Proposed as a **standalone article** (no active series had parts remaining)."
+
     title = f"[AEP/{mode}] Draft article: {top['topic']}"
     body = f"""\
 This issue was opened automatically by the `{mode}` AEP pipeline run.
 
 **Topic:** {top['topic']} (overall_score={top['overall_score']})
+**Target folder:** `{target_dir}/` — {target_note}
 
 ## Your task
 Follow these prompt contracts, in order, from this repository:
 1. `aep/prompts/research.md` — expand `{rel_run_dir}/research-bundle.json` if needed;
    every claim must keep reference URLs.
-2. `aep/prompts/writer.md` — draft the article. Explain architecture/implementation,
-   reference every technical claim, keep status `Draft - Pending Human Approval`.
-3. `aep/prompts/production-engineering.md` — if you add a build/PoC, include real
-   command output as evidence; never claim execution without it.
+2. `aep/prompts/writer.md` — draft the article **and commit the full deliverable set**,
+   not just prose. This is what "publish-ready" requires, all under `{target_dir}/`:
+   - `article.md` — hero image embed, content, an embedded topic-specific mermaid
+     diagram, real code snippets, a mini-project section, trade-offs, references
+   - `assets/hero.png` — generate via `python3 aep/pipelines/generate_hero_image.py
+     --title "..." --out {target_dir}/assets/hero.png` (or hand-author an SVG).
+     Never call an external image-generation API.
+   - `assets/diagrams/architecture.mmd` — topic-specific, not generic
+   - `project/` — a real, runnable mini-project with `project/README.md` and actual
+     source files (see `aep/prompts/production-engineering.md`)
+   - `research-bundle.json`, `publish-draft.json` — matching
+     `aep/schemas/research-bundle.schema.json` / `publish-draft.schema.json`,
+     with `article_path`/`hero_image_path`/`diagram_paths`/`project_path` pointing
+     at files that actually exist
+3. `aep/prompts/production-engineering.md` — run the mini-project for real, capture
+   real command output as evidence; never claim execution without it.
 4. `aep/prompts/technical-auditor.md` and `aep/prompts/platform-auditor.md` — self-check
    the draft against these before opening the PR.
 
@@ -66,6 +91,7 @@ only authorizes a **draft PR**, not publishing.
 ## Starting material (from this run)
 Research bundle: `{rel_run_dir / 'research-bundle.json'}`
 Ranked topics: `{rel_run_dir / 'ranked-topics.json'}`
+Hero image preview (baseline only, feel free to improve): `{rel_run_dir / 'hero_preview.png'}`
 Notion draft template: `aep/publisher/notion-page-template.md`
 
 Official references so far:
@@ -74,10 +100,13 @@ Official references so far:
 Claims so far:
 {claims or '(none captured — build these out per aep/prompts/research.md)'}
 
-## Output
-Open a PR with the article draft and update `{rel_run_dir / 'publish-draft.json'}`
-to match `aep/schemas/publish-draft.schema.json`. Keep `human_approval_required: true`
-and status `Draft - Pending Human Approval`.
+## Before opening the PR
+Run `python3 aep/pipelines/validate_article.py {target_dir}` — this is the exact
+check CI (`aep-article-check.yml`) runs against your PR. Fix everything it flags
+first; don't rely on CI to find gaps for you.
+
+If this is a series continuation, also update `articles/{target.get('series_name', '')}/README.md`
+with the new part.
 """
     return {"title": title, "body": body}
 

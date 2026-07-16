@@ -19,7 +19,9 @@
     "status": "enum",
     "source_repo": "string",
     "pr_url": "string",
-    "commit_sha": "string"
+    "commit_sha": "string",
+    "hero_image_path": "string",
+    "project_path": "string"
   },
   "required_sections": [
     "Problem Statement",
@@ -27,6 +29,7 @@
     "Architecture",
     "Build Walkthrough (Teach by Building)",
     "Diagrams (Editable Source Required)",
+    "Mini Project",
     "Results / Validation",
     "Trade-offs",
     "References (Official Preferred)",

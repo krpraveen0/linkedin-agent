@@ -19,6 +19,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install AEP pipeline dependencies
+        run: pip install -r aep/requirements.txt
+
       - name: Run AEP morning orchestrator
         run: |
           bash aep/pipelines/morning-orchestrator.sh

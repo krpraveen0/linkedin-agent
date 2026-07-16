@@ -33,9 +33,19 @@ This module is an isolated foundation for a GitHub-native, Copilot-agent-first e
 - `pipelines/`: deterministic trend/research/audit pipeline
   (`run_pipeline.py`, `validate_artifacts.py`) plus the Copilot handoff
   (`dispatch_to_copilot.py`) — see `docs/agent-dispatch.md` for how the
-  three agents are actually invoked (scheduled vs. manual vs. local).
+  three agents are actually invoked (scheduled vs. manual vs. local) — plus
+  `generate_hero_image.py` (code-rendered hero images, no external API) and
+  `validate_article.py` (the publish-readiness gate for `articles/**`,
+  also run in CI via `aep-article-check.yml`).
 - `publisher/`: Notion draft template + field mapping.
 - `policies/`: explicit external-LLM prohibition.
+
+## Where finished articles live
+
+Not under `aep/` — published/drafted articles live in `articles/<series>/part-NN/`
+(series) or `articles/<slug>/` (standalone), each a hero image + content +
+diagrams + a runnable mini-project. See `aep/prompts/writer.md` for the exact
+required layout and `aep/pipelines/validate_article.py` for the mechanical check.
 
 ## Workflow schedule assumption
 AEP workflow cron schedules use UTC:

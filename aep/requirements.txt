@@ -1,0 +1,5 @@
+# Deterministic aep/pipelines/ dependencies only — not an LLM SDK, see
+# aep/policies/no-external-llm-policy.md. matplotlib is required for
+# aep/pipelines/generate_hero_image.py (code-rendered hero images, no
+# external image-generation API).
+matplotlib>=3.8
