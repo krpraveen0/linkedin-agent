@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "aep/schemas/ranked-topic.schema.json",
+  "title": "RankedTopic",
+  "type": "object",
+  "required": ["topic", "scores", "overall_score", "ranked_at"],
+  "properties": {
+    "topic": { "type": "string" },
+    "ranked_at": { "type": "string", "format": "date-time" },
+    "scores": {
+      "type": "object",
+      "required": ["evergreen", "practical", "knowledge_gap", "virality"],
+      "properties": {
+        "evergreen": { "type": "number", "minimum": 0, "maximum": 100 },
+        "practical": { "type": "number", "minimum": 0, "maximum": 100 },
+        "knowledge_gap": { "type": "number", "minimum": 0, "maximum": 100 },
+        "virality": { "type": "number", "minimum": 0, "maximum": 100 }
+      },
+      "additionalProperties": false
+    },
+    "overall_score": { "type": "number", "minimum": 0, "maximum": 100 },
+    "references": {
+      "type": "array",
+      "items": { "type": "string", "format": "uri" }
+    }
+  },
+  "additionalProperties": false
+}

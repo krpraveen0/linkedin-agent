@@ -1,0 +1,30 @@
+name: aep-evening-review
+
+on:
+  schedule:
+    # 20:00 UTC daily (timezone assumption: UTC)
+    - cron: '0 20 * * *'
+  workflow_dispatch:
+  push:
+    paths:
+      - 'aep/**'
+      - '.github/workflows/aep-evening-review.yml'
+
+jobs:
+  evening-stub:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run AEP evening stub orchestrator
+        run: |
+          bash aep/pipelines/evening-orchestrator.sh
+
+      - name: Upload evening stub artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: aep-evening-stub
+          path: aep/out/evening/last-run.json

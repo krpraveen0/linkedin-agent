@@ -1,0 +1,43 @@
+name: aep-constitution-check
+
+on:
+  pull_request:
+    paths:
+      - 'aep/**'
+      - '.github/workflows/aep-constitution-check.yml'
+  push:
+    paths:
+      - 'aep/**'
+      - '.github/workflows/aep-constitution-check.yml'
+  workflow_dispatch:
+
+jobs:
+  constitution-check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify AEP files include human approval state
+        run: |
+          grep -R -nE "Draft - Pending Human Approval|Human approval" aep >/dev/null
+
+      - name: Block external LLM API/provider usage in AEP
+        run: |
+          if grep -R -nEi "openai|anthropic|gemini|groq|mistral|x-ai|OPENAI_API_KEY|ANTHROPIC_API_KEY|from cohere|import cohere|cohere\\." aep \
+            --include='*.sh' --include='*.py' --include='*.js' --include='*.ts' --include='*.json' --include='*.yml' --include='*.yaml'; then
+            echo "Disallowed external LLM provider/API usage detected in aep/**"
+            exit 1
+          fi
+
+      - name: Validate all AEP JSON files parse
+        run: |
+          python - <<'PY'
+          import glob, json
+          for path in glob.glob('aep/**/*.json', recursive=True):
+              with open(path, 'r', encoding='utf-8') as f:
+                  json.load(f)
+              print(f'validated: {path}')
+          PY
