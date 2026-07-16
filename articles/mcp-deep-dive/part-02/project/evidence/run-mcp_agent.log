@@ -1,0 +1,17 @@
+[initialize] -> {"jsonrpc": "2.0", "id": 1, "result": {"protocolVersion": "2025-11-25", "serverInfo": {"name": "support-tools", "version": "0.1.0"}}}
+[tools/list] -> 2 tools: ['get_order_status', 'convert_currency']
+
+User: What's the status of order A1001?
+  tool-calling model decided -> {"name": "get_order_status", "arguments": {"order_id": "A1001"}}
+  [tools/call] -> {"jsonrpc": "2.0", "id": 3, "result": {"status": "shipped", "carrier": "UPS", "eta_days": 2}}
+Agent: your order is shipped via UPS, ETA 2 day(s).
+
+User: Can you convert 100 USD to EUR?
+  tool-calling model decided -> {"name": "convert_currency", "arguments": {"amount": 100.0, "from_currency": "USD", "to_currency": "EUR"}}
+  [tools/call] -> {"jsonrpc": "2.0", "id": 4, "result": {"converted_amount": 92.59, "to_currency": "EUR"}}
+Agent: that's 92.59 EUR.
+
+User: What's the weather like today?
+Agent: no tool matched this message; would fall back to a direct model answer.
+
+exit_code=0

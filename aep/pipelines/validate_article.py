@@ -123,6 +123,47 @@ def check_project_folder(article_dir: pathlib.Path) -> List[str]:
     return []
 
 
+def check_build_evidence(article_dir: pathlib.Path) -> List[str]:
+    """Mechanically enforce 'never publish unexecuted code' (aep/README.md rule 1).
+
+    A project/ folder full of source files proves nothing was fabricated as
+    text, but it doesn't prove the code actually runs. build-artifact.json
+    (aep/schemas/build-artifact.schema.json) is where that gets recorded --
+    require it to exist and say the build genuinely passed, not just that
+    someone traced it by eye.
+    """
+    build_path = article_dir / "project" / "build-artifact.json"
+    if not build_path.exists():
+        return [
+            f"missing {build_path.relative_to(REPO_ROOT)} -- the mini-project must be "
+            "actually run and its result recorded, not just traced by eye"
+        ]
+
+    try:
+        build = json.loads(build_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        return [f"{build_path.relative_to(REPO_ROOT)} is not valid JSON: {exc}"]
+
+    required = ["artifact_id", "topic", "build_status", "executed_checks", "generated_at"]
+    missing = [f for f in required if f not in build]
+    if missing:
+        return [f"{build_path.relative_to(REPO_ROOT)} missing required fields: {missing}"]
+
+    if build["build_status"] != "passed":
+        return [
+            f"{build_path.relative_to(REPO_ROOT)} records build_status="
+            f"'{build['build_status']}' -- the mini-project must actually run "
+            "successfully (see aep/prompts/production-engineering.md) before this "
+            "counts as publish-ready, per aep/README.md's 'never publish "
+            "unexecuted code' rule"
+        ]
+
+    if not build["executed_checks"]:
+        return [f"{build_path.relative_to(REPO_ROOT)} has build_status=passed but no executed_checks recorded"]
+
+    return []
+
+
 def validate_article(article_dir: pathlib.Path) -> List[str]:
     errors: List[str] = []
     if not article_dir.exists():
@@ -131,6 +172,7 @@ def validate_article(article_dir: pathlib.Path) -> List[str]:
     errors += check_article_content(article_dir)
     errors += check_hero_image(article_dir)
     errors += check_project_folder(article_dir)
+    errors += check_build_evidence(article_dir)
     return errors
 
 
