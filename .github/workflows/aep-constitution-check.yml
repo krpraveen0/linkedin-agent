@@ -26,7 +26,13 @@ jobs:
 
       - name: Block external LLM API/provider usage in AEP
         run: |
-          if grep -R -nEi "openai|anthropic|gemini|groq|mistral|x-ai|OPENAI_API_KEY|ANTHROPIC_API_KEY|from cohere|import cohere|cohere\\." aep \
+          # Targets actual SDK/API integration (imports, api-key env vars, api.* hosts),
+          # not editorial mentions of provider names/domains as citation references
+          # (e.g. research bundles legitimately cite https://anthropic.com/news/... as
+          # an official source — that is not an API call).
+          if grep -R -nE \
+            "(^|[^a-zA-Z0-9_.-])(import|from) +(openai|anthropic|groq|cohere|mistralai)\b|from google import genai|import google\.generativeai|OPENAI_API_KEY|ANTHROPIC_API_KEY|GOOGLE_AI_KEY|GEMINI_API_KEY|GROQ_API_KEY|MISTRAL_API_KEY|COHERE_API_KEY|XAI_API_KEY|api\.openai\.com|api\.anthropic\.com|generativelanguage\.googleapis\.com|api\.groq\.com|api\.mistral\.ai|api\.cohere\.ai" \
+            aep \
             --include='*.sh' --include='*.py' --include='*.js' --include='*.ts' --include='*.json' --include='*.yml' --include='*.yaml'; then
             echo "Disallowed external LLM provider/API usage detected in aep/**"
             exit 1
