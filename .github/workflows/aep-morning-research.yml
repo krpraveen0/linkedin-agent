@@ -11,7 +11,7 @@ on:
       - '.github/workflows/aep-morning-research.yml'
 
 jobs:
-  morning-stub:
+  morning-pipeline:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -19,12 +19,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Run AEP morning stub orchestrator
+      - name: Run AEP morning orchestrator
         run: |
           bash aep/pipelines/morning-orchestrator.sh
 
-      - name: Upload morning stub artifact
+      - name: Upload morning pipeline artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: aep-morning-stub
-          path: aep/out/morning/last-run.json
+          name: aep-morning-pipeline
+          path: aep/out/morning/**
