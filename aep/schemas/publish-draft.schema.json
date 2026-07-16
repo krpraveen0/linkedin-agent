@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "aep/schemas/publish-draft.schema.json",
+  "title": "PublishDraft",
+  "type": "object",
+  "required": ["external_id", "title", "status", "body_path", "references", "human_approval_required"],
+  "properties": {
+    "external_id": { "type": "string" },
+    "title": { "type": "string" },
+    "status": { "type": "string", "enum": ["Draft - Pending Human Approval", "Ready to Publish"] },
+    "body_path": { "type": "string" },
+    "references": {
+      "type": "array",
+      "items": { "type": "string", "format": "uri" },
+      "minItems": 1
+    },
+    "human_approval_required": { "type": "boolean", "const": true },
+    "notion_page_id": { "type": "string" }
+  },
+  "additionalProperties": false
+}

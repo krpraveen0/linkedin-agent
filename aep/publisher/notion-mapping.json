@@ -1,0 +1,36 @@
+{
+  "version": "1.0",
+  "integration": "notion.so MCP",
+  "idempotency": {
+    "strategy": "upsert-by-external_id",
+    "external_id_field": "external_id",
+    "create_if_missing": true,
+    "update_if_exists": true
+  },
+  "statuses": {
+    "draft": "Draft - Pending Human Approval",
+    "ready": "Ready to Publish"
+  },
+  "required_properties": {
+    "external_id": "string",
+    "title": "string",
+    "topic": "string",
+    "series_name": "string",
+    "status": "enum",
+    "source_repo": "string",
+    "pr_url": "string",
+    "commit_sha": "string"
+  },
+  "required_sections": [
+    "Problem Statement",
+    "Why Now (Trend Signals)",
+    "Architecture",
+    "Build Walkthrough (Teach by Building)",
+    "Diagrams (Editable Source Required)",
+    "Results / Validation",
+    "Trade-offs",
+    "References (Official Preferred)",
+    "Audit Scorecards",
+    "Approval Checklist"
+  ]
+}

@@ -1,0 +1,30 @@
+name: aep-morning-research
+
+on:
+  schedule:
+    # 06:00 UTC daily (timezone assumption: UTC)
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+  push:
+    paths:
+      - 'aep/**'
+      - '.github/workflows/aep-morning-research.yml'
+
+jobs:
+  morning-stub:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run AEP morning stub orchestrator
+        run: |
+          bash aep/pipelines/morning-orchestrator.sh
+
+      - name: Upload morning stub artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: aep-morning-stub
+          path: aep/out/morning/last-run.json

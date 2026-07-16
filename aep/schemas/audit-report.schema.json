@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "aep/schemas/audit-report.schema.json",
+  "title": "AuditReport",
+  "type": "object",
+  "required": ["audit_type", "score", "status", "findings", "audited_at"],
+  "properties": {
+    "audit_type": { "type": "string", "enum": ["technical", "platform"] },
+    "score": { "type": "number", "minimum": 0, "maximum": 100 },
+    "status": { "type": "string", "enum": ["passed", "failed"] },
+    "audited_at": { "type": "string", "format": "date-time" },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["severity", "summary"],
+        "properties": {
+          "severity": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+          "summary": { "type": "string" },
+          "remediation": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

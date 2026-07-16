@@ -1,0 +1,40 @@
+# EngineeringCoders Autonomous Editorial Platform (AEP) — v1 Foundation
+
+This module is an isolated foundation for a GitHub-native, Copilot-agent-first editorial platform.
+
+## Isolation + non-invasive guarantees
+- All AEP implementation is under `aep/`.
+- Existing repository folders and automations are untouched.
+- New workflows are uniquely named (`aep-*`) and scoped to `aep/**` where relevant.
+- Current workflows outside AEP are not modified.
+
+## Core operating constraints
+- No external LLM API usage inside AEP.
+- GitHub/Copilot agent-first architecture.
+- Human approval is required before publication.
+- Notion output is draft-first via MCP-friendly contracts.
+
+## Constitution alignment
+1. Never publish unexecuted code.
+2. Prefer official documentation.
+3. Every article teaches by building.
+4. Every diagram is editable.
+5. Every claim is referenced.
+6. Quality over virality.
+7. Human approval before publication.
+
+## v1 scope in this folder
+- `docs/`: concise implementation blueprint.
+- `schemas/`: contracts for AEP artifacts.
+- `prompts/`: agent role templates.
+- `pipelines/`: safe, non-destructive orchestration stubs.
+- `publisher/`: Notion draft template + field mapping.
+- `policies/`: explicit external-LLM prohibition.
+
+## Workflow schedule assumption
+AEP workflow cron schedules use UTC:
+- Morning research: `06:00 UTC`
+- Evening review: `20:00 UTC`
+
+## Future expansion
+This v1 is intentionally stubbed for roadmap phases (trend/research engines, builder/writer/diagram agents, auditors/publisher, analytics loop) without affecting existing repository behavior.

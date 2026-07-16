@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "aep/schemas/build-artifact.schema.json",
+  "title": "BuildArtifact",
+  "type": "object",
+  "required": ["artifact_id", "topic", "build_status", "executed_checks", "generated_at"],
+  "properties": {
+    "artifact_id": { "type": "string" },
+    "topic": { "type": "string" },
+    "build_status": { "type": "string", "enum": ["passed", "failed"] },
+    "executed_checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "status"],
+        "properties": {
+          "name": { "type": "string" },
+          "status": { "type": "string", "enum": ["passed", "failed"] },
+          "evidence_path": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "repo_ref": { "type": "string" }
+  },
+  "additionalProperties": false
+}
