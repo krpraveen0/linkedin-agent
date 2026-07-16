@@ -1,0 +1,23 @@
+{
+  "external_id": "mcp-deep-dive-part-02",
+  "title": "Accelerate Agentic Tool Calling with Serverless Model Customization in Amazon SageMaker AI",
+  "status": "Draft - Pending Human Approval",
+  "body_path": "articles/mcp-deep-dive/part-02/article.md",
+  "references": [
+    "https://www.anthropic.com/news/model-context-protocol",
+    "https://modelcontextprotocol.io/introduction",
+    "https://github.com/modelcontextprotocol",
+    "https://aws.amazon.com/blogs/machine-learning/accelerate-agentic-tool-calling-with-serverless-model-customization-in-amazon-sagemaker-ai/",
+    "https://aws.amazon.com/sagemaker/ai/",
+    "https://huggingface.co/blog/introducing-gradio-server"
+  ],
+  "human_approval_required": true,
+  "article_path": "articles/mcp-deep-dive/part-02/article.md",
+  "hero_image_path": "articles/mcp-deep-dive/part-02/assets/hero.svg",
+  "diagram_paths": [
+    "articles/mcp-deep-dive/part-02/assets/diagrams/architecture.mmd"
+  ],
+  "project_path": "articles/mcp-deep-dive/part-02/project",
+  "series_name": "mcp-deep-dive",
+  "series_part": 2
+}

@@ -1,0 +1,22 @@
+flowchart LR
+    User([End user]) --> Agent[Agent orchestrator]
+
+    subgraph SageMaker["Amazon SageMaker AI — serverless endpoint"]
+        Model["Customized tool-calling model\n(fine-tuned for one MCP tool schema,\nscales to zero between bursts)"]
+    end
+
+    Agent -- "1. prompt + tool schema" --> Model
+    Model -- "2. {name, arguments} decision" --> Agent
+
+    Agent -- "3. tools/call (JSON-RPC 2.0)" --> MCPServer
+
+    subgraph MCPServer["MCP server (STDIO / HTTP+SSE transport)"]
+        Tool1[["get_order_status"]]
+        Tool2[["convert_currency"]]
+    end
+
+    MCPServer -- "4. tool result" --> Agent
+    Agent -- "5. final answer" --> User
+
+    style SageMaker fill:#0d1117,color:#f0f6fc,stroke:#2f81f7
+    style MCPServer fill:#0d1117,color:#f0f6fc,stroke:#2f81f7

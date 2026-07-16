@@ -1,0 +1,48 @@
+{
+  "topic": "Accelerate agentic tool calling with serverless model customization in Amazon SageMaker AI",
+  "objective": "Explain, as part 2 of the mcp-deep-dive series ('MCP in Action: Real-World Applications and Case Studies'), how hosting a customized (fine-tuned) tool-calling model on a serverless Amazon SageMaker AI endpoint reduces cost and latency for MCP-based agentic systems, and demonstrate the underlying tool-calling protocol with a runnable local example.",
+  "official_references": [
+    "https://www.anthropic.com/news/model-context-protocol",
+    "https://modelcontextprotocol.io/introduction",
+    "https://github.com/modelcontextprotocol",
+    "https://aws.amazon.com/blogs/machine-learning/accelerate-agentic-tool-calling-with-serverless-model-customization-in-amazon-sagemaker-ai/",
+    "https://aws.amazon.com/sagemaker/ai/"
+  ],
+  "supporting_references": [
+    "https://huggingface.co/blog/introducing-gradio-server"
+  ],
+  "claims": [
+    {
+      "statement": "MCP was launched by Anthropic on November 25, 2024, as an open-standard protocol for AI-data integration.",
+      "reference_urls": ["https://www.anthropic.com/news/model-context-protocol"]
+    },
+    {
+      "statement": "MCP reduces integration complexity from O(N*M) bespoke connectors to O(N+M) standardized interfaces between AI applications and tools/data sources.",
+      "reference_urls": ["https://modelcontextprotocol.io/introduction", "https://www.anthropic.com/news/model-context-protocol"]
+    },
+    {
+      "statement": "MCP is built on the JSON-RPC 2.0 specification, so messages are language-agnostic between clients and servers.",
+      "reference_urls": ["https://modelcontextprotocol.io/introduction"]
+    },
+    {
+      "statement": "MCP defines three core primitives exposed by a server: Resources (static/queryable data), Tools (executable functions), and Prompts (reusable templates).",
+      "reference_urls": ["https://modelcontextprotocol.io/introduction", "https://github.com/modelcontextprotocol"]
+    },
+    {
+      "statement": "MCP supports STDIO transport for local processes (newline-delimited JSON-RPC messages on stdin/stdout) and HTTP with Server-Sent Events (SSE) for remote connections.",
+      "reference_urls": ["https://modelcontextprotocol.io/introduction", "https://github.com/modelcontextprotocol"]
+    },
+    {
+      "statement": "AWS describes an approach for hosting agentic tool-calling models with serverless/on-demand model customization on Amazon SageMaker AI, aimed at accelerating and reducing the cost of the tool-selection step in agent loops compared to always-on dedicated GPU endpoints.",
+      "reference_urls": ["https://aws.amazon.com/blogs/machine-learning/accelerate-agentic-tool-calling-with-serverless-model-customization-in-amazon-sagemaker-ai/"]
+    },
+    {
+      "statement": "Amazon SageMaker AI is AWS's managed platform for building, training, fine-tuning, and deploying machine learning models, including inference options that scale down between bursts of traffic.",
+      "reference_urls": ["https://aws.amazon.com/sagemaker/ai/"]
+    },
+    {
+      "statement": "Standardized server tooling for exposing model-facing endpoints (e.g. Gradio's MCP/server integration) is an active trend making it easier to wrap existing apps as agent-callable tools.",
+      "reference_urls": ["https://huggingface.co/blog/introducing-gradio-server"]
+    }
+  ]
+}
