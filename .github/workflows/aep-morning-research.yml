@@ -19,9 +19,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install AEP pipeline dependencies
+        run: pip install -r aep/requirements.txt
+
       - name: Run AEP morning orchestrator
         run: |
           bash aep/pipelines/morning-orchestrator.sh
+
+      - name: Dispatch top-ranked topic to Copilot coding agent
+        env:
+          COPILOT_DISPATCH_PAT: ${{ secrets.COPILOT_DISPATCH_PAT }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          if [ -z "$COPILOT_DISPATCH_PAT" ]; then
+            echo "COPILOT_DISPATCH_PAT not set — skipping Copilot dispatch."
+            echo "Deterministic artifacts were still generated and uploaded below."
+            echo "See aep/docs/agent-dispatch.md to enable auto-dispatch."
+            exit 0
+          fi
+          python3 aep/pipelines/dispatch_to_copilot.py --mode morning
 
       - name: Upload morning pipeline artifacts
         uses: actions/upload-artifact@v4

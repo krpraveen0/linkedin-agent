@@ -1,0 +1,43 @@
+name: aep-claude-manual
+
+# Manual/on-demand only — deliberately NOT on a `schedule:` trigger.
+# anthropics/claude-code-action currently fails auth on cron-triggered runs
+# (https://github.com/anthropics/claude-code-action/issues/814); manual and
+# comment triggers work reliably. Uses claude_code_oauth_token (Claude
+# Pro/Max subscription) instead of a metered ANTHROPIC_API_KEY.
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Which AEP run to draft from (morning/evening)'
+        required: false
+        default: 'morning'
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+
+jobs:
+  claude:
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude'))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Claude Code
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: >-
+            ${{ github.event_name == 'workflow_dispatch' &&
+                format('Follow aep/prompts/research.md then aep/prompts/writer.md to draft an article from the latest AEP {0} run under aep/out/{0}/ (see last-run.json for the current run id, and its target_article field in run-summary.json for the proposed articles/** destination folder). writer.md specifies the full required deliverable set for that folder -- article.md, assets/hero.png (generate via aep/pipelines/generate_hero_image.py, never an external image API), assets/diagrams/*.mmd, a real runnable project/ folder per aep/prompts/production-engineering.md, research-bundle.json, and publish-draft.json. Self-check against aep/prompts/technical-auditor.md and aep/prompts/platform-auditor.md, then run python3 aep/pipelines/validate_article.py <target-dir> yourself before opening the PR -- that is the same check aep-article-check.yml runs on your PR. Keep status Draft - Pending Human Approval per aep/README.md. Open a PR, do not publish anything.', github.event.inputs.mode)
+                || '' }}

@@ -1,5 +1,7 @@
 # {{title}}
 
+![hero]({{hero_image_path}})
+
 ## Metadata
 - External ID: `{{external_id}}`
 - Topic: `{{topic}}`
@@ -21,6 +23,9 @@
 
 ## Diagrams (Editable Source Required)
 {{diagram_links}}
+
+## Mini Project
+Runnable code for this article: `{{project_path}}`
 
 ## Results / Validation
 {{execution_evidence}}
