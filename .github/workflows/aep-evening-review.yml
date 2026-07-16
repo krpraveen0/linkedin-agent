@@ -11,7 +11,7 @@ on:
       - '.github/workflows/aep-evening-review.yml'
 
 jobs:
-  evening-stub:
+  evening-pipeline:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -19,12 +19,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Run AEP evening stub orchestrator
+      - name: Run AEP evening orchestrator
         run: |
           bash aep/pipelines/evening-orchestrator.sh
 
-      - name: Upload evening stub artifact
+      - name: Upload evening pipeline artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: aep-evening-stub
-          path: aep/out/evening/last-run.json
+          name: aep-evening-pipeline
+          path: aep/out/evening/**

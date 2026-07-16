@@ -1,0 +1,6 @@
+{
+  "pipeline": "evening-review",
+  "run_timestamp_utc": "2026-07-16T06:40:00Z",
+  "mode": "stub",
+  "notes": "No publication action is performed; human approval remains mandatory."
+}
