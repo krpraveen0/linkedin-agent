@@ -14,6 +14,10 @@ on:
     paths:
       - 'articles/**'
 
+concurrency:
+  group: aep-notion-publish-${{ github.event.pull_request.number }}
+  cancel-in-progress: false  # a merge event should never be dropped/superseded
+
 jobs:
   dispatch-publish:
     if: github.event.pull_request.merged == true

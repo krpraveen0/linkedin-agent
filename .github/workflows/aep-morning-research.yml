@@ -6,9 +6,20 @@ on:
     - cron: '0 6 * * *'
   workflow_dispatch:
   push:
+    branches: [main]  # never auto-dispatch from a feature/PR branch push — see
+                       # the incident note below: this used to fire on any
+                       # branch, which raced two concurrent triggers into
+                       # creating duplicate real GitHub issues and assigning
+                       # Copilot to both from a non-main branch during review.
     paths:
       - 'aep/**'
       - '.github/workflows/aep-morning-research.yml'
+
+concurrency:
+  group: aep-morning-research
+  cancel-in-progress: false  # let an in-flight dispatch finish rather than
+                              # racing a second trigger past the idempotency
+                              # check before the first has created its issue
 
 jobs:
   morning-pipeline:

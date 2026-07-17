@@ -6,9 +6,15 @@ on:
     - cron: '0 20 * * *'
   workflow_dispatch:
   push:
+    branches: [main]  # never auto-dispatch from a feature/PR branch push —
+                       # see aep-morning-research.yml's incident note
     paths:
       - 'aep/**'
       - '.github/workflows/aep-evening-review.yml'
+
+concurrency:
+  group: aep-evening-review
+  cancel-in-progress: false
 
 jobs:
   evening-pipeline:

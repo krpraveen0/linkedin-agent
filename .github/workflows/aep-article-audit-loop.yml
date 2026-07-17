@@ -19,6 +19,10 @@ on:
     paths:
       - 'articles/**'
 
+concurrency:
+  group: aep-article-audit-loop-${{ github.event.pull_request.number }}
+  cancel-in-progress: true  # a newer push supersedes an in-flight audit of an older commit
+
 jobs:
   audit-loop:
     runs-on: ubuntu-latest
