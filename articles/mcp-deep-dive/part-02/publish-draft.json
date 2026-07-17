@@ -15,7 +15,8 @@
   "article_path": "articles/mcp-deep-dive/part-02/article.md",
   "hero_image_path": "articles/mcp-deep-dive/part-02/assets/hero.svg",
   "diagram_paths": [
-    "articles/mcp-deep-dive/part-02/assets/diagrams/architecture.mmd"
+    "articles/mcp-deep-dive/part-02/assets/diagrams/architecture.mmd",
+    "articles/mcp-deep-dive/part-02/assets/diagrams/sequence.mmd"
   ],
   "project_path": "articles/mcp-deep-dive/part-02/project",
   "series_name": "mcp-deep-dive",

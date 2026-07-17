@@ -67,7 +67,7 @@ def _handle(message: dict) -> dict:
     method = message.get("method")
     msg_id = message.get("id")
     if method == "initialize":
-        result = {"protocolVersion": "2025-06-18", "serverInfo": {"name": "support-tools", "version": "0.1.0"}}
+        result = {"protocolVersion": "2025-11-25", "serverInfo": {"name": "support-tools", "version": "0.1.0"}}
     elif method == "tools/list":
         result = {"tools": TOOLS}
     elif method == "tools/call":

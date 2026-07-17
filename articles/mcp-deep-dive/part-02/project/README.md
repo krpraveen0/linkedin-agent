@@ -37,12 +37,34 @@ python3 mcp_agent.py
 
 ## Execution status
 
-**Not executed in this PR's authoring session** — the sandboxed environment
-this draft was written in blocks all local command execution (`python3`,
-including via a subagent, returned `This command requires approval` with no
-interactive user available to grant it). The code has been manually traced
-line-by-line (see `build-artifact.json` in this folder) but that is not a
-substitute for actually running it. **Before merging, a human reviewer (or
-CI) should run the command above and confirm the output**, per this repo's
-"never claim execution without evidence" rule
-(`aep/prompts/production-engineering.md`).
+**Verified.** The authoring session's sandbox blocked all local command
+execution (`python3` returned `This command requires approval` with no
+interactive user available to grant it), so the code was traced but not run
+at authoring time — see `build-artifact.json`'s original `generated_at`
+entry for that honest disclosure. A follow-up review, outside that sandbox,
+ran it for real:
+
+```
+$ python3 mcp_agent.py
+[initialize] -> {"jsonrpc": "2.0", "id": 1, "result": {"protocolVersion": "2025-11-25", "serverInfo": {"name": "support-tools", "version": "0.1.0"}}}
+[tools/list] -> 2 tools: ['get_order_status', 'convert_currency']
+
+User: What's the status of order A1001?
+  tool-calling model decided -> {"name": "get_order_status", "arguments": {"order_id": "A1001"}}
+  [tools/call] -> {"jsonrpc": "2.0", "id": 3, "result": {"status": "shipped", "carrier": "UPS", "eta_days": 2}}
+Agent: your order is shipped via UPS, ETA 2 day(s).
+
+User: Can you convert 100 USD to EUR?
+  tool-calling model decided -> {"name": "convert_currency", "arguments": {"amount": 100.0, "from_currency": "USD", "to_currency": "EUR"}}
+  [tools/call] -> {"jsonrpc": "2.0", "id": 4, "result": {"converted_amount": 92.59, "to_currency": "EUR"}}
+Agent: that's 92.59 EUR.
+
+User: What's the weather like today?
+Agent: no tool matched this message; would fall back to a direct model answer.
+```
+
+Full output also saved at `evidence/run-mcp_agent.log` (`exit_code=0`). One
+correction made in the process: `mcp_tools_server.py`'s `protocolVersion` was
+`2025-06-18` (stale) at authoring time, bumped to `2025-11-25` (current
+stable MCP spec — the `2026-07-28` revision is a release candidate, not yet
+final). `build-artifact.json`'s `build_status` now reflects this real run.

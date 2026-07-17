@@ -1,0 +1,24 @@
+sequenceDiagram
+    participant U as User message
+    participant A as Agent (mcp_agent.py)
+    participant M as tool_calling_model.py
+    participant S as MCP server (subprocess, STDIO)
+
+    A->>S: spawn subprocess
+    A->>S: initialize
+    S-->>A: protocolVersion, serverInfo
+    A->>S: tools/list
+    S-->>A: [get_order_status, convert_currency]
+
+    loop each sample message
+        U->>A: user_message
+        A->>M: decide_tool_call(user_message, tools)
+        M-->>A: {name, arguments} or None
+        alt tool matched
+            A->>S: tools/call {name, arguments}
+            S-->>A: result
+            A-->>U: synthesized answer
+        else no match
+            A-->>U: fallback message
+        end
+    end

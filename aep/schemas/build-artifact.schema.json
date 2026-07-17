@@ -22,7 +22,9 @@
       }
     },
     "generated_at": { "type": "string", "format": "date-time" },
-    "repo_ref": { "type": "string" }
+    "repo_ref": { "type": "string" },
+    "verified_at": { "type": "string", "format": "date-time", "description": "When a follow-up run (human or CI) confirmed build_status, if different from generated_at" },
+    "verified_by": { "type": "string", "description": "Who/what did the follow-up run, and why one was needed (e.g. authoring sandbox blocked execution)" }
   },
   "additionalProperties": false
 }
