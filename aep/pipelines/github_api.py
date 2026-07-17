@@ -77,12 +77,24 @@ def list_comments(issue_or_pr_number: int, token: str, repo: str) -> list:
 
 def find_open_item_for_target(target_dir: str, token: str, repo: str) -> dict | None:
     """Best-effort duplicate check via the search API — see the caller's docstring
-    for the known indexing-lag caveat; this is a soft guard, not a hard lock."""
-    query = f'repo:{repo} is:open "{target_dir}" in:title,body'
-    url = "https://api.github.com/search/issues?q=" + urllib.parse.quote(query)
-    result = github_request("GET", url, token)
-    items = result.get("items", [])
-    return items[0] if items else None
+    for the known indexing-lag caveat; this is a soft guard, not a hard lock.
+
+    GitHub's search/issues API rejects a query with neither `is:issue` nor
+    `is:pull-request` (HTTP 422 "Query must include 'is:issue' or
+    'is:pull-request'") — found by actually running this in CI, not in local
+    dry-run testing, since dry-run never reaches this code path. Since we
+    want to catch either an open issue OR an open PR already targeting the
+    folder, and the two `is:` qualifiers aren't OR-able in one query, this
+    runs two searches rather than guessing at undocumented query syntax.
+    """
+    for kind in ("is:issue", "is:pull-request"):
+        query = f'repo:{repo} is:open {kind} "{target_dir}" in:title,body'
+        url = "https://api.github.com/search/issues?q=" + urllib.parse.quote(query)
+        result = github_request("GET", url, token)
+        items = result.get("items", [])
+        if items:
+            return items[0]
+    return None
 
 
 def looks_like_quota_exhaustion(error_message: str) -> bool:
