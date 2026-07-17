@@ -1,0 +1,31 @@
+{
+  "_comment": "Config for fetch_trend_signals.py. Edit this file to add feeds or tune keywords — no code changes needed. official_domains also backs run_pipeline.py's is_official() check.",
+  "feeds": [
+    "https://aws.amazon.com/blogs/machine-learning/feed/",
+    "https://www.microsoft.com/en-us/research/feed/",
+    "https://blog.google/technology/ai/rss/",
+    "https://huggingface.co/blog/feed.xml"
+  ],
+  "official_domains": [
+    "anthropic.com",
+    "modelcontextprotocol.io",
+    "github.com/modelcontextprotocol",
+    "microsoft.com",
+    "aws.amazon.com",
+    "blog.google",
+    "huggingface.co",
+    "openai.com",
+    "pytorch.org",
+    "kubernetes.io",
+    "cloud.google.com"
+  ],
+  "focus_keywords": [
+    "mcp", "model context protocol", "agent", "agentic", "tool calling", "tool-calling",
+    "llm", "rag", "retrieval", "fine-tun", "inference", "serverless", "protocol",
+    "context window", "evaluation", "benchmark", "orchestrat", "reasoning"
+  ],
+  "practicality_keywords": [
+    "how to", "how we", "build", "tutorial", "walkthrough", "walk through",
+    "step-by-step", "implement", "guide", "hands-on", "deploy", "we show"
+  ]
+}

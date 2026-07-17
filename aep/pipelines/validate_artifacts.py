@@ -28,12 +28,16 @@ def assert_required(obj: Dict[str, Any], required: List[str], name: str) -> None
 def validate_ranked_topics(payload: Dict[str, Any]) -> None:
     assert_required(payload, ["ranked_topics"], "ranked-topics")
     ranked_topics = payload["ranked_topics"]
-    if not isinstance(ranked_topics, list) or not ranked_topics:
-        raise ValueError("ranked-topics.ranked_topics must be a non-empty array")
+    if not isinstance(ranked_topics, list):
+        raise ValueError("ranked-topics.ranked_topics must be an array")
+    # Empty is a legitimate state now: every live signal this run could be a
+    # near-duplicate of already-published content, or all feeds could be
+    # transiently unreachable. That's a "topic_resolved: false" run, not a
+    # broken pipeline — see validate_mode's degraded-run handling below.
     for item in ranked_topics:
         assert_required(item, ["topic", "scores", "overall_score", "ranked_at"], "ranked-topic-item")
         scores = item["scores"]
-        assert_required(scores, ["evergreen", "practical", "knowledge_gap", "virality"], "ranked-topic-scores")
+        assert_required(scores, ["freshness", "relevance", "practicality", "novelty"], "ranked-topic-scores")
         for score_name, value in scores.items():
             if not isinstance(value, (int, float)) or value < 0 or value > 100:
                 raise ValueError(f"invalid score {score_name}={value}")
@@ -41,9 +45,9 @@ def validate_ranked_topics(payload: Dict[str, Any]) -> None:
             raise ValueError("overall_score out of range")
 
 
-def validate_research_bundle(payload: Dict[str, Any]) -> None:
+def validate_research_bundle(payload: Dict[str, Any], require_references: bool = True) -> None:
     assert_required(payload, ["topic", "objective", "official_references", "claims"], "research-bundle")
-    if not payload["official_references"]:
+    if require_references and not payload["official_references"]:
         raise ValueError("research-bundle requires official references")
     for claim in payload["claims"]:
         assert_required(claim, ["statement", "reference_urls"], "research-claim")
@@ -111,14 +115,23 @@ def validate_mode(mode: str) -> None:
     if missing:
         raise ValueError(f"missing generated files: {missing}")
 
+    summary = load_json(files["run-summary.json"])
+    validate_summary(summary)
+    topic_resolved = summary.get("topic_resolved", True)  # older runs pre-date this field
+
     validate_ranked_topics(load_json(files["ranked-topics.json"]))
-    validate_research_bundle(load_json(files["research-bundle.json"]))
+    validate_research_bundle(load_json(files["research-bundle.json"]), require_references=topic_resolved)
     validate_build(load_json(files["build-artifact.json"]))
     validate_audit(load_json(files["technical-audit.json"]), "technical")
     validate_audit(load_json(files["platform-audit.json"]), "platform")
     validate_publish(load_json(files["publish-draft.json"]))
-    validate_summary(load_json(files["run-summary.json"]))
 
+    if not topic_resolved:
+        print(
+            f"WARNING: mode={mode} run_dir={run_dir.relative_to(REPO_ROOT)} resolved no topic this run "
+            "(all live signals were duplicates of published content, or feeds were unreachable — "
+            "see topic-discovery.json/fetch_errors). Structure is valid; there's just nothing to dispatch."
+        )
     print(f"validated mode={mode} run_dir={run_dir.relative_to(REPO_ROOT)}")
 
 

@@ -30,11 +30,23 @@ articles/<series-or-slug>/[part-NN/]
     diagrams/
       architecture.mmd    # topic-specific Mermaid source (not generic)
       <more>.mmd          # additional diagrams as needed (flow, sequence, etc.)
+    <slug>-infographic.png (or .svg)
+                           # REQUIRED once the article enumerates 3+ comparable
+                           # concepts (a features list, a comparison, a set of
+                           # trade-offs, etc.) — render via
+                           # aep/pipelines/generate_infographic.py instead of
+                           # leaving that content as another prose bullet list.
+                           # See "Concept density" below for the exact rule.
   project/
-    README.md             # exact commands to run it
+    README.md             # exact commands to run it — MUST include a
+                           # `## Run it` section with a fenced ```bash block
+                           # whose first line is the literal command to run
+                           # (this is executed by CI, see below — not decorative)
     <source files>        # real, runnable code — see
                            # aep/prompts/production-engineering.md
-  research-bundle.json    # matches aep/schemas/research-bundle.schema.json
+  research-bundle.json    # matches aep/schemas/research-bundle.schema.json —
+                           # including the competitive_scan field, see
+                           # aep/prompts/research.md
   publish-draft.json      # matches aep/schemas/publish-draft.schema.json —
                            # article_path/hero_image_path/diagram_paths/
                            # project_path must point at files that actually
@@ -66,10 +78,56 @@ If this is a series continuation, also update `articles/<series-name>/README.md`
 
 Minimum ~300 words of prose (excluding code/diagram blocks) — this is a
 mechanical floor, not a target; write as much as the topic actually needs.
+It is not a target to hit with padding — see "Concept density" below.
+
+## Concept density: visual over listy prose
+
+If you're about to write a bulleted or numbered list where 3+ items each
+carry their own bolded label (a features list, a set of trade-offs, a
+comparison of options, primitives/components of a system), that content
+belongs in a rendered infographic (`aep/pipelines/generate_infographic.py`),
+not as another prose list. This is mechanically checked (see below): 3+
+bold-labeled list items in `article.md` requires a second visual asset
+beyond the architecture diagram. Reserve prose bullets for short, non-parallel
+asides that don't warrant their own visual.
+
+## Voice: write like the person who built this, not like a summary of it
+
+The single biggest quality gap in past output has been generic, obviously-
+generated prose. Concretely:
+
+- **No fabricated persona or anecdote.** Don't write "as I reflect on my
+  journey as a senior engineer..." or invent a war story that didn't happen
+  in this repo's research. If you want a concrete example, pull it from
+  `research-bundle.json` or the actual `project/` you built.
+- **Ban hype words and throat-clearing.** Do not use: "game-changing",
+  "revolutionize/revolutionary", "seamless(ly)", "unlock the (full) potential",
+  "cutting-edge", "in today's fast-paced world", "in the ever-evolving
+  landscape", "dive into"/"delve into", "harness the power of", "it's
+  important to note that", "let's explore". These are mechanically flagged
+  (see below) and will fail the check.
+- **No generic listicle transitions.** Avoid "Here are N key points to
+  consider" and "In conclusion" as section openers — say the specific thing
+  instead of announcing that you're about to say a thing.
+- **Prefer concrete numbers over adjectives.** "Reduces integration
+  connectors from O(N×M) to O(N+M)" beats "makes integration much simpler."
+  If a claim can carry a number, a benchmark, or real command output, use
+  that instead of an adjective.
+- **Vary sentence length.** A paragraph of five same-length sentences reads
+  as generated. Mix a short, declarative sentence next to a longer,
+  qualified one — the way you'd actually explain something to a colleague.
+- **State honest uncertainty instead of hedging generically.** "This wasn't
+  load-tested past 50 req/s" is better than "may have some limitations
+  depending on scale."
 
 ## Constitution reminders
 
-- Never claim execution without evidence (`aep/README.md` rule 1).
+- Never claim execution without evidence (`aep/README.md` rule 1) — and
+  note that CI now actually executes `project/`'s documented run command
+  (see `check_execution` in `validate_article.py`), so an execution-status
+  claim that contradicts what CI observes will fail the build, not just look
+  bad. If the code runs successfully, say so plainly — don't leave a stale
+  "not executed" disclaimer once it's verified.
 - Keep `status: "Draft - Pending Human Approval"` in `publish-draft.json` —
   you are opening a PR for review, not publishing.
 - Self-check against `aep/prompts/technical-auditor.md` and
