@@ -1,0 +1,25 @@
+{
+  "external_id": "mcp-deep-dive-part-03",
+  "title": "Designing and Implementing MCP: Best Practices and Challenges",
+  "status": "Draft - Pending Human Approval",
+  "body_path": "articles/mcp-deep-dive/part-03/article.md",
+  "references": [
+    "https://www.anthropic.com/news/model-context-protocol",
+    "https://modelcontextprotocol.io/docs/learn/architecture",
+    "https://modelcontextprotocol.io/docs/learn/server-concepts",
+    "https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices",
+    "https://modelcontextprotocol.io/seps/1303-input-validation-errors-as-tool-execution-errors",
+    "https://modelcontextprotocol.io/docs/develop/build-server",
+    "https://dev.to/alpic/better-mcp-toolscall-error-responses-help-your-ai-recover-gracefully-15c7",
+    "https://aws.amazon.com/blogs/machine-learning/agentic-vision-building-visual-intelligence-with-amazon-bedrock-and-mcp-servers/"
+  ],
+  "human_approval_required": true,
+  "article_path": "articles/mcp-deep-dive/part-03/article.md",
+  "hero_image_path": "articles/mcp-deep-dive/part-03/assets/hero.svg",
+  "diagram_paths": [
+    "articles/mcp-deep-dive/part-03/assets/diagrams/architecture.mmd"
+  ],
+  "project_path": "articles/mcp-deep-dive/part-03/project",
+  "series_name": "mcp-deep-dive",
+  "series_part": 3
+}

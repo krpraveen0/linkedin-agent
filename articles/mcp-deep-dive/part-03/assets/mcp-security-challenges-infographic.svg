@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="480" viewBox="0 0 1200 480">
+  <defs>
+    <style>
+      .kicker { font: bold 12px monospace; fill: #2f81f7; letter-spacing: 1.5px; }
+      .title { font: bold 22px sans-serif; fill: #f0f6fc; }
+      .card-label { font: bold 14.5px sans-serif; fill: #f0f6fc; }
+      .card-desc { font: 11.5px sans-serif; fill: #8b949e; }
+      .badge-num { font: bold 12px monospace; fill: #0d1117; }
+      .footer { font: 10px monospace; fill: #8b949e; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="480" fill="#0d1117" />
+  <text x="40" y="38" class="kicker">MCP SECURITY BEST PRACTICES DOC</text>
+  <text x="40" y="68" class="title">Five ways an MCP server design breaks its own trust boundary</text>
+
+  <!-- Row 1 -->
+  <g>
+    <rect x="40" y="96" width="360" height="170" rx="10" fill="#161b22" stroke="#30363d" stroke-width="1.2" />
+    <circle cx="72" cy="126" r="14" fill="#2f81f7" /><text x="72" y="131" text-anchor="middle" class="badge-num">1</text>
+    <text x="96" y="132" class="card-label">Confused deputy</text>
+    <text x="60" y="160" class="card-desc">Proxy uses a static client ID +</text>
+    <text x="60" y="178" class="card-desc">3rd-party consent cookie -&gt;</text>
+    <text x="60" y="196" class="card-desc">skips per-client consent unless</text>
+    <text x="60" y="214" class="card-desc">the proxy adds its own consent</text>
+    <text x="60" y="232" class="card-desc">step before forwarding.</text>
+  </g>
+
+  <g>
+    <rect x="420" y="96" width="360" height="170" rx="10" fill="#161b22" stroke="#30363d" stroke-width="1.2" />
+    <circle cx="452" cy="126" r="14" fill="#2f81f7" /><text x="452" y="131" text-anchor="middle" class="badge-num">2</text>
+    <text x="476" y="132" class="card-label">Token passthrough</text>
+    <text x="440" y="160" class="card-desc">Accepting a token not issued</text>
+    <text x="440" y="178" class="card-desc">for your server and forwarding</text>
+    <text x="440" y="196" class="card-desc">it downstream breaks audit</text>
+    <text x="440" y="214" class="card-desc">trails and security controls.</text>
+    <text x="440" y="232" class="card-desc">Explicitly forbidden by spec.</text>
+  </g>
+
+  <g>
+    <rect x="800" y="96" width="360" height="170" rx="10" fill="#161b22" stroke="#30363d" stroke-width="1.2" />
+    <circle cx="832" cy="126" r="14" fill="#2f81f7" /><text x="832" y="131" text-anchor="middle" class="badge-num">3</text>
+    <text x="856" y="132" class="card-label">Session hijacking</text>
+    <text x="820" y="160" class="card-desc">Using session IDs as the</text>
+    <text x="820" y="178" class="card-desc">authentication mechanism lets</text>
+    <text x="820" y="196" class="card-desc">a guessed/leaked ID impersonate</text>
+    <text x="820" y="214" class="card-desc">a user. Bind IDs to a user, e.g.</text>
+    <text x="820" y="232" class="card-desc">&lt;user_id&gt;:&lt;session_id&gt;.</text>
+  </g>
+
+  <!-- Row 2 -->
+  <g>
+    <rect x="40" y="284" width="360" height="170" rx="10" fill="#161b22" stroke="#30363d" stroke-width="1.2" />
+    <circle cx="72" cy="314" r="14" fill="#2f81f7" /><text x="72" y="319" text-anchor="middle" class="badge-num">4</text>
+    <text x="96" y="320" class="card-label">Local server trust</text>
+    <text x="60" y="348" class="card-desc">A stdio server runs with the</text>
+    <text x="60" y="366" class="card-desc">client's own privileges. Show</text>
+    <text x="60" y="384" class="card-desc">the exact launch command and</text>
+    <text x="60" y="402" class="card-desc">sandbox spawned processes --</text>
+    <text x="60" y="420" class="card-desc">don't run it unreviewed.</text>
+  </g>
+
+  <g>
+    <rect x="420" y="284" width="360" height="170" rx="10" fill="#161b22" stroke="#30363d" stroke-width="1.2" />
+    <circle cx="452" cy="314" r="14" fill="#2f81f7" /><text x="452" y="319" text-anchor="middle" class="badge-num">5</text>
+    <text x="476" y="320" class="card-label">Scope inflation</text>
+    <text x="440" y="348" class="card-desc">Publishing every possible</text>
+    <text x="440" y="366" class="card-desc">scope and granting it up front</text>
+    <text x="440" y="384" class="card-desc">turns one leaked token into a</text>
+    <text x="440" y="402" class="card-desc">full-access token. Start minimal,</text>
+    <text x="440" y="420" class="card-desc">elevate scope per-operation.</text>
+  </g>
+
+  <text x="40" y="466" class="footer">EngineeringCoders &#8212; AEP</text>
+</svg>

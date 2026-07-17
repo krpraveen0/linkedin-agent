@@ -1,0 +1,14 @@
+flowchart TD
+    A["Client sends tools/call request"] --> B{"Method == tools/call?"}
+    B -- "No" --> C["Protocol Error\nJSON-RPC error object\ncaught by the MCP client only\n(model never sees it)"]
+    B -- "Yes" --> D{"Tool name known?"}
+    D -- "No" --> C
+    D -- "Yes" --> E{"Arguments valid?\n(e.g. departureDate in the future)"}
+    E -- "No" --> F["Tool Execution Error\nresult.isError = true\nforwarded into the model's context"]
+    F --> G["Model reads the error text\nand retries with corrected arguments"]
+    G --> A
+    E -- "Yes" --> H["Tool executes\nresult.isError = false"]
+
+    style C fill:#3d1f1f,color:#f0f6fc,stroke:#f85149
+    style F fill:#3d2f0d,color:#f0f6fc,stroke:#d29922
+    style H fill:#0d3d1f,color:#f0f6fc,stroke:#3fb950

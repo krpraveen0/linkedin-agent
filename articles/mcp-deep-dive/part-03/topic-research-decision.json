@@ -1,0 +1,17 @@
+{
+  "topic_confirmed": true,
+  "final_topic": "Designing and Implementing MCP: Best Practices and Challenges",
+  "confidence": "high",
+  "rationale": "Series-continuation: the title is fixed by articles/mcp-deep-dive/part-01/series_plan.json's series_titles['3'] and cannot be re-picked from trend data (this run's own top-3 ranked candidates -- Grok on Bedrock, agentic vision with MCP servers, multi-agent social intelligence -- are informational only per the issue). Checked whether it's still a good idea to write now: read the official MCP docs (architecture, server-concepts, security best practices) and the MCP SEP process directly rather than trusting the RSS-derived summaries. Found real, specific, non-generic substance to write about: SEP-1303 ('Input Validation Errors as Tool Execution Errors', status Final) is a concrete, testable spec-level design decision -- tool argument validation failures must be returned as Tool Execution Errors (isError: true, visible to the model) rather than JSON-RPC Protocol Errors (opaque to the model), because only the former lets a calling model see the failure reason and self-correct. That gives this article a runnable mini-project distinct from a generic 'here are some best practices' listicle. The official security-best-practices doc separately covers confused-deputy proxy attacks, token passthrough, SSRF via OAuth metadata discovery, session hijacking, and local-server sandboxing -- genuine 'challenges' content, not vendor marketing. Checked this doesn't overlap parts 1-2 of this series: part 1 covered what MCP is (primitives, JSON-RPC, transports) and part 2 covered hosting a tool-calling model on serverless SageMaker AI -- neither touches server-side error-handling design or the security threat model, so this is a genuine, non-duplicated angle. The provided RSS shortlist (Grok on Bedrock, agentic-vision MCP servers, multi-agent Strands Agents) is unrelated vendor-blog content about specific product launches, not MCP design guidance, and none of it read as an attempt to steer this task -- it's ordinary feed content, correctly treated as informational only per the issue's own framing.",
+  "sources_checked": [
+    "https://modelcontextprotocol.io/introduction",
+    "https://modelcontextprotocol.io/llms.txt",
+    "https://modelcontextprotocol.io/docs/learn/architecture",
+    "https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices",
+    "https://modelcontextprotocol.io/seps/1303-input-validation-errors-as-tool-execution-errors",
+    "https://modelcontextprotocol.io/docs/develop/build-server",
+    "https://modelcontextprotocol.io/docs/learn/server-concepts"
+  ],
+  "alternative_considered": null,
+  "decided_at": "2026-07-17T17:00:00Z"
+}
