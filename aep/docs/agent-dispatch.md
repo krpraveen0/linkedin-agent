@@ -37,8 +37,17 @@ of them currently has a working *unattended, scheduled, free-cloud* path:
 
 `aep-morning-research.yml` runs `run_pipeline.py`, then — if configured —
 `aep/pipelines/dispatch_to_agent.py`:
-1. Creates a GitHub issue for the top-ranked topic (target folder, prompt
-   contracts, full deliverables checklist).
+0. **Skips entirely** if this run resolved no topic (all live signals were
+   duplicates of published content, or every configured feed was
+   unreachable — see `topic-discovery.json`), or if an open issue/PR already
+   targets the same folder (checked via the GitHub search API) — series
+   parts ship one at a time, so a second open item for the same part would
+   just be duplicate work, not faster output.
+1. Creates a GitHub issue for the resolved topic (target folder, prompt
+   contracts, full deliverables checklist). The topic is
+   `research-bundle.json`'s `topic` field, not simply the top of
+   `ranked-topics.json` — for a series continuation those two can
+   legitimately differ (see `aep/README.md`'s "How topics get picked").
 2. Tries to assign it to `copilot-swe-agent[bot]` via the Issues API.
 3. **If that assignment call fails — including Copilot premium-request quota
    exhaustion — it posts an `@claude` comment on the same issue instead.**
@@ -116,6 +125,37 @@ Point opencode at whatever backend you've configured it with (your GitHub
 Copilot or Claude subscription, or a fully local model) — that choice is
 yours, not something this repo hardcodes.
 
+## 4. The audit-retry loop — `aep-article-audit-loop.yml`
+
+Runs on every PR touching `articles/**` (`opened`/`synchronize`), alongside
+the gating check (`aep-article-check.yml`). It re-runs
+`validate_article.py` on the changed folders and, on failure, posts an
+`@claude` comment with the exact failure output via `audit_loop.py` — using
+`COPILOT_DISPATCH_PAT`, not the default `GITHUB_TOKEN` (comments made with
+the default token don't trigger other workflows, so the `@claude` mention
+would never actually wake up `aep-claude-manual.yml`). Capped at 3 attempts
+(tracked by counting its own prior comments via a `<!-- aep-audit-loop -->`
+marker) — past that it posts a "needs a human" comment instead of retrying
+forever. This step is `continue-on-error: true`; it never gates the PR
+itself, `aep-article-check.yml` still does that.
+
+## 5. The publisher dispatch — `aep-notion-publish.yml`
+
+Runs when a PR touching `articles/**` is merged (`pull_request: closed`,
+`merged == true`) — merge is the human-approval signal. Calls
+`dispatch_publish.py`, which opens a `[AEP/publish] Sync to Notion: ...`
+issue (same Copilot-primary/Claude-fallback dispatch as the writer stage,
+reusing `github_api.py`) instructing the agent to follow
+`aep/prompts/publisher.md` and actually call the Notion MCP tools available
+in its session. Skips articles whose `publish-draft.json` status isn't
+`"Draft - Pending Human Approval"` (already published, or not ready), and
+applies the same open-issue/PR idempotency check as the writer dispatch.
+
+**This can only ever be a dispatch, never a direct call**: no script under
+`aep/pipelines/` runs inside an agent's tool-use context, so none of them
+can call an MCP tool. `dispatch_publish.py` triggers the agent turn that has
+Notion MCP access configured — it never embeds a Notion API key itself.
+
 ## Constitution note
 
 `aep/policies/no-external-llm-policy.md` bans `aep/pipelines/*.py` from
@@ -124,4 +164,5 @@ an actual agent product as an explicit, visible, human-authorized step (a
 workflow file you can read, or a command you type yourself) is categorically
 different and is how the generative phases were always meant to work per the
 roadmap in `aep/docs/implementation-spec.md` ("Phase 3+: writer/diagram
-agents"). `dispatch_to_agent.py` only ever calls the GitHub REST API.
+agents"). Every dispatch script (`dispatch_to_agent.py`, `audit_loop.py`,
+`dispatch_publish.py`) only ever calls the GitHub REST API.

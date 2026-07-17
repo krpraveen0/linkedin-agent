@@ -7,16 +7,53 @@ agent (Copilot/Claude/opencode) produced: hero image, topic-specific
 diagram(s), code snippets in the article body, a non-empty runnable
 mini-project with a README, and a publish-draft.json whose declared paths
 all actually exist on disk. "Never publish unexecuted code" only means
-something if this is enforced mechanically, not just requested in a prompt.
+something if this is enforced mechanically, not just requested in a prompt —
+so this also actually runs project/'s documented command (check_execution),
+lints for a fixed list of AI-tell phrases (check_style), and requires a
+concept-infographic once the article enumerates 3+ comparable items instead
+of leaving them as prose bullets (check_infographic).
 """
 import argparse
 import json
 import pathlib
 import re
+import shlex
+import subprocess
 import sys
 from typing import List
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
+
+# Fixed list of AI-tell phrases. This is a cheap, deterministic backstop —
+# it will not catch every generic-sounding sentence, and it will not flag
+# every draft that reads as AI-written. It exists to make the most common,
+# easily-avoided tells mechanically impossible to ship, per the voice rules
+# in aep/prompts/writer.md. The real judgment call is the platform-auditor
+# agent's job (aep/prompts/platform-auditor.md).
+AI_TELL_PATTERNS = [
+    r"in today'?s fast-paced",
+    r"in the ever-evolving",
+    r"unlock(?:ing)? the (?:full )?potential",
+    r"game[- ]changing",
+    r"game changer",
+    r"revolution(?:ize|izing|ary)",
+    r"seamless(?:ly)?",
+    r"\bdive into\b",
+    r"\bdelve into\b",
+    r"\bas an ai\b",
+    r"^in conclusion",
+    r"let'?s explore",
+    r"it'?s important to note",
+    r"cutting[- ]edge",
+    r"as i reflect on my journey",
+    r"harness(?:ing)? the power",
+    r"here are \w+ key points to consider",
+]
+
+STALE_EXECUTION_PHRASES = [
+    "not executed", "wasn't executed", "was not executed", "did not execute",
+    "hasn't been run", "has not been run", "not been executed",
+]
 
 
 def _display_path(p: pathlib.Path) -> str:
@@ -123,6 +160,185 @@ def check_project_folder(article_dir: pathlib.Path) -> List[str]:
     return []
 
 
+def check_topic_research_decision(article_dir: pathlib.Path) -> List[str]:
+    """Mechanical teeth for aep/prompts/trend-research-agent.md: the deterministic
+    pre-filter (fetch_trend_signals.py) has no judgment, so a real research pass
+    over the shortlist is required before writing — this is what makes that
+    requirement enforced rather than a prompt suggestion that's easy to skip."""
+    path = article_dir / "topic-research-decision.json"
+    if not path.exists():
+        return [
+            f"missing {path.relative_to(REPO_ROOT)} — aep/prompts/trend-research-agent.md "
+            "must run before writing; the deterministic topic pre-filter has no judgment "
+            "of its own and its pick must be reviewed, not taken on faith"
+        ]
+    try:
+        decision = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as e:
+        return [f"topic-research-decision.json is not valid JSON: {e}"]
+
+    errors: List[str] = []
+    required = ["topic_confirmed", "final_topic", "confidence", "rationale", "sources_checked", "decided_at"]
+    missing = [f for f in required if f not in decision]
+    if missing:
+        errors.append(f"topic-research-decision.json missing required fields: {missing}")
+        return errors
+    if not decision["sources_checked"]:
+        errors.append("topic-research-decision.json's sources_checked must be non-empty — real URLs actually reviewed")
+    if decision["confidence"] not in ("low", "medium", "high"):
+        errors.append(f"topic-research-decision.json has invalid confidence: {decision['confidence']!r}")
+    return errors
+
+
+def check_research_bundle(article_dir: pathlib.Path) -> List[str]:
+    path = article_dir / "research-bundle.json"
+    if not path.exists():
+        return [f"missing {path.relative_to(REPO_ROOT)}"]
+    try:
+        bundle = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as e:
+        return [f"research-bundle.json is not valid JSON: {e}"]
+
+    errors: List[str] = []
+    scan = bundle.get("competitive_scan")
+    if not scan:
+        errors.append(
+            "research-bundle.json has no competitive_scan entries — "
+            "aep/prompts/research.md requires 2-3 existing published pieces "
+            "on this topic, each with a stated differentiation"
+        )
+    else:
+        for i, entry in enumerate(scan):
+            if not entry.get("source_url") or not entry.get("differentiation"):
+                errors.append(
+                    f"competitive_scan[{i}] is missing source_url or differentiation"
+                )
+    return errors
+
+
+def check_style(article_dir: pathlib.Path) -> List[str]:
+    article_path = article_dir / "article.md"
+    if not article_path.exists():
+        return []
+    text = article_path.read_text(encoding="utf-8")
+    # Strip fenced code blocks first so phrases inside real code/comments
+    # (e.g. a docstring quoting a bad example) aren't mistaken for prose.
+    text_no_code = re.sub(r"```.*?```", "", text, flags=re.S)
+
+    hits = [p for p in AI_TELL_PATTERNS if re.search(p, text_no_code, flags=re.I | re.M)]
+    if hits:
+        return [
+            "article.md contains AI-tell phrasing that aep/prompts/writer.md's "
+            f"voice rules ban (matched: {hits}) — rewrite those sections in a "
+            "direct, specific voice"
+        ]
+    return []
+
+
+def check_infographic(article_dir: pathlib.Path) -> List[str]:
+    article_path = article_dir / "article.md"
+    if not article_path.exists():
+        return []
+    text = article_path.read_text(encoding="utf-8")
+    text_no_code = re.sub(r"```.*?```", "", text, flags=re.S)
+
+    bullet_items = re.findall(r"^\s*[-*]\s+\*\*[^*]+\*\*", text_no_code, flags=re.M)
+    numbered_items = re.findall(r"^\s*\d+\.\s+\*\*[^*]+\*\*", text_no_code, flags=re.M)
+    concept_count = len(bullet_items) + len(numbered_items)
+
+    if concept_count < 3:
+        return []
+
+    assets_dir = article_dir / "assets"
+    diagram_dir = assets_dir / "diagrams"
+    mmd_files = list(diagram_dir.glob("*.mmd")) if diagram_dir.exists() else []
+    infographic_files = list(assets_dir.glob("*infographic*")) if assets_dir.exists() else []
+
+    # One diagram is expected to cover architecture (see check_article_content).
+    # A second visual asset is required once the article enumerates 3+
+    # comparable concepts in bullet/numbered form, per aep/prompts/writer.md's
+    # "Concept density" rule — that content should be an infographic, not
+    # another prose list.
+    if len(mmd_files) + len(infographic_files) < 2:
+        return [
+            f"article.md enumerates {concept_count} bold-labeled bullet/numbered "
+            "items but ships only one diagram/infographic asset — render that "
+            "content as a concept-infographic (aep/pipelines/generate_infographic.py) "
+            "instead of leaving it as prose bullets"
+        ]
+    return []
+
+
+def check_execution(article_dir: pathlib.Path) -> List[str]:
+    """Actually run project/'s documented command — not just check it exists.
+
+    This is what makes "never publish unexecuted code" (aep/README.md rule 1)
+    a mechanical fact rather than a prompt request. It also cross-checks that
+    article.md isn't left with a stale "not executed" disclaimer once the
+    code is verified to run.
+    """
+    project_dir = article_dir / "project"
+    readme_path = project_dir / "README.md"
+    if not readme_path.exists():
+        return []  # already reported by check_project_folder
+
+    readme_text = readme_path.read_text(encoding="utf-8")
+    match = re.search(r"##\s*Run it\s*\n```(?:bash|sh)?\n(.+?)```", readme_text, flags=re.S | re.I)
+    if not match:
+        return [
+            f"{readme_path.relative_to(REPO_ROOT)} has no '## Run it' section with a "
+            "fenced ```bash block — CI needs a literal command to execute"
+        ]
+
+    command_lines = [
+        line.strip() for line in match.group(1).splitlines()
+        if line.strip() and not line.strip().startswith("#")
+        # We already run with cwd=project_dir, so a leading `cd <dir>` in the
+        # documented block (written for a human copy-pasting from repo root)
+        # is a no-op here, not the actual command to execute.
+        and not re.match(r"^cd\s+", line.strip())
+    ]
+    if not command_lines:
+        return [f"{readme_path.relative_to(REPO_ROOT)}'s 'Run it' block has no executable command"]
+
+    command = command_lines[0]
+    try:
+        parts = shlex.split(command)
+    except ValueError as e:
+        return [f"could not parse run command '{command}': {e}"]
+
+    try:
+        result = subprocess.run(
+            parts, cwd=project_dir, capture_output=True, text=True, timeout=30,
+        )
+    except FileNotFoundError:
+        return [f"run command '{command}' references a program not found on PATH"]
+    except subprocess.TimeoutExpired:
+        return [
+            f"run command '{command}' did not finish within 30s — if it genuinely "
+            "needs network access or a live external endpoint (e.g. a real cloud "
+            "API), say so explicitly in article.md instead of shipping a command "
+            "CI can't complete"
+        ]
+
+    if result.returncode != 0:
+        tail = (result.stderr or result.stdout).strip()[-800:]
+        return [f"project code failed to execute (`{command}`, exit {result.returncode}):\n{tail}"]
+
+    article_path = article_dir / "article.md"
+    if article_path.exists():
+        article_lower = article_path.read_text(encoding="utf-8").lower()
+        stale = next((p for p in STALE_EXECUTION_PHRASES if p in article_lower), None)
+        if stale:
+            return [
+                f"project code executed successfully in CI (`{command}`), but article.md "
+                f"still contains {stale!r} — update the execution-status note so it "
+                "doesn't undersell verified-working code"
+            ]
+
+    return []
+
+
 def validate_article(article_dir: pathlib.Path) -> List[str]:
     errors: List[str] = []
     if not article_dir.exists():
@@ -131,6 +347,11 @@ def validate_article(article_dir: pathlib.Path) -> List[str]:
     errors += check_article_content(article_dir)
     errors += check_hero_image(article_dir)
     errors += check_project_folder(article_dir)
+    errors += check_topic_research_decision(article_dir)
+    errors += check_research_bundle(article_dir)
+    errors += check_style(article_dir)
+    errors += check_infographic(article_dir)
+    errors += check_execution(article_dir)
     return errors
 
 

@@ -1,0 +1,56 @@
+name: aep-notion-publish
+
+# Fires when a PR touching articles/** is merged into main — merge is the
+# human-approval signal (aep/README.md constitution: "human approval before
+# publication"). Dispatches a follow-up agent task to actually sync the
+# article to Notion via the Notion MCP tools (aep/prompts/publisher.md).
+# A deterministic script can never call an MCP tool itself, so this workflow
+# can only ever "trigger the agent turn that has Notion access" — never a
+# direct Notion API call with a stored secret embedded here.
+
+on:
+  pull_request:
+    types: [closed]
+    paths:
+      - 'articles/**'
+
+jobs:
+  dispatch-publish:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Find merged article folders
+        id: changed
+        run: |
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          HEAD_SHA="${{ github.event.pull_request.merge_commit_sha }}"
+          git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- 'articles/**' \
+            | python3 aep/pipelines/list_changed_article_dirs.py > changed_dirs.txt
+          cat changed_dirs.txt
+          echo "count=$(wc -l < changed_dirs.txt | tr -d ' ')" >> "$GITHUB_OUTPUT"
+
+      - name: Dispatch Notion publish task
+        if: steps.changed.outputs.count != '0'
+        env:
+          COPILOT_DISPATCH_PAT: ${{ secrets.COPILOT_DISPATCH_PAT }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          if [ -z "$COPILOT_DISPATCH_PAT" ]; then
+            echo "COPILOT_DISPATCH_PAT not set — skipping Notion-publish dispatch."
+            echo "See aep/docs/agent-dispatch.md to enable it."
+            exit 0
+          fi
+          mapfile -t dirs < changed_dirs.txt
+          python3 aep/pipelines/dispatch_publish.py "${dirs[@]}"

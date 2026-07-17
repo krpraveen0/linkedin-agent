@@ -7,12 +7,26 @@ import re
 import subprocess
 from typing import Dict, List, Optional, Tuple
 
+import fetch_trend_signals
 import generate_hero_image
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
-SERIES_DIR = REPO_ROOT / "articles" / "mcp-deep-dive" / "part-01"
 AEP_DIR = REPO_ROOT / "aep"
 ARTICLES_DIR = REPO_ROOT / "articles"
+
+# Below this, a candidate signal is close enough to something already
+# published that it's excluded from ranking entirely (not just penalized).
+DUPLICATE_EXCLUDE_THRESHOLD = 0.6
+# Below this combined (similarity*0.6 + relevance*0.4) score, a series part's
+# fixed title has no strong live supporting evidence this run — flagged, not
+# fatal (the writer/research agent does the real research regardless).
+TREND_SUPPORT_STRONG_THRESHOLD = 0.35
+
+STOPWORDS = {
+    "the", "a", "an", "of", "to", "for", "in", "on", "and", "or", "with",
+    "is", "are", "how", "what", "why", "your", "this", "that", "new",
+    "using", "part", "series", "into", "from", "about", "vs",
+}
 
 
 def utc_now() -> str:
@@ -21,6 +35,21 @@ def utc_now() -> str:
 
 def slugify(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
+
+
+def _keywords(text: str) -> set:
+    words = re.findall(r"[a-z0-9][a-z0-9\-]{2,}", text.lower())
+    return {w for w in words if w not in STOPWORDS}
+
+
+def topic_similarity(a: str, b: str) -> float:
+    """Deterministic Jaccard similarity over significant words — no embeddings,
+    no LLM call, fully explainable. Good enough to catch "this is basically
+    the same topic again," not meant to catch subtle paraphrases."""
+    ka, kb = _keywords(a), _keywords(b)
+    if not ka or not kb:
+        return 0.0
+    return round(len(ka & kb) / len(ka | kb), 3)
 
 
 def find_active_series(articles_dir: pathlib.Path) -> Optional[Tuple[str, int, dict]]:
@@ -35,12 +64,21 @@ def find_active_series(articles_dir: pathlib.Path) -> Optional[Tuple[str, int, d
         part_dirs = sorted(p for p in series_dir.glob("part-*") if p.is_dir())
         if not part_dirs:
             continue
-        plan_path = part_dirs[-1] / "series_plan.json"
-        if not plan_path.exists():
-            continue
-        try:
-            plan = json.loads(plan_path.read_text(encoding="utf-8"))
-        except json.JSONDecodeError:
+        # The plan is only ever written once, in whichever part first defined
+        # it — later parts aren't guaranteed to carry their own copy (observed:
+        # mcp-deep-dive/part-02 doesn't have one). Search newest-to-oldest
+        # instead of assuming the latest part has it, or an existing series
+        # silently gets treated as finished/absent.
+        plan = None
+        for part_dir in reversed(part_dirs):
+            plan_path = part_dir / "series_plan.json"
+            if plan_path.exists():
+                try:
+                    plan = json.loads(plan_path.read_text(encoding="utf-8"))
+                    break
+                except json.JSONDecodeError:
+                    continue
+        if plan is None:
             continue
         total_parts = len(plan.get("series_titles", {})) or len(part_dirs)
         next_part = len(part_dirs) + 1
@@ -49,125 +87,207 @@ def find_active_series(articles_dir: pathlib.Path) -> Optional[Tuple[str, int, d
     return None
 
 
-def resolve_target_article_dir(topic: str, articles_dir: pathlib.Path) -> Tuple[pathlib.Path, dict]:
-    """Propose (not create) the publish-ready folder this article belongs in."""
+def collect_published_topics(articles_dir: pathlib.Path) -> List[Tuple[str, str]]:
+    """(topic_text, repo-relative-path) for every already-shipped research-bundle.json.
+
+    This is what makes de-duplication self-updating: it's derived from repo
+    state on every run, not a list someone has to remember to maintain.
+    """
+    results: List[Tuple[str, str]] = []
+    if not articles_dir.exists():
+        return results
+    for bundle_path in sorted(articles_dir.glob("**/research-bundle.json")):
+        try:
+            bundle = json.loads(bundle_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            continue
+        topic = bundle.get("topic")
+        if topic:
+            results.append((topic, str(bundle_path.relative_to(REPO_ROOT))))
+    return results
+
+
+def rank_topics(
+    signals: List[dict], published_topics: List[Tuple[str, str]], run_ts: str
+) -> Tuple[List[dict], List[dict]]:
+    """Score + rank live signals; hard-exclude near-duplicates of already-published
+    topics (kept visible in the `excluded` list for transparency, not silently dropped).
+
+    Weights (sum to 100): freshness 25, relevance 30, practicality 20, novelty 15,
+    official-source nudge 10 (5 if not an official/primary source). There is no
+    "virality" term — this pipeline has no live engagement-metric source, and a
+    fabricated placeholder number would be worse than not having one.
+    """
+    ranked: List[dict] = []
+    excluded: List[dict] = []
+
+    for item in signals:
+        best_sim, best_match = 0.0, None
+        for pub_topic, pub_path in published_topics:
+            sim = topic_similarity(item["topic"], pub_topic)
+            if sim > best_sim:
+                best_sim, best_match = sim, (pub_topic, pub_path)
+
+        hs = item["heuristic_scores"]
+        freshness = round(hs["freshness"] * 100, 2)
+        relevance = round(hs["relevance"] * 100, 2)
+        practicality = round(hs["practicality"] * 100, 2)
+        novelty = round((1.0 - best_sim) * 100, 2)
+        overall = round(
+            freshness * 0.25
+            + relevance * 0.30
+            + practicality * 0.20
+            + novelty * 0.15
+            + (10 if item.get("official_source") else 5),
+            2,
+        )
+
+        entry = {
+            "topic": item["topic"],
+            "ranked_at": run_ts,
+            "scores": {
+                "freshness": freshness,
+                "relevance": relevance,
+                "practicality": practicality,
+                "novelty": novelty,
+            },
+            "overall_score": overall,
+            "references": [item["evidence_url"]],
+            "similarity_to_existing": best_sim,
+            "most_similar_existing": best_match[0] if best_match else None,
+            "most_similar_existing_path": best_match[1] if best_match else None,
+        }
+
+        if best_sim >= DUPLICATE_EXCLUDE_THRESHOLD:
+            entry["excluded_reason"] = (
+                f"similarity={best_sim} to already-published topic "
+                f"({best_match[1]}) meets the {DUPLICATE_EXCLUDE_THRESHOLD} exclusion threshold"
+            )
+            excluded.append(entry)
+        else:
+            ranked.append(entry)
+
+    ranked.sort(key=lambda x: x["overall_score"], reverse=True)
+    return ranked, excluded
+
+
+def find_supporting_signals_for_title(signals: List[dict], fixed_title: str, top_n: int = 3) -> List[dict]:
+    """For an already-committed series-part title, find the best live evidence
+    for it — this does NOT re-pick the topic, only what backs it up."""
+    scored = []
+    for s in signals:
+        sim = topic_similarity(fixed_title, s["topic"])
+        combined = round(sim * 0.6 + s["heuristic_scores"]["relevance"] * 0.4, 3)
+        scored.append((combined, sim, s))
+    scored.sort(key=lambda x: x[0], reverse=True)
+    return [{"signal": s, "similarity": sim, "combined_score": combined} for combined, sim, s in scored[:top_n]]
+
+
+def resolve_topic(
+    articles_dir: pathlib.Path, signals: List[dict], ranked: List[dict]
+) -> Tuple[Optional[str], pathlib.Path, dict]:
+    """The core fix: series continuation and standalone topic-picking are two
+    different decisions, not one. A series part's title is fixed once in
+    series_plan.json when the series starts — trend data only ever supplies
+    supporting evidence for it, never overrides it. Only when there's no
+    active series does live-ranked ('what's the best new thing to write
+    about') selection apply.
+    """
     active = find_active_series(articles_dir)
+
     if active:
         series_name, next_part, plan = active
         target = articles_dir / series_name / f"part-{next_part:02d}"
-        return target, {
+        fixed_title = plan.get("series_titles", {}).get(str(next_part), "")
+        supporting = find_supporting_signals_for_title(signals, fixed_title) if fixed_title else []
+        strength = "strong" if supporting and supporting[0]["combined_score"] >= TREND_SUPPORT_STRONG_THRESHOLD else "weak"
+        meta = {
             "kind": "series-continuation",
             "series_name": series_name,
             "series_part": next_part,
-            "series_title": plan.get("series_titles", {}).get(str(next_part), ""),
+            "series_title": fixed_title,
+            "trend_support_strength": strength,
+            "supporting_signals": supporting,
         }
+        return (fixed_title or None), target, meta
+
+    if not ranked:
+        return None, articles_dir / "untitled-article", {
+            "kind": "standalone", "series_name": None, "series_part": None,
+            "series_title": None, "trend_support_strength": None, "supporting_signals": [],
+        }
+
+    topic = ranked[0]["topic"]
     slug = slugify(topic)[:60] or "untitled-article"
     target = articles_dir / slug
-    return target, {"kind": "standalone", "series_name": None, "series_part": None, "series_title": None}
+    # ranked entries (from rank_topics) don't carry the original summary/
+    # official_source fields — look the raw signal back up by topic so
+    # build_research_bundle gets the same {"signal": <raw dict>, ...} shape
+    # it expects from the series-continuation path. (Caught by testing this
+    # path directly: without this, standalone runs silently produced zero
+    # references/claims, which fails validate_artifacts.py's reference check.)
+    signals_by_topic = {s["topic"]: s for s in signals}
+    supporting = [
+        {
+            "signal": signals_by_topic.get(r["topic"]),
+            "similarity": r["similarity_to_existing"],
+            "combined_score": round(r["overall_score"] / 100, 3),
+        }
+        for r in ranked[:3]
+    ]
+    meta = {
+        "kind": "standalone",
+        "series_name": None,
+        "series_part": None,
+        "series_title": None,
+        "trend_support_strength": "strong",
+        "supporting_signals": supporting,
+    }
+    return topic, target, meta
 
 
-def load_json(path: pathlib.Path):
-    with path.open("r", encoding="utf-8") as f:
-        return json.load(f)
+def build_research_bundle(topic: str, target_meta: dict) -> dict:
+    """Built from live, attributed signal data only — no hand-authored 'key facts'
+    fabricated for a topic the deterministic pipeline can't actually verify.
+    Deep factual research remains the research/writer agent's job
+    (aep/prompts/research.md, aep/prompts/writer.md) — this is a sourced
+    starting point, not a finished bundle."""
+    supporting = target_meta.get("supporting_signals", [])
+    official_domains = fetch_trend_signals.load_config().get("official_domains", [])
 
+    all_refs, official_refs, claims = [], [], []
+    for entry in supporting:
+        sig = entry.get("signal")
+        if not sig:
+            continue
+        url = sig["evidence_url"]
+        all_refs.append(url)
+        if sig.get("official_source") or fetch_trend_signals.is_official(url, official_domains):
+            official_refs.append(url)
+        statement = sig.get("summary") or sig["topic"]
+        claims.append({"statement": f"{statement} (source: {sig['topic']})", "reference_urls": [url]})
 
-def write_json(path: pathlib.Path, payload: dict) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
-
-
-def write_text(path: pathlib.Path, text: str) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(text, encoding="utf-8")
-
-
-def classify_signal(title: str) -> str:
-    lowered = title.lower()
-    if "benchmark" in lowered:
-        return "benchmark"
-    if "incident" in lowered:
-        return "incident"
-    if "release" in lowered or "introducing" in lowered or "welcome" in lowered:
-        return "release"
-    if "discussion" in lowered or "debate" in lowered:
-        return "discussion"
-    return "trend"
-
-
-def is_official(url: str) -> bool:
-    return any(
-        domain in url
-        for domain in [
-            "anthropic.com",
-            "modelcontextprotocol.io",
-            "github.com/modelcontextprotocol",
-            "microsoft.com",
-            "aws.amazon.com",
-            "blog.google",
-        ]
-    )
-
-
-def normalize_topic_signals(raw_signals: List[dict], run_ts: str) -> List[dict]:
-    signals = []
-    for idx, item in enumerate(raw_signals, start=1):
-        evidence_url = item["link"]
-        signals.append(
-            {
-                "id": f"sig-{idx:03d}",
-                "captured_at": run_ts,
-                "source": item["source"],
-                "topic": item["title"],
-                "signal_type": classify_signal(item["title"]),
-                "summary": item.get("summary", "")[:300],
-                "evidence_url": evidence_url,
-                "official_source": is_official(evidence_url),
-            }
-        )
-    return signals
-
-
-def rank_topics(raw_signals: List[dict], run_ts: str) -> List[dict]:
-    ranked = []
-    for item in raw_signals:
-        practicality = round(float(item.get("llm_practicality", 0.0)) * 100, 2)
-        freshness = round(float(item.get("llm_freshness", 0.0)) * 100, 2)
-        relevance = round(float(item.get("llm_relevance", 0.0)) * 100, 2)
-        evergreen = round((freshness * 0.4) + (relevance * 0.6), 2)
-        knowledge_gap = round((100 - relevance) * 0.35 + relevance * 0.65, 2)
-        virality = round(float(item.get("heuristic_score", 0.0)) * 100, 2)
-        overall = round(evergreen * 0.35 + practicality * 0.35 + knowledge_gap * 0.2 + virality * 0.1, 2)
-        ranked.append(
-            {
-                "topic": item["title"],
-                "ranked_at": run_ts,
-                "scores": {
-                    "evergreen": evergreen,
-                    "practical": practicality,
-                    "knowledge_gap": knowledge_gap,
-                    "virality": virality,
-                },
-                "overall_score": overall,
-                "references": [item["link"]],
-            }
-        )
-    return sorted(ranked, key=lambda x: x["overall_score"], reverse=True)
-
-
-def build_research_bundle(research_source: dict, ranked_topics: List[dict]) -> dict:
-    topic = ranked_topics[0]["topic"] if ranked_topics else research_source["topic"]
-    all_refs = research_source.get("source_links", [])
-    official_refs = [url for url in all_refs if is_official(url)]
     if not official_refs and all_refs:
-        official_refs = [all_refs[0]]
-    supporting_refs = [url for url in all_refs if url not in official_refs]
-    claims = []
-    for fact in research_source.get("key_facts", []):
-        refs = official_refs[:2] if official_refs else all_refs[:1]
-        claims.append({"statement": fact, "reference_urls": refs})
+        official_refs = all_refs[:1]
+    supporting_refs = [u for u in all_refs if u not in official_refs]
+
+    if target_meta["kind"] == "series-continuation":
+        objective = (
+            f"Part {target_meta['series_part']} of the {target_meta['series_name']} series: {topic}. "
+            f"Live trend support this run: {target_meta['trend_support_strength']} "
+            "(see supporting_signals for what backs it) — deep research is still the "
+            "writer/research agent's job, this is a sourced starting point only."
+        )
+    else:
+        objective = (
+            f"Standalone article on: {topic}. Selected as the top live-ranked, "
+            "non-duplicate candidate this run — see ranked-topics.json for the full pool "
+            "and why alternatives scored lower."
+        )
+
     return {
         "topic": topic,
-        "objective": research_source.get("part_theme", "Build a practical and reference-backed article draft."),
+        "objective": objective,
         "official_references": official_refs,
         "supporting_references": supporting_refs,
         "claims": claims,
@@ -183,14 +303,26 @@ def run_check(command: List[str], cwd: pathlib.Path, evidence_path: pathlib.Path
     if proc.stderr:
         output.append("\n[stderr]\n" + proc.stderr.strip())
     output.append(f"\nexit_code={proc.returncode}")
-    write_text(evidence_path, "\n".join(output).strip() + "\n")
+    evidence_path.parent.mkdir(parents=True, exist_ok=True)
+    evidence_path.write_text("\n".join(output).strip() + "\n", encoding="utf-8")
     return proc.returncode == 0, str(evidence_path.relative_to(REPO_ROOT))
+
+
+def write_json(path: pathlib.Path, payload: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+
+
+def write_text(path: pathlib.Path, text: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text, encoding="utf-8")
 
 
 def build_phase_artifacts(
     mode: str,
     run_ts: str,
     out_dir: pathlib.Path,
+    topic: Optional[str],
     research_bundle: dict,
     ranked_topics: List[dict],
 ) -> Tuple[dict, pathlib.Path, pathlib.Path]:
@@ -204,17 +336,18 @@ def build_phase_artifacts(
     )
     checks.append({"name": "parse-article-json", "status": "passed" if pass_json else "failed", "evidence_path": json_evidence})
 
-    pass_article = (SERIES_DIR / "article_draft.md").exists()
-    article_evidence_path = evidence_dir / "check-article-draft.log"
-    write_text(
-        article_evidence_path,
-        f"article_draft_path={SERIES_DIR / 'article_draft.md'}\nexists={str(pass_article).lower()}\n",
-    )
+    # Replaces the old check that tested for one specific historical file's
+    # existence forever — meaningless once the pipeline stopped being
+    # hardcoded to a single seed topic. This checks the thing that actually
+    # matters now: did topic resolution succeed this run.
+    pass_topic = bool(topic)
+    topic_evidence_path = evidence_dir / "check-topic-resolved.log"
+    write_text(topic_evidence_path, f"resolved_topic={topic!r}\nresolved={str(pass_topic).lower()}\n")
     checks.append(
         {
-            "name": "article-draft-exists",
-            "status": "passed" if pass_article else "failed",
-            "evidence_path": str(article_evidence_path.relative_to(REPO_ROOT)),
+            "name": "topic-resolved",
+            "status": "passed" if pass_topic else "failed",
+            "evidence_path": str(topic_evidence_path.relative_to(REPO_ROOT)),
         }
     )
 
@@ -238,8 +371,8 @@ def build_phase_artifacts(
 
     build_status = "passed" if all(c["status"] == "passed" for c in checks) else "failed"
     build_artifact = {
-        "artifact_id": f"{mode}-{slugify(ranked_topics[0]['topic']) if ranked_topics else 'topic'}",
-        "topic": ranked_topics[0]["topic"] if ranked_topics else "Unknown topic",
+        "artifact_id": f"{mode}-{slugify(topic) if topic else 'no-topic-resolved'}",
+        "topic": topic or "No topic resolved this run",
         "build_status": build_status,
         "executed_checks": checks,
         "generated_at": run_ts,
@@ -250,22 +383,25 @@ def build_phase_artifacts(
     article_lines = [
         f"# {research_bundle['topic']}",
         "",
-        f"**Status:** Draft - Pending Human Approval",
+        "**Status:** Draft - Pending Human Approval",
         "",
         "## Problem Statement",
         research_bundle["objective"],
         "",
         "## Why Now (Trend Signals)",
-        "\n".join(f"- {item['topic']} (score: {item['overall_score']})" for item in ranked_topics[:3]),
+        "\n".join(f"- {item['topic']} (score: {item['overall_score']})" for item in ranked_topics[:3])
+        or "(no live signals scored this run — see fetch_errors)",
         "",
         "## Build Walkthrough (Teach by Building)",
-        "1. Collect deterministic trend signals from repository datasets.",
-        "2. Rank topics using weighted scoring.",
-        "3. Build research bundle with official references and traceable claims.",
-        "4. Produce evidence-backed build checks before draft packaging.",
+        "1. Fetch live trend signals from configured RSS/Atom feeds (fetch_trend_signals.py).",
+        "2. De-duplicate against already-published articles/** topics.",
+        "3. Resolve topic: fixed series-part title if a series is active, else top-ranked live candidate.",
+        "4. Build research bundle with attributed references and traceable claims.",
+        "5. Produce evidence-backed build checks before draft packaging.",
         "",
         "## References (Official Preferred)",
-        "\n".join(f"- {url}" for url in research_bundle["official_references"] + research_bundle.get("supporting_references", [])),
+        "\n".join(f"- {url}" for url in research_bundle["official_references"] + research_bundle.get("supporting_references", []))
+        or "(none captured this run)",
     ]
     write_text(article_output, "\n".join(article_lines) + "\n")
 
@@ -273,12 +409,13 @@ def build_phase_artifacts(
     write_text(
         diagram_output,
         "graph TD\n"
-        "  A[Trend Signals] --> B[Deterministic Ranking]\n"
-        "  B --> C[Research Bundle]\n"
-        "  C --> D[Build + Evidence]\n"
-        "  D --> E[Audits]\n"
-        "  E --> F[Publish Draft Package]\n"
-        "  F --> G[Analytics Loop]\n",
+        "  A[Live RSS/Atom Feeds] --> B[Fetch + Score Signals]\n"
+        "  B --> C[De-duplicate vs articles/**]\n"
+        "  C --> D[Resolve Topic: series-fixed or top-ranked]\n"
+        "  D --> E[Research Bundle]\n"
+        "  E --> F[Build + Evidence]\n"
+        "  F --> G[Audits]\n"
+        "  G --> H[Publish Draft Package]\n",
     )
     return build_artifact, article_output, diagram_output
 
@@ -394,14 +531,14 @@ def build_publish_bundle(
             "topic": topic,
             "series_name": target_meta["series_name"] or "(standalone article)",
             "hero_image_path": publish_draft["hero_image_path"],
-            "problem_statement": "Explain practical MCP architecture choices for engineering teams.",
-            "trend_summary": f"Top ranked topic score confirms current relevance for {topic}.",
-            "architecture_summary": "Pipeline stages are deterministic and auditable across trend, research, build, audit, and packaging.",
-            "build_steps": "Trend scoring -> research bundle -> build evidence -> audits -> draft packaging.",
+            "problem_statement": f"Explain and demonstrate: {topic}.",
+            "trend_summary": f"Trend support strength this run: {target_meta.get('trend_support_strength') or 'n/a'}.",
+            "architecture_summary": "Pipeline stages are deterministic and auditable across fetch, dedup, resolve, research, build, audit, and packaging.",
+            "build_steps": "Live signal fetch -> dedup vs published -> topic resolution -> research bundle -> build evidence -> audits -> draft packaging.",
             "diagram_links": f"- {str((out_dir / 'architecture.mmd').relative_to(REPO_ROOT))}",
             "project_path": publish_draft["project_path"],
             "execution_evidence": f"- Build status: {technical_audit['status']}\n- Platform status: {platform_audit['status']}",
-            "tradeoffs": "Deterministic logic is reliable and testable, but less adaptive than model-generated content.",
+            "tradeoffs": "Deterministic topic discovery/ranking is reliable and testable, but the deep factual research and writing remain agent tasks, not automated.",
             "references": "\n".join(f"- {url}" for url in publish_draft["references"]),
             "audit_scores": f"- Technical: {technical_audit['score']} ({technical_audit['status']})\n- Platform: {platform_audit['score']} ({platform_audit['status']})",
         },
@@ -435,15 +572,19 @@ def run_pipeline(mode: str) -> pathlib.Path:
     latest_dir = AEP_DIR / "out" / mode
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    raw_signals = load_json(SERIES_DIR / "trend_signals.json")
-    research_source = load_json(SERIES_DIR / "research.json")
-    topic_signals = normalize_topic_signals(raw_signals, run_ts)
-    ranked_topics = rank_topics(raw_signals, run_ts)
-    research_bundle = build_research_bundle(research_source, ranked_topics)
-    build_artifact, article_output, diagram_output = build_phase_artifacts(mode, run_ts, out_dir, research_bundle, ranked_topics)
+    config = fetch_trend_signals.load_config()
+    signals, fetch_errors = fetch_trend_signals.fetch_all(config, run_ts)
+    published_topics = collect_published_topics(ARTICLES_DIR)
+    ranked_topics, excluded_duplicates = rank_topics(signals, published_topics, run_ts)
+
+    topic, target_dir, target_meta = resolve_topic(ARTICLES_DIR, signals, ranked_topics)
+    research_bundle = build_research_bundle(topic or "No topic resolved", target_meta)
+
+    build_artifact, article_output, diagram_output = build_phase_artifacts(
+        mode, run_ts, out_dir, topic, research_bundle, ranked_topics
+    )
     technical_audit, platform_audit = build_audits(build_artifact, research_bundle, article_output, run_ts)
 
-    target_dir, target_meta = resolve_target_article_dir(research_bundle["topic"], ARTICLES_DIR)
     hero_preview_path = out_dir / "hero_preview.png"
     generate_hero_image.generate(
         title=research_bundle["topic"],
@@ -464,32 +605,57 @@ def run_pipeline(mode: str) -> pathlib.Path:
     )
     analytics = build_analytics(run_ts, ranked_topics, technical_audit, platform_audit)
 
-    write_json(out_dir / "topic-signals.json", {"signals": topic_signals})
-    write_json(out_dir / "ranked-topics.json", {"ranked_topics": ranked_topics})
+    write_json(out_dir / "topic-signals.json", {"signals": signals, "fetch_errors": fetch_errors})
+    write_json(out_dir / "ranked-topics.json", {"ranked_topics": ranked_topics, "excluded_duplicates": excluded_duplicates})
     write_json(out_dir / "research-bundle.json", research_bundle)
     write_json(out_dir / "build-artifact.json", build_artifact)
     write_json(out_dir / "technical-audit.json", technical_audit)
     write_json(out_dir / "platform-audit.json", platform_audit)
     write_json(out_dir / "publish-draft.json", publish_draft)
     write_json(out_dir / "analytics.json", analytics)
+
+    topic_discovery = {
+        "run_id": run_id,
+        "signals_fetched": len(signals),
+        "fetch_errors": fetch_errors,
+        "published_topics_considered": [t for t, _ in published_topics],
+        "excluded_duplicates": excluded_duplicates,
+        "resolution": {
+            "kind": target_meta["kind"],
+            "topic": topic,
+            "target_dir": str(target_dir.relative_to(REPO_ROOT)),
+            "series_name": target_meta["series_name"],
+            "series_part": target_meta["series_part"],
+            "trend_support_strength": target_meta.get("trend_support_strength"),
+            "reasoning": (
+                "Series-continuation: topic is the fixed title from series_plan.json, "
+                "never re-picked from trend data. Supporting signals only back it up."
+                if target_meta["kind"] == "series-continuation"
+                else "Standalone: topic is the top-ranked, non-duplicate live signal this run."
+            ),
+        },
+    }
+    write_json(out_dir / "topic-discovery.json", topic_discovery)
+
+    pipeline_status = "passed" if (
+        bool(topic)
+        and build_artifact["build_status"] == "passed"
+        and technical_audit["status"] == "passed"
+        and platform_audit["status"] == "passed"
+    ) else "failed"
+
     write_json(
         out_dir / "run-summary.json",
         {
             "run_id": run_id,
             "mode": mode,
             "run_timestamp_utc": run_ts,
-            "pipeline_status": "passed"
-            if all(
-                [
-                    build_artifact["build_status"] == "passed",
-                    technical_audit["status"] == "passed",
-                    platform_audit["status"] == "passed",
-                ]
-            )
-            else "failed",
+            "pipeline_status": pipeline_status,
+            "topic_resolved": bool(topic),
             "artifacts": {
                 "topic_signals": str((out_dir / "topic-signals.json").relative_to(REPO_ROOT)),
                 "ranked_topics": str((out_dir / "ranked-topics.json").relative_to(REPO_ROOT)),
+                "topic_discovery": str((out_dir / "topic-discovery.json").relative_to(REPO_ROOT)),
                 "research_bundle": str((out_dir / "research-bundle.json").relative_to(REPO_ROOT)),
                 "build_artifact": str((out_dir / "build-artifact.json").relative_to(REPO_ROOT)),
                 "technical_audit": str((out_dir / "technical-audit.json").relative_to(REPO_ROOT)),

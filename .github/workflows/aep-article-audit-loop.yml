@@ -1,0 +1,56 @@
+name: aep-article-audit-loop
+
+# The enforced retry loop that aep-article-check.yml alone doesn't provide:
+# that workflow tells you pass/fail once. This one, on failure, automatically
+# posts an @claude comment with the exact failure so the agent that opened
+# the PR gets a chance to fix it — up to a fixed retry budget
+# (aep/pipelines/audit_loop.py's MAX_ATTEMPTS) — before flagging for a human
+# instead of nagging forever. This is a side-effect step, not a gating check;
+# aep-article-check.yml remains the actual required status check.
+#
+# IMPORTANT: the @claude comment must be posted with a real PAT
+# (COPILOT_DISPATCH_PAT), not the default GITHUB_TOKEN — comments made with
+# the default token don't trigger other workflows (GitHub's loop-prevention
+# rule), so aep-claude-manual.yml's issue_comment trigger would never fire.
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - 'articles/**'
+
+jobs:
+  audit-loop:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Find changed article folders
+        id: changed
+        run: |
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- 'articles/**' \
+            | python3 aep/pipelines/list_changed_article_dirs.py > changed_dirs.txt
+          cat changed_dirs.txt
+          echo "count=$(wc -l < changed_dirs.txt | tr -d ' ')" >> "$GITHUB_OUTPUT"
+
+      - name: Run audit loop on changed folders
+        if: steps.changed.outputs.count != '0'
+        continue-on-error: true  # side-effect step (comment); aep-article-check.yml is the real gate
+        env:
+          COPILOT_DISPATCH_PAT: ${{ secrets.COPILOT_DISPATCH_PAT }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          if [ -z "$COPILOT_DISPATCH_PAT" ]; then
+            echo "COPILOT_DISPATCH_PAT not set — skipping the auto-retry comment loop."
+            echo "(aep-article-check.yml still gates the PR on validate_article.py directly.)"
+            exit 0
+          fi
+          mapfile -t dirs < changed_dirs.txt
+          python3 aep/pipelines/audit_loop.py --pr-number "${{ github.event.pull_request.number }}" "${dirs[@]}"

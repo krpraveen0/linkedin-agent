@@ -9,12 +9,15 @@
     "ranked_at": { "type": "string", "format": "date-time" },
     "scores": {
       "type": "object",
-      "required": ["evergreen", "practical", "knowledge_gap", "virality"],
+      "required": ["freshness", "relevance", "practicality", "novelty"],
       "properties": {
-        "evergreen": { "type": "number", "minimum": 0, "maximum": 100 },
-        "practical": { "type": "number", "minimum": 0, "maximum": 100 },
-        "knowledge_gap": { "type": "number", "minimum": 0, "maximum": 100 },
-        "virality": { "type": "number", "minimum": 0, "maximum": 100 }
+        "freshness": { "type": "number", "minimum": 0, "maximum": 100 },
+        "relevance": { "type": "number", "minimum": 0, "maximum": 100 },
+        "practicality": { "type": "number", "minimum": 0, "maximum": 100 },
+        "novelty": {
+          "type": "number", "minimum": 0, "maximum": 100,
+          "description": "100 minus similarity to the closest already-published topic — how not-a-repeat this is."
+        }
       },
       "additionalProperties": false
     },
@@ -22,6 +25,16 @@
     "references": {
       "type": "array",
       "items": { "type": "string", "format": "uri" }
+    },
+    "similarity_to_existing": {
+      "type": "number", "minimum": 0, "maximum": 1,
+      "description": "Highest Jaccard similarity found against any already-published articles/**/research-bundle.json topic."
+    },
+    "most_similar_existing": { "type": ["string", "null"] },
+    "most_similar_existing_path": { "type": ["string", "null"] },
+    "excluded_reason": {
+      "type": "string",
+      "description": "Present only on entries returned in ranked-topics.json's excluded_duplicates list."
     }
   },
   "additionalProperties": false

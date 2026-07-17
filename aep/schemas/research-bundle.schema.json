@@ -16,6 +16,18 @@
       "type": "array",
       "items": { "type": "string", "format": "uri" }
     },
+    "competitive_scan": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source_url", "differentiation"],
+        "properties": {
+          "source_url": { "type": "string", "format": "uri" },
+          "differentiation": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
     "claims": {
       "type": "array",
       "items": {

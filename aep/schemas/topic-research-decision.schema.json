@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "aep/schemas/topic-research-decision.schema.json",
+  "title": "TopicResearchDecision",
+  "description": "Output of aep/prompts/trend-research-agent.md — the real judgment pass over the deterministic shortlist, required before writing starts.",
+  "type": "object",
+  "required": ["topic_confirmed", "final_topic", "confidence", "rationale", "sources_checked", "decided_at"],
+  "properties": {
+    "topic_confirmed": {
+      "type": "boolean",
+      "description": "true if the pipeline's proposed topic was confirmed as worth writing; false if rejected/overridden."
+    },
+    "final_topic": {
+      "type": "string",
+      "description": "The topic actually being written about after this review — may differ from the pipeline's proposal for a standalone article, but must equal the fixed series title for a series-continuation."
+    },
+    "confidence": { "type": "string", "enum": ["low", "medium", "high"] },
+    "rationale": {
+      "type": "string",
+      "description": "Concrete reasoning: what was checked, what was found, why this topic (or rejection) is the right call."
+    },
+    "sources_checked": {
+      "type": "array",
+      "items": { "type": "string", "format": "uri" },
+      "minItems": 1,
+      "description": "Real URLs actually read during this review, not just those already in research-bundle.json."
+    },
+    "alternative_considered": {
+      "type": ["string", "null"],
+      "description": "If the shortlist's top-ranked candidate was passed over in favor of another, name it here."
+    },
+    "decided_at": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": false
+}
