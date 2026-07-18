@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="300" viewBox="0 0 640 300" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="640" height="300" fill="#ffffff"/>
+  <text x="20" y="30" font-size="15" font-weight="bold" fill="#333333">What 0.65b0 (July 16, 2026) changed</text>
+
+  <!-- FROM box -->
+  <rect x="30" y="70" width="250" height="150" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="45" y="95" font-size="13" font-weight="bold" fill="#333333">core package</text>
+  <text x="45" y="114" font-size="12" fill="#333333">opentelemetry-semantic-</text>
+  <text x="45" y="130" font-size="12" fill="#333333">conventions 0.65b0</text>
+  <text x="45" y="158" font-size="12" fill="#333333">gen_ai.* (60 constants)</text>
+  <text x="45" y="178" font-size="12" fill="#333333">still importable,</text>
+  <text x="45" y="194" font-size="12" fill="#333333">all 60 flagged Deprecated</text>
+
+  <!-- arrow -->
+  <line x1="285" y1="145" x2="355" y2="145" stroke="#333333" stroke-width="1.5"/>
+  <polygon points="355,145 343,139 343,151" fill="#333333"/>
+  <text x="290" y="137" font-size="12" fill="#333333">moved</text>
+
+  <!-- TO box -->
+  <rect x="360" y="70" width="250" height="150" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="375" y="95" font-size="13" font-weight="bold" fill="#333333">dedicated repo</text>
+  <text x="375" y="114" font-size="12" fill="#333333">semantic-conventions-</text>
+  <text x="375" y="130" font-size="12" fill="#333333">genai</text>
+  <text x="375" y="158" font-size="12" fill="#333333">canonical span/attr defs</text>
+  <text x="375" y="178" font-size="12" fill="#333333">status: Development</text>
+  <text x="375" y="194" font-size="12" fill="#333333">gen_ai.system &#8594; provider.name</text>
+
+  <text x="30" y="260" font-size="12" fill="#333333">Operation values (invoke_agent, execute_tool, create_agent) are unchanged.</text>
+</svg>

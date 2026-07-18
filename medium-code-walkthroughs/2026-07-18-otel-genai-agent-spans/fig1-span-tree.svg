@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="330" viewBox="0 0 640 330" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="640" height="330" fill="#ffffff"/>
+  <text x="20" y="30" font-size="15" font-weight="bold" fill="#333333">Agent trace shape (GenAI conventions)</text>
+
+  <!-- root span -->
+  <rect x="40" y="60" width="470" height="46" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="55" y="82" font-size="14" font-weight="bold" fill="#333333">invoke_agent unit-converter</text>
+  <text x="55" y="99" font-size="12" fill="#333333">gen_ai.operation.name = invoke_agent  ·  gen_ai.provider.name (Required)</text>
+
+  <!-- connector lines -->
+  <line x1="70" y1="106" x2="70" y2="150" stroke="#333333" stroke-width="1.5"/>
+  <line x1="70" y1="150" x2="90" y2="150" stroke="#333333" stroke-width="1.5"/>
+  <line x1="70" y1="106" x2="70" y2="235" stroke="#333333" stroke-width="1.5"/>
+  <line x1="70" y1="235" x2="90" y2="235" stroke="#333333" stroke-width="1.5"/>
+
+  <!-- child span 1 -->
+  <rect x="90" y="128" width="440" height="46" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="105" y="150" font-size="14" font-weight="bold" fill="#333333">execute_tool to_celsius</text>
+  <text x="105" y="167" font-size="12" fill="#333333">gen_ai.tool.name = to_celsius (Required)  ·  result = 37.0</text>
+
+  <!-- child span 2 -->
+  <rect x="90" y="213" width="440" height="46" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="105" y="235" font-size="14" font-weight="bold" fill="#333333">execute_tool to_miles</text>
+  <text x="105" y="252" font-size="12" fill="#333333">gen_ai.tool.name = to_miles (Required)  ·  result = 26.1</text>
+
+  <text x="40" y="300" font-size="12" fill="#333333">Span name = "{operation} {name}"; children nest under one invoke_agent root.</text>
+</svg>
