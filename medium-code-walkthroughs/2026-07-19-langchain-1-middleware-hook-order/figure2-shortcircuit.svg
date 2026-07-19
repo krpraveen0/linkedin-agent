@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="320" viewBox="0 0 640 320" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="640" height="320" fill="#ffffff"/>
+  <text x="320" y="30" font-size="16" fill="#333333" text-anchor="middle" font-weight="bold">wrap_model_call owns the handler: it can skip the model</text>
+
+  <defs>
+    <marker id="a2" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#333333"/>
+    </marker>
+  </defs>
+
+  <!-- request -->
+  <rect x="30" y="130" width="120" height="56" rx="8" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="90" y="163" font-size="13" fill="#333333" text-anchor="middle">request</text>
+
+  <!-- decision -->
+  <rect x="200" y="120" width="150" height="76" rx="8" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="275" y="150" font-size="13" fill="#333333" text-anchor="middle" font-weight="bold">wrap_model_call</text>
+  <text x="275" y="172" font-size="12" fill="#333333" text-anchor="middle">banned input?</text>
+
+  <line x1="150" y1="158" x2="196" y2="158" stroke="#333333" stroke-width="1.5" marker-end="url(#a2)"/>
+
+  <!-- YES path: short-circuit -->
+  <line x1="350" y1="140" x2="470" y2="80" stroke="#333333" stroke-width="1.5" marker-end="url(#a2)"/>
+  <text x="380" y="98" font-size="12" fill="#333333" font-weight="bold">yes</text>
+  <rect x="470" y="52" width="150" height="56" rx="8" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="545" y="76" font-size="12" fill="#333333" text-anchor="middle">canned response</text>
+  <text x="545" y="94" font-size="12" fill="#333333" text-anchor="middle">(model skipped)</text>
+
+  <!-- NO path: call handler -->
+  <line x1="350" y1="176" x2="470" y2="236" stroke="#333333" stroke-width="1.5" marker-end="url(#a2)"/>
+  <text x="380" y="230" font-size="12" fill="#333333" font-weight="bold">no</text>
+  <rect x="470" y="208" width="150" height="56" rx="8" fill="#ffffff" stroke="#333333" stroke-width="1.5"/>
+  <text x="545" y="232" font-size="12" fill="#333333" text-anchor="middle">handler(request)</text>
+  <text x="545" y="250" font-size="12" fill="#333333" text-anchor="middle">&#8594; real model call</text>
+
+  <text x="320" y="300" font-size="12" fill="#333333" text-anchor="middle">before_model / after_model can observe the request, but cannot stop this call.</text>
+</svg>
