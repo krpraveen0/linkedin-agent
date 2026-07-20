@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="330" viewBox="0 0 640 330" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="640" height="330" fill="#ffffff"/>
+  <text x="320" y="34" font-size="15" fill="#333333" text-anchor="middle" font-weight="bold">additional_authorized_imports: how wide is the door?</text>
+
+  <!-- Left: default -->
+  <rect x="30" y="60" width="270" height="230" fill="#f7f7f7" stroke="#333333" stroke-width="1.5"/>
+  <text x="165" y="86" font-size="14" fill="#333333" text-anchor="middle" font-weight="bold">default allowlist</text>
+  <text x="165" y="106" font-size="12" fill="#333333" text-anchor="middle">math, random, re, datetime, ...</text>
+
+  <rect x="55" y="126" width="220" height="34" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <text x="65" y="148" font-size="12" fill="#333333">import math -> OK</text>
+  <rect x="55" y="168" width="220" height="34" fill="#e0e0e0" stroke="#333333" stroke-width="1"/>
+  <text x="65" y="190" font-size="12" fill="#333333">import os -> BLOCKED</text>
+  <rect x="55" y="210" width="220" height="34" fill="#e0e0e0" stroke="#333333" stroke-width="1"/>
+  <text x="65" y="232" font-size="12" fill="#333333">os.system(...) -> unreachable</text>
+  <text x="165" y="272" font-size="12" fill="#333333" text-anchor="middle" font-style="italic">useful defense-in-depth</text>
+
+  <!-- Right: wildcard -->
+  <rect x="340" y="60" width="270" height="230" fill="#f7f7f7" stroke="#333333" stroke-width="1.5"/>
+  <text x="475" y="86" font-size="14" fill="#333333" text-anchor="middle" font-weight="bold">allowlist = ["*"]</text>
+  <text x="475" y="106" font-size="12" fill="#333333" text-anchor="middle">import check switched off</text>
+
+  <rect x="365" y="126" width="220" height="34" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <text x="375" y="148" font-size="12" fill="#333333">import os -> OK</text>
+  <rect x="365" y="168" width="220" height="34" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <text x="375" y="190" font-size="12" fill="#333333">os.system('id') -> OK</text>
+  <rect x="365" y="210" width="220" height="34" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <text x="375" y="232" font-size="12" fill="#333333">=> uid=0(root)  (real RCE)</text>
+  <text x="475" y="272" font-size="12" fill="#333333" text-anchor="middle" font-style="italic">ordinary Python, full host reach</text>
+</svg>
