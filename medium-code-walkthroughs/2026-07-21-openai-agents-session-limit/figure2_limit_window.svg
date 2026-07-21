@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="340" viewBox="0 0 660 340" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="660" height="340" fill="#ffffff"/>
+  <text x="330" y="28" font-size="16" font-weight="bold" fill="#333333" text-anchor="middle">What get_items() replays: default vs. SessionSettings(limit=6)</text>
+
+  <!-- helper: 20 items stored, drawn as a row of small cells for each panel -->
+  <!-- Panel A -->
+  <text x="30" y="70" font-size="13" font-weight="bold" fill="#333333">limit=None (default): replays all 20 items</text>
+  <g stroke="#333333" stroke-width="1">
+    <!-- 20 cells -->
+    <g fill="#e0e0e0">
+      <rect x="30" y="82" width="28" height="24"/><rect x="59" y="82" width="28" height="24"/><rect x="88" y="82" width="28" height="24"/><rect x="117" y="82" width="28" height="24"/><rect x="146" y="82" width="28" height="24"/>
+      <rect x="175" y="82" width="28" height="24"/><rect x="204" y="82" width="28" height="24"/><rect x="233" y="82" width="28" height="24"/><rect x="262" y="82" width="28" height="24"/><rect x="291" y="82" width="28" height="24"/>
+      <rect x="320" y="82" width="28" height="24"/><rect x="349" y="82" width="28" height="24"/><rect x="378" y="82" width="28" height="24"/><rect x="407" y="82" width="28" height="24"/><rect x="436" y="82" width="28" height="24"/>
+      <rect x="465" y="82" width="28" height="24"/><rect x="494" y="82" width="28" height="24"/><rect x="523" y="82" width="28" height="24"/><rect x="552" y="82" width="28" height="24"/><rect x="581" y="82" width="28" height="24"/>
+    </g>
+  </g>
+  <text x="30" y="128" font-size="12" fill="#333333">item 1 (oldest)</text>
+  <text x="609" y="128" font-size="12" fill="#333333" text-anchor="end">item 20 (newest)</text>
+  <text x="30" y="150" font-size="12" fill="#333333">payload sent to model: 1372 chars, and climbing every turn</text>
+
+  <!-- divider -->
+  <line x1="30" y1="172" x2="630" y2="172" stroke="#333333" stroke-width="1" stroke-dasharray="4 4"/>
+
+  <!-- Panel B -->
+  <text x="30" y="206" font-size="13" font-weight="bold" fill="#333333">SessionSettings(limit=6): replays only the last 6</text>
+  <g stroke="#333333" stroke-width="1">
+    <g fill="#f0f0f0">
+      <rect x="30" y="218" width="28" height="24"/><rect x="59" y="218" width="28" height="24"/><rect x="88" y="218" width="28" height="24"/><rect x="117" y="218" width="28" height="24"/><rect x="146" y="218" width="28" height="24"/>
+      <rect x="175" y="218" width="28" height="24"/><rect x="204" y="218" width="28" height="24"/><rect x="233" y="218" width="28" height="24"/><rect x="262" y="218" width="28" height="24"/><rect x="291" y="218" width="28" height="24"/>
+      <rect x="320" y="218" width="28" height="24"/><rect x="349" y="218" width="28" height="24"/><rect x="378" y="218" width="28" height="24"/><rect x="407" y="218" width="28" height="24"/>
+    </g>
+    <!-- last 6 highlighted -->
+    <g fill="#e0e0e0">
+      <rect x="436" y="218" width="28" height="24"/><rect x="465" y="218" width="28" height="24"/><rect x="494" y="218" width="28" height="24"/><rect x="523" y="218" width="28" height="24"/><rect x="552" y="218" width="28" height="24"/><rect x="581" y="218" width="28" height="24"/>
+    </g>
+  </g>
+  <rect x="434" y="216" width="177" height="28" fill="none" stroke="#333333" stroke-width="2"/>
+  <text x="522" y="266" font-size="12" fill="#333333" text-anchor="middle">only these 6 replayed</text>
+  <text x="30" y="266" font-size="12" fill="#333333">14 older items still stored on disk, just not resent</text>
+  <text x="30" y="292" font-size="12" fill="#333333">payload sent to model: 413 chars, flat regardless of length</text>
+
+  <text x="330" y="322" font-size="12" fill="#333333" text-anchor="middle">Storage is unchanged in both cases; the cap is on retrieval only.</text>
+</svg>
