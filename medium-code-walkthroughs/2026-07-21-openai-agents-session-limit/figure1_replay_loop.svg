@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="330" viewBox="0 0 660 330" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="660" height="330" fill="#ffffff"/>
+  <text x="330" y="28" font-size="16" font-weight="bold" fill="#333333" text-anchor="middle">Default session: every turn replays the whole store</text>
+
+  <!-- Store -->
+  <text x="120" y="62" font-size="13" fill="#333333" text-anchor="middle">agent_messages (SQLite)</text>
+  <g stroke="#333333" stroke-width="1.5">
+    <rect x="40" y="74" width="160" height="26" fill="#e0e0e0"/>
+    <rect x="40" y="100" width="160" height="26" fill="#e0e0e0"/>
+    <rect x="40" y="126" width="160" height="26" fill="#e0e0e0"/>
+    <rect x="40" y="152" width="160" height="26" fill="#f0f0f0"/>
+    <rect x="40" y="178" width="160" height="26" fill="#f0f0f0"/>
+  </g>
+  <text x="120" y="92" font-size="12" fill="#333333" text-anchor="middle">turn 1  user + assistant</text>
+  <text x="120" y="118" font-size="12" fill="#333333" text-anchor="middle">turn 2  user + assistant</text>
+  <text x="120" y="144" font-size="12" fill="#333333" text-anchor="middle">turn 3  user + assistant</text>
+  <text x="120" y="170" font-size="12" fill="#333333" text-anchor="middle">...</text>
+  <text x="120" y="196" font-size="12" fill="#333333" text-anchor="middle">turn N  user + assistant</text>
+  <text x="120" y="224" font-size="12" fill="#333333" text-anchor="middle">one row per item, never trimmed</text>
+
+  <!-- get_items arrow -->
+  <line x1="200" y1="138" x2="330" y2="138" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="265" y="128" font-size="12" fill="#333333" text-anchor="middle">get_items()</text>
+  <text x="265" y="156" font-size="12" fill="#333333" text-anchor="middle">limit=None</text>
+  <text x="265" y="172" font-size="12" fill="#333333" text-anchor="middle">= ALL rows</text>
+
+  <!-- Model call -->
+  <rect x="335" y="90" width="285" height="150" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="477" y="112" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">Model call, turn N</text>
+  <line x1="350" y1="122" x2="605" y2="122" stroke="#333333" stroke-width="1"/>
+  <text x="477" y="142" font-size="12" fill="#333333" text-anchor="middle">history: all items from turns 1..N-1</text>
+  <text x="477" y="164" font-size="12" fill="#333333" text-anchor="middle">+ new user input (turn N)</text>
+  <text x="477" y="200" font-size="12" fill="#333333" text-anchor="middle">input tokens grow every turn -></text>
+  <text x="477" y="220" font-size="12" fill="#333333" text-anchor="middle">total cost ~ quadratic in length</text>
+
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L7,3 L0,6 z" fill="#333333"/>
+    </marker>
+  </defs>
+</svg>
