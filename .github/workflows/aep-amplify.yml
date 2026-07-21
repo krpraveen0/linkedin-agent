@@ -1,0 +1,59 @@
+name: aep-amplify
+
+# Fires on every merge touching articles/** — same trigger shape as
+# aep-notion-publish.yml. dispatch_amplify.py itself decides whether this
+# particular merge is the actual trigger event (publish-draft.json's status
+# just became "Ready to Publish", i.e. the publisher's bookkeeping PR), so
+# this workflow no-ops harmlessly on the article's own merge and on any
+# later unrelated merge to the same folder.
+
+on:
+  pull_request:
+    types: [closed]
+    paths:
+      - 'articles/**'
+
+concurrency:
+  group: aep-amplify-${{ github.event.pull_request.number }}
+  cancel-in-progress: false  # a merge event should never be dropped/superseded
+
+jobs:
+  dispatch-amplify:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Find merged article folders
+        id: changed
+        run: |
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          HEAD_SHA="${{ github.event.pull_request.merge_commit_sha }}"
+          git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- 'articles/**' \
+            | python3 aep/pipelines/list_changed_article_dirs.py > changed_dirs.txt
+          cat changed_dirs.txt
+          echo "count=$(wc -l < changed_dirs.txt | tr -d ' ')" >> "$GITHUB_OUTPUT"
+
+      - name: Dispatch LinkedIn amplification task
+        if: steps.changed.outputs.count != '0'
+        env:
+          COPILOT_DISPATCH_PAT: ${{ secrets.COPILOT_DISPATCH_PAT }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          if [ -z "$COPILOT_DISPATCH_PAT" ]; then
+            echo "COPILOT_DISPATCH_PAT not set — skipping amplification dispatch."
+            echo "See aep/docs/agent-dispatch.md to enable it."
+            exit 0
+          fi
+          mapfile -t dirs < changed_dirs.txt
+          python3 aep/pipelines/dispatch_amplify.py "${dirs[@]}"

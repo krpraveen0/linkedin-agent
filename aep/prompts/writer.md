@@ -93,32 +93,13 @@ asides that don't warrant their own visual.
 
 ## Voice: write like the person who built this, not like a summary of it
 
-The single biggest quality gap in past output has been generic, obviously-
-generated prose. Concretely:
-
-- **No fabricated persona or anecdote.** Don't write "as I reflect on my
-  journey as a senior engineer..." or invent a war story that didn't happen
-  in this repo's research. If you want a concrete example, pull it from
-  `research-bundle.json` or the actual `project/` you built.
-- **Ban hype words and throat-clearing.** Do not use: "game-changing",
-  "revolutionize/revolutionary", "seamless(ly)", "unlock the (full) potential",
-  "cutting-edge", "in today's fast-paced world", "in the ever-evolving
-  landscape", "dive into"/"delve into", "harness the power of", "it's
-  important to note that", "let's explore". These are mechanically flagged
-  (see below) and will fail the check.
-- **No generic listicle transitions.** Avoid "Here are N key points to
-  consider" and "In conclusion" as section openers — say the specific thing
-  instead of announcing that you're about to say a thing.
-- **Prefer concrete numbers over adjectives.** "Reduces integration
-  connectors from O(N×M) to O(N+M)" beats "makes integration much simpler."
-  If a claim can carry a number, a benchmark, or real command output, use
-  that instead of an adjective.
-- **Vary sentence length.** A paragraph of five same-length sentences reads
-  as generated. Mix a short, declarative sentence next to a longer,
-  qualified one — the way you'd actually explain something to a colleague.
-- **State honest uncertainty instead of hedging generically.** "This wasn't
-  load-tested past 50 req/s" is better than "may have some limitations
-  depending on scale."
+Follow `aep/prompts/brand-voice.md` — the full rule set (banned hype words,
+no fabricated persona, concrete numbers over adjectives, sentence-length
+variation, honest uncertainty) lives there so the LinkedIn amplification
+stage (`aep/prompts/amplify.md`) applies the same house style instead of
+drifting from a second copy. A fixed subset of the banned phrases is
+mechanically flagged by `check_style` (see below) and will fail the check,
+but that regex list is a floor, not the full standard.
 
 ## Constitution reminders
 

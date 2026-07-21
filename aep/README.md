@@ -55,6 +55,13 @@ This module is an isolated foundation for a GitHub-native, Copilot-agent-first e
     stage: dispatched when a PR merges (merge = human approval), hands off
     to an agent turn that actually calls the Notion MCP tools per
     `aep/prompts/publisher.md`.
+  - `dispatch_amplify.py` (+ `aep-amplify.yml`) — the amplification stage:
+    dispatched once `publish-draft.json`'s `status` is confirmed
+    `"Ready to Publish"` (the publisher's own bookkeeping PR merging), hands
+    off to an agent turn that drafts a LinkedIn post per
+    `aep/prompts/amplify.md`, applying `aep/prompts/brand-voice.md`'s house
+    style. Drafts only — no LinkedIn API credential exists in this repo, so
+    a human posts it themselves.
   - see `docs/agent-dispatch.md` for how the three agents are actually
     invoked (scheduled vs. manual vs. local).
   - `generate_hero_image.py` and `generate_infographic.py` (code-rendered
@@ -138,6 +145,12 @@ live feeds → heuristic pre-filter → TREND-RESEARCH AGENT (real judgment,
                      PUBLISHER AGENT (publisher.md) — actual Notion MCP
                      sync, dispatched by aep-notion-publish.yml on merge;
                      idempotent upsert keyed by external_id
+                                            │
+                                            ▼ (publish-draft.json status ->
+                                               "Ready to Publish")
+                     AMPLIFY AGENT (amplify.md) — drafts a LinkedIn post
+                     (brand-voice.md house style), dispatched by
+                     aep-amplify.yml; human posts it, no LinkedIn API here
 
 ```
 

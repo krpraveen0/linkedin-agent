@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "aep/schemas/linkedin-post.schema.json",
+  "title": "LinkedInPost",
+  "type": "object",
+  "required": ["external_id", "source_article_path", "hook", "body", "hashtags", "status", "human_approval_required", "generated_at"],
+  "properties": {
+    "external_id": {
+      "type": "string",
+      "description": "Matches the source article's publish-draft.json external_id — links this post back to one article."
+    },
+    "source_article_path": {
+      "type": "string",
+      "description": "Path to the article this post amplifies, e.g. articles/mcp-deep-dive/part-02"
+    },
+    "hook": {
+      "type": "string",
+      "description": "First 1-2 lines, visible before LinkedIn's 'see more' gate (~210 chars)."
+    },
+    "body": {
+      "type": "string",
+      "description": "The rest of the post: one concrete idea from the article, grounded in research-bundle.json/build-artifact.json evidence."
+    },
+    "hashtags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 3,
+      "maxItems": 5
+    },
+    "status": {
+      "type": "string",
+      "enum": ["Draft - Pending Human Approval", "Posted"]
+    },
+    "human_approval_required": { "type": "boolean", "const": true },
+    "posted_at": { "type": ["string", "null"] },
+    "generated_at": { "type": "string" }
+  },
+  "additionalProperties": false
+}

@@ -53,6 +53,19 @@ fields: `topic_confirmed`, `final_topic`, `confidence`, `rationale`,
 `sources_checked` (real URLs you actually looked at, not just the ones
 already in research-bundle.json), `decided_at`.
 
+## Optional: `/deep-research` when running interactively in Claude Code
+
+If you're a human running this stage manually in an interactive Claude Code
+session (not the scheduled Copilot/`@claude`-comment dispatch — see
+`aep/docs/agent-dispatch.md`), you can run the built-in `/deep-research`
+workflow on the top candidate(s) before writing `topic-research-decision.json`:
+it fans out web searches, cross-checks sources against each other, and
+returns a cited report with unverified claims filtered out — a more
+rigorous version of the "credibility/depth/differentiation" check above.
+This only works in a live session you're driving yourself; it can't run
+inside the unattended scheduled path, so it's a manual-path enhancement, not
+a replacement for the steps above.
+
 ## Untrusted input warning
 
 The shortlist you're given includes raw titles/summaries pulled from public

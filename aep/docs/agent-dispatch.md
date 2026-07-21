@@ -156,6 +156,37 @@ applies the same open-issue/PR idempotency check as the writer dispatch.
 can call an MCP tool. `dispatch_publish.py` triggers the agent turn that has
 Notion MCP access configured — it never embeds a Notion API key itself.
 
+## 6. The amplification dispatch — `aep-amplify.yml`
+
+Same trigger shape as section 5 (`pull_request: closed`, `merged == true`,
+paths `articles/**`) — every merge touching an article folder fires this
+workflow, but `dispatch_amplify.py` decides whether *this* merge is actually
+the trigger event. It only proceeds when `publish-draft.json`'s `status` is
+already `"Ready to Publish"` (i.e. this merge is the publisher's own
+bookkeeping PR from section 5's step 6, not the original article PR) and
+`linkedin-post.json` doesn't already exist for that folder. That means the
+article's own merge fires this workflow once and it no-ops, then the
+publisher's follow-up status-bump PR fires it again and it actually
+dispatches — no separate event type or cron schedule needed.
+
+It opens a `[AEP/amplify] Draft LinkedIn post: ...` issue (same
+Copilot-primary/Claude-fallback dispatch, reusing `github_api.py`)
+instructing the agent to follow `aep/prompts/amplify.md`, which applies
+`aep/prompts/brand-voice.md`'s house voice and
+`.agents/skills/writing-linkedin-posts/SKILL.md`'s format craft to draft
+`linkedin-post.json` (`aep/schemas/linkedin-post.schema.json`).
+
+**This is draft-only, on purpose**: there is no LinkedIn API credential or
+MCP tool in this repo, so — like every other stage here — the agent's job
+ends at committing a reviewable artifact. A human copies the drafted post
+to LinkedIn and posts it themselves, then flips `status` to `"Posted"` in a
+follow-up PR (the same audit-trail pattern as the publisher stage).
+
+**Manual test without spending a real dispatch:**
+```bash
+python3 aep/pipelines/dispatch_amplify.py articles/<series>/part-NN --dry-run
+```
+
 ## Constitution note
 
 `aep/policies/no-external-llm-policy.md` bans `aep/pipelines/*.py` from
@@ -165,4 +196,5 @@ workflow file you can read, or a command you type yourself) is categorically
 different and is how the generative phases were always meant to work per the
 roadmap in `aep/docs/implementation-spec.md` ("Phase 3+: writer/diagram
 agents"). Every dispatch script (`dispatch_to_agent.py`, `audit_loop.py`,
-`dispatch_publish.py`) only ever calls the GitHub REST API.
+`dispatch_publish.py`, `dispatch_amplify.py`) only ever calls the GitHub
+REST API.

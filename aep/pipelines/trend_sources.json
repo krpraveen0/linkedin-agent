@@ -1,10 +1,13 @@
 {
-  "_comment": "Config for fetch_trend_signals.py. Edit this file to add feeds or tune keywords — no code changes needed. official_domains also backs run_pipeline.py's is_official() check.",
+  "_comment": "Config for fetch_trend_signals.py. Edit this file to add feeds or tune keywords — no code changes needed. official_domains also backs run_pipeline.py's is_official() check. HN/Reddit entries are real RSS/Atom endpoints (hnrss.org proxies HN into RSS 2.0; Reddit's own '.rss' suffix returns Atom) — they widen the pre-filter's signal net past official vendor blogs, same parser, no JSON-API code path needed.",
   "feeds": [
     "https://aws.amazon.com/blogs/machine-learning/feed/",
     "https://www.microsoft.com/en-us/research/feed/",
     "https://blog.google/technology/ai/rss/",
-    "https://huggingface.co/blog/feed.xml"
+    "https://huggingface.co/blog/feed.xml",
+    "https://hnrss.org/frontpage",
+    "https://www.reddit.com/r/MachineLearning/.rss",
+    "https://www.reddit.com/r/LocalLLaMA/.rss"
   ],
   "official_domains": [
     "anthropic.com",
