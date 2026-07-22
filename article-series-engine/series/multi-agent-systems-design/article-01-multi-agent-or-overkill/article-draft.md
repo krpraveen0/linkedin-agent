@@ -12,7 +12,7 @@ Five pieces: a supervisor, an inbox-triage agent, a file-classifier agent that s
 
 Five nodes. Mathematically, that is 10 possible pairwise links between them.
 
-The question worth asking before any of it gets built is not whether five agents sounds reasonable. It is how many of those 10 links this design actually uses, and whether each one earns its place.
+The question worth asking before any of it gets built is not whether five agents sound reasonable. It is how many of those 10 links this design actually uses, and whether each one earns its place.
 
 ## The question nobody asks before the design doc
 
@@ -62,9 +62,9 @@ None of its agents needs more context than a single agent could hold. Reason one
 
 That leaves reasons two and three, and they split the system in a revealing way.
 
-**Attempt at the parallel case: inbox triage, file classification, and calendar planning.** Each pulls from a separate system — IMAP or notifications, filesystem watchers, CalDAV — and none needs another's output to do its job. Run them as three parallel workers under a supervisor, and the coordination cost buys real thoroughness. Three problems get solved at once instead of in sequence. Verdict: justified.
+**First, the parallel case: inbox triage, file classification, and calendar planning.** Each pulls from a separate system — IMAP or notifications, filesystem watchers, CalDAV — and none needs another's output to do its job. Run them as three parallel workers under a supervisor, and the coordination cost buys real thoroughness. Three problems get solved at once instead of in sequence. Verdict: justified.
 
-**Attempt at the same reasoning for the workspace provisioner.** In practice it depends on the file classifier having already run — it looks for a spec file the classifier already sorted into the right project folder. That is a handoff, not a peer relationship. Modeling it as just another parallel agent hides a real dependency. Modeling it explicitly as sequential-after-classification is the more honest design, and it is the detail a clean diagram tends to smooth over. Verdict: not parallel, and should not be modeled as if it were.
+**Next, the same reasoning applied to the workspace provisioner.** In practice it depends on the file classifier having already run — it looks for a spec file the classifier already sorted into the right project folder. That is a handoff, not a peer relationship. Modeling it as just another parallel agent hides a real dependency. Modeling it explicitly as sequential-after-classification is the more honest design, and it is the detail a clean diagram tends to smooth over. Verdict: not parallel, and should not be modeled as if it were.
 
 **The supervisor itself exists for the third reason: isolation.** If the calendar agent throws an exception, that should not take down file classification or inbox triage. Splitting them into separate processes under a supervisor, rather than one agent doing all four jobs, is what actually buys that isolation.
 
