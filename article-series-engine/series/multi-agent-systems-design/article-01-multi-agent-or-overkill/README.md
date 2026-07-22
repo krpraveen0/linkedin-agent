@@ -28,7 +28,18 @@ coordination-cost data (e.g. 4 agents = 6 potential failure points, 10 = 45).
 
 ## Word count
 
-1,601 words - inside the 1,600-2,000 target band.
+1,660 words - inside the 1,600-2,000 target band.
+
+## Medium reader-experience pass (separate from the SIGNAL score)
+
+Ran the new reader-experience checklist against this piece and found one
+real issue: the contraction-removal pass had also stripped direct "you"
+address from the practical sections, which was an overcorrection - the two
+things are unrelated in the real voice samples. Restored "you" address in
+"What this looks like Monday morning" and added a direct challenge as the
+actual closing beat, ahead of the series cross-link, matching the pattern
+in both real Medium samples (see `voice-reference-notes.md` at the
+package root).
 
 ## Diagram
 

@@ -114,13 +114,15 @@ Full runnable code: `github.com/krpraveen0/linkedin-agent/tree/main/article-seri
 
 ## What this looks like Monday morning
 
-Before opening a new file for `agent_2.py`, run the design through the three questions. The same way this article just ran the developer-OS case study through them.
+Before you open a new file for `agent_2.py`, run your own design through the three questions. The same way this article just ran the developer-OS case study through them.
 
-Landing on "stay single-agent" does not mean building a smaller version of the multi-agent system that was planned. It means giving the one agent a better tool, a bigger context window, or a tighter loop. Adding tools is cheap. Adding agents is quadratic.
+If you land on "stay single-agent," that does not mean building a smaller version of the multi-agent system you were about to build. It means giving your one agent a better tool, a bigger context window, or a tighter loop. Adding tools is cheap. Adding agents is quadratic.
 
-Landing on multi-agent means being as honest about the dependencies, like the provisioner's handoff above, as about the parallelism. A design that pretends a sequential handoff is a parallel worker will cost exactly where that pretense breaks.
+If you land on multi-agent, be as honest about the dependencies, like the provisioner's handoff above, as you are about the parallelism. A design that pretends a sequential handoff is a parallel worker will cost you exactly where that pretense breaks.
 
-The next article in this series picks up from here. Once the decision is genuinely multi-agent, the next question is how the agents coordinate — control, state, and communication, the three axes every orchestration pattern reduces to.
+The next time you sketch a fourth or fifth agent onto a diagram, do not just ask whether the task looks parallelizable. Ask which of the three reasons that specific agent earns, and whether you would still draw that link if you had to justify it out loud.
+
+The next article in this series picks up from here. Once your decision is genuinely multi-agent, the next question is how the agents coordinate — control, state, and communication, the three axes every orchestration pattern reduces to.
 
 ---
 
