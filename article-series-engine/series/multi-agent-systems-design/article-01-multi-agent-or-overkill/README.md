@@ -18,18 +18,17 @@ coordination-cost data (e.g. 4 agents = 6 potential failure points, 10 = 45).
 
 | Axis | Score | Note |
 |---|---|---|
-| Earned depth | 3/5 | A composite, well-specified, proof-testable case study - explicitly disclosed as illustrative, not claimed as personal lived experience. Different flavor of depth than a real war story; appropriate for training content, but honestly not the same thing, and the scorecard shouldn't blur that. |
-| Clarity | 4/5 | |
-| Proof density | 5/5 | Anthropic's published 3-10x token stat, verified pairwise-link math, tested code, plus a fully worked case-study walkthrough |
-| Visual support | 4/5 | One decision-tree diagram for ~1,270 words - reasonable, a second diagram (the case study's own architecture) is a fair next-pass addition |
-| Voice integrity | 3/5 | Approximated against skill rules, not verified against Praveen's actual voice |
-| Usefulness | 5/5 | Runnable checklist code, concrete Monday-morning action, worked example |
-| **Total** | **24/30** | **Clears the gate (>=24, no axis below 3) - but see the Earned Depth note above before treating this as equivalent to a personal-anecdote pass** |
+| Earned depth | 3/5 | A composite, well-specified, proof-testable case study - explicitly disclosed as illustrative, not claimed as personal lived experience. Structurally capped without a real anecdote. |
+| Clarity | 5/5 | Topology claim is now set up and paid off explicitly; code examples match the case study instead of contradicting it. |
+| Proof density | 5/5 | Anthropic's published 3-10x token stat verified against the primary source (not just recalled), verified pairwise-link math, tested code, worked case-study walkthrough, References section added. |
+| Visual support | 5/5 | Two load-bearing diagrams (decision tree + actual-topology-vs-full-mesh), each referenced and resolved in text. |
+| Voice integrity | 4/5 | Calibrated against a real, fetched sample of Praveen's own Medium writing (not approximated from skill rules alone): zero contractions (grep-verified), short punchy paragraphs, numbered Attempt-1/Attempt-2 escalation-with-verdict structure matching his real CSV-agent walkthrough pattern, References section matching his real convention. Capped at 4, not 5 - calibrated against one real article, not his full range. |
+| Usefulness | 5/5 | Runnable checklist code, concrete Monday-morning action, worked example. |
+| **Total** | **27/30** | One point from 28. The remaining point requires either Praveen confirming this genuinely reads as his voice, or a real personal anecdote replacing the illustrative case study - neither can be manufactured further from this side. |
 
 ## Word count
 
-1,266 words against a 1,600-2,000 target - closer than before, still a bit
-under. Praveen's call whether to expand further or publish as-is.
+1,601 words - inside the 1,600-2,000 target band.
 
 ## Diagram
 
