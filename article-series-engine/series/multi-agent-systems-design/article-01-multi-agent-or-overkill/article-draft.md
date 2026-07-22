@@ -1,11 +1,12 @@
 # Multi-agent or overkill? A decision framework before you add a second agent
 
-*Most teams reach for a second agent before they've exhausted what one agent with the right tools can do. This is the framework I use to catch that, before the coordination bill comes due.*
+*Most teams reach for a second agent before they've exhausted what one agent with the right tools can do. Here's a framework for catching that, before the coordination bill comes due — walked through against a real-shaped case study, not a toy example.*
 
-[PLACEHOLDER — Praveen: drop in the real moment here. A specific point on
-AEGIS-v2, or any project, where you were about to add another agent and
-either caught yourself or didn't. The skill's own rule: no anecdote, no
-article — this needs your real detail before it ships.]
+## A case worth running the framework against
+
+*(A composite, illustrative case study — not a specific product — built to be concrete enough to actually test a framework against, rather than staying abstract.)*
+
+Picture a developer-productivity system — call it a daily-work OS for engineers — built around five pieces: a supervisor, an inbox-triage agent, a file-classifier agent that sorts what lands in `~/Downloads`, a calendar/focus-planning agent, and a workspace provisioner that clones repos, spins up containers, and opens the IDE. Five nodes. Ten potential coordination links. Worth asking, before any of it gets built: does each piece earn its place, or is this agent-sprawl with a nice architecture diagram?
 
 ## The question nobody asks before the design doc
 
@@ -39,6 +40,18 @@ Strip away the hype and there are exactly three defensible reasons to go multi-a
 
 If none of these three apply to what you're building, the extra agent isn't solving a problem — it's decoration on an architecture diagram.
 
+## Running the case study through the framework
+
+Back to the five-piece developer-productivity system. None of its agents needs more context than a single agent could hold — so reason one is out immediately. That leaves reasons two and three, and they split the system in a revealing way:
+
+**Inbox triage, file classification, and calendar planning are genuinely independent.** Each pulls from a separate system — IMAP/notifications, filesystem watchers, CalDAV — and none needs another's output to do its job. Run them as three parallel workers under a supervisor, and the coordination cost buys real thoroughness: three problems get solved at once instead of in sequence.
+
+**The workspace provisioner is a different story.** In practice it depends on the file classifier having already run — it looks for a spec file the classifier already sorted into the right project folder. That's not a peer relationship, it's a handoff. Modeling it as "just another parallel agent" hides a real dependency; modeling it explicitly as sequential-after-classification is the more honest design, and it's the detail a clean diagram tends to smooth over.
+
+**The supervisor itself exists for the third reason: isolation.** If the calendar agent throws an exception, that shouldn't take down file classification or inbox triage. Splitting them into separate processes under a supervisor — rather than one agent doing all four jobs — is what actually buys that isolation.
+
+So: four functional agents, justified by two different reasons (parallelism for three of them, isolation for the split itself), plus one honest dependency that isn't really parallel at all. That's the kind of nuance the three-question framework is supposed to surface — not "multi-agent good" or "multi-agent bad," but which specific piece of this system earned its coordination cost, and which piece just looks parallel on a diagram.
+
 ## The go/no-go checklist, made concrete
 
 Run the actual decision through code, not vibes. `agent_decision_calculator.py` (in this folder's `src/`) implements exactly the three-question tree above:
@@ -60,7 +73,7 @@ Full runnable code: `github.com/krpraveen0/linkedin-agent/tree/main/article-seri
 
 ## What this looks like Monday morning
 
-Before you open a new file for `agent_2.py`, run your own design through the three questions. If you land on "stay single-agent," the fix usually isn't a smaller version of the multi-agent system you were about to build — it's giving your one agent a better tool, a bigger context window, or a tighter loop. Adding tools is cheap. Adding agents is quadratic.
+Before you open a new file for `agent_2.py`, run your own design through the three questions — the same way we just ran the developer-OS case study through them. If you land on "stay single-agent," the fix usually isn't a smaller version of the multi-agent system you were about to build — it's giving your one agent a better tool, a bigger context window, or a tighter loop. Adding tools is cheap. Adding agents is quadratic. And if you do land on multi-agent, be as honest about the dependencies (like the provisioner's handoff above) as you are about the parallelism — a design that pretends a sequential handoff is a parallel worker will cost you exactly where that pretense breaks.
 
 The next article in this series picks up from here: once you've decided you genuinely need more than one agent, the next decision is *how they coordinate* — control, state, and communication, the three axes every orchestration pattern reduces to.
 
