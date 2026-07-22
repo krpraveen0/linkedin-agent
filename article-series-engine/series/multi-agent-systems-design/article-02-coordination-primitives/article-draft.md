@@ -127,7 +127,16 @@ The next article in this series picks up from here: the four canonical orchestra
 
 *This article was researched and drafted with AI assistance, then reviewed and edited by Praveen Kumar.*
 
-*Part 2 of "Design Multi-Agent Systems." Previous: Multi-agent or overkill? Next: The four canonical orchestration patterns, and how to actually choose one.*
+## Series: Design Multi-Agent Systems
+
+1. Multi-agent or overkill? A decision framework before you add a second agent — not yet published
+2. **The coordination primitives: control, state, and communication — a vendor-neutral model** *(this article)*
+3. The four canonical orchestration patterns, and how to actually choose one — not yet published
+4. Designing the trust boundary: authorization between agents that isn't an afterthought — not yet published
+5. Preventing the MAST failure modes by design, not by autopsy — not yet published
+6. Observability and evaluation for multi-agent systems: what to actually measure — not yet published
+7. Shared-resource contention: when your agents fight over the same database row — not yet published
+8. Putting it together: designing a production multi-agent system end to end — not yet published
 
 ## References
 
