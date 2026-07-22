@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <style>
+      .kicker { font: bold 15px monospace; fill: #2f81f7; letter-spacing: 2px; }
+      .title { font: bold 34px sans-serif; fill: #f0f6fc; }
+      .subtitle { font: 15px sans-serif; fill: #8b949e; }
+      .footer { font: 12px monospace; fill: #8b949e; }
+      .node-label { font: 12.5px monospace; fill: #f0f6fc; }
+      .node-caption { font: 10.5px sans-serif; fill: #8b949e; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="#0d1117" />
+  <rect x="0" y="0" width="1200" height="30" fill="#2f81f7" />
+  <circle cx="1230" cy="600" r="230" fill="#2f81f7" opacity="0.08" />
+  <circle cx="1180" cy="20" r="140" fill="#2f81f7" opacity="0.06" />
+
+  <circle cx="70" cy="94" r="7" fill="#2f81f7" opacity="0.6" />
+  <circle cx="97" cy="94" r="7" fill="#2f81f7" opacity="0.45" />
+  <circle cx="124" cy="94" r="7" fill="#2f81f7" opacity="0.3" />
+
+  <text x="64" y="128" class="kicker">MCP-DEEP-DIVE &#8212; PART 3</text>
+
+  <text x="64" y="182" class="title">Designing and Implementing MCP:</text>
+  <text x="64" y="222" class="title">Best Practices and Challenges</text>
+
+  <text x="64" y="266" class="subtitle">Two error shapes, one decides whether the model can self-correct</text>
+
+  <!-- Branching glyph: tools/call decision splitting into Protocol Error vs Tool Execution Error -->
+  <g>
+    <rect x="700" y="330" width="230" height="56" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1.4" />
+    <text x="815" y="354" text-anchor="middle" class="node-label">tools/call</text>
+    <text x="815" y="372" text-anchor="middle" class="node-caption">invalid arguments</text>
+
+    <line x1="815" y1="386" x2="815" y2="410" stroke="#2f81f7" stroke-width="1.6" />
+    <line x1="700" y1="410" x2="930" y2="410" stroke="#2f81f7" stroke-width="1.6" />
+    <line x1="700" y1="410" x2="700" y2="424" stroke="#2f81f7" stroke-width="1.6" />
+    <line x1="930" y1="410" x2="930" y2="424" stroke="#2f81f7" stroke-width="1.6" />
+
+    <rect x="600" y="424" width="200" height="60" rx="8" fill="#2a1515" stroke="#f85149" stroke-width="1.4" />
+    <text x="700" y="449" text-anchor="middle" class="node-label">Protocol Error</text>
+    <text x="700" y="467" text-anchor="middle" class="node-caption">hidden from the model</text>
+
+    <rect x="830" y="424" width="200" height="60" rx="8" fill="#2a2110" stroke="#d29922" stroke-width="1.4" />
+    <text x="930" y="449" text-anchor="middle" class="node-label">isError: true</text>
+    <text x="930" y="467" text-anchor="middle" class="node-caption">model reads &amp; retries</text>
+  </g>
+
+  <text x="64" y="600" class="footer">EngineeringCoders &#8212; AEP</text>
+</svg>

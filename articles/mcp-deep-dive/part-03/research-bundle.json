@@ -1,0 +1,72 @@
+{
+  "topic": "Designing and Implementing MCP: Best Practices and Challenges",
+  "objective": "As part 3 of the mcp-deep-dive series, move past 'what MCP is' (part 1) and 'hosting a tool-calling model' (part 2) into the design decisions that separate a demo MCP server from a production one: how tool errors must be reported so a calling model can self-correct (SEP-1303), and the security threat model a server author has to design against (confused deputy, token passthrough, session hijacking, local-server trust). Demonstrate the error-handling distinction with a runnable, asserted example rather than prose alone.",
+  "official_references": [
+    "https://modelcontextprotocol.io/introduction",
+    "https://modelcontextprotocol.io/docs/learn/architecture",
+    "https://modelcontextprotocol.io/docs/learn/server-concepts",
+    "https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices",
+    "https://modelcontextprotocol.io/seps/1303-input-validation-errors-as-tool-execution-errors",
+    "https://modelcontextprotocol.io/docs/develop/build-server"
+  ],
+  "supporting_references": [
+    "https://dev.to/alpic/better-mcp-toolscall-error-responses-help-your-ai-recover-gracefully-15c7",
+    "https://aws.amazon.com/blogs/machine-learning/agentic-vision-building-visual-intelligence-with-amazon-bedrock-and-mcp-servers/"
+  ],
+  "competitive_scan": [
+    {
+      "source_url": "https://dev.to/alpic/better-mcp-toolscall-error-responses-help-your-ai-recover-gracefully-15c7",
+      "differentiation": "Covers the same isError-vs-protocol-error problem in prose plus a TypeScript snippet, but stops there; this article pairs it with a runnable, hand-traced Python server whose test harness asserts the exact response shape for both error categories, and adds the security threat model (confused deputy, token passthrough, session hijacking) that post doesn't cover at all."
+    },
+    {
+      "source_url": "https://aws.amazon.com/blogs/machine-learning/agentic-vision-building-visual-intelligence-with-amazon-bedrock-and-mcp-servers/",
+      "differentiation": "A single applied use case (computer-vision tools behind an MCP server on Bedrock), not general server-design guidance -- it never discusses how tool errors should be reported to the model or the authorization/session threat model, which is this article's core content."
+    },
+    {
+      "source_url": "https://modelcontextprotocol.io/docs/develop/build-server",
+      "differentiation": "The official quickstart gets a first weather-tool server running but is deliberately introductory -- it doesn't cover the SEP-1303 error-reporting distinction, doesn't cover the security-best-practices threat model, and has no test harness verifying response shapes the way this article's project/ does."
+    }
+  ],
+  "claims": [
+    {
+      "statement": "MCP follows a client-server architecture where an MCP host (an AI application) creates one dedicated MCP client per MCP server it connects to; local servers using STDIO typically serve a single client, while remote servers on Streamable HTTP typically serve many.",
+      "reference_urls": ["https://modelcontextprotocol.io/docs/learn/architecture"]
+    },
+    {
+      "statement": "MCP has two layers: a data layer (JSON-RPC 2.0-based protocol covering lifecycle management, tools, resources, prompts, and notifications) and a transport layer (STDIO for local same-machine processes, Streamable HTTP with optional SSE for remote/multi-client communication).",
+      "reference_urls": ["https://modelcontextprotocol.io/docs/learn/architecture"]
+    },
+    {
+      "statement": "Servers expose three core primitives -- Tools (model-controlled executable functions), Resources (application-controlled read-only data), and Prompts (user-controlled reusable templates) -- each discoverable via a */list method before use.",
+      "reference_urls": ["https://modelcontextprotocol.io/docs/learn/server-concepts", "https://modelcontextprotocol.io/docs/learn/architecture"]
+    },
+    {
+      "statement": "MCP's initialize handshake negotiates a protocolVersion and each side's capabilities before any other request is allowed; if a mutually compatible protocol version cannot be negotiated, the connection should be terminated.",
+      "reference_urls": ["https://modelcontextprotocol.io/docs/learn/architecture"]
+    },
+    {
+      "statement": "SEP-1303 ('Input Validation Errors as Tool Execution Errors', status: Final) changed the spec so that tool argument validation failures are reported as Tool Execution Errors (a normal JSON-RPC result with isError: true) rather than JSON-RPC Protocol Errors, because only Tool Execution Errors are forwarded into the calling model's context -- a Protocol Error is caught by the MCP client and never seen by the model, so the model cannot self-correct and instead repeats the same invalid call.",
+      "reference_urls": ["https://modelcontextprotocol.io/seps/1303-input-validation-errors-as-tool-execution-errors"]
+    },
+    {
+      "statement": "Per the current tools error-handling guidance, Protocol Errors are reserved for cases like unknown tools/methods and server errors, while API failures, input validation errors, and business-logic errors all belong in Tool Execution Errors.",
+      "reference_urls": ["https://modelcontextprotocol.io/seps/1303-input-validation-errors-as-tool-execution-errors"]
+    },
+    {
+      "statement": "MCP proxy servers that use a static client ID toward a third-party authorization server, combined with dynamic client registration for MCP clients and a consent cookie set by the third party, are vulnerable to a 'confused deputy' attack unless the proxy implements its own per-client consent step before forwarding to the third-party authorization flow.",
+      "reference_urls": ["https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices"]
+    },
+    {
+      "statement": "Token passthrough -- an MCP server accepting a token from a client without validating it was issued specifically for that server, then forwarding it to a downstream API -- is explicitly forbidden by the authorization specification because it breaks downstream security controls, audit trails, and trust boundaries.",
+      "reference_urls": ["https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices"]
+    },
+    {
+      "statement": "MCP servers implementing authorization must not use sessions as the authentication mechanism, must generate secure non-deterministic session IDs, and should bind session IDs to a specific user (e.g. a '<user_id>:<session_id>' key) so a guessed or leaked session ID cannot be used to impersonate a different user.",
+      "reference_urls": ["https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices"]
+    },
+    {
+      "statement": "Local MCP servers run with the same privileges as the MCP client process; clients that support one-click local-server configuration must show the exact command before executing it and should sandbox spawned server processes with restricted filesystem and network access.",
+      "reference_urls": ["https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices"]
+    }
+  ]
+}
