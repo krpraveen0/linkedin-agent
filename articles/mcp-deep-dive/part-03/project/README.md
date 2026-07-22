@@ -28,19 +28,26 @@ assertions hold.
 
 ## Execution status
 
-**Not executed in this authoring session.** This draft was written in a
-sandboxed session where Bash access to `python3` (any form — `--version`
-works, but `-c` and running a `.py` file both require an approval that
-has no interactive user to grant it in this automated run) is blocked.
-The logic was traced by hand instead of run — see the trace in the PR
-description / `article.md`'s Mini-project section for the expected
-output of each scenario.
+**Verified by CI, not yet by a captured local transcript.** Every
+authoring/audit-loop session so far has had Bash access to `python3`
+blocked beyond `--version` (any other form — `-c`, running a `.py` file —
+requires an approval with no interactive user available to grant it,
+confirmed directly and via a fresh subagent). The logic was traced by
+hand at authoring time — see `article.md`'s Mini-project section for the
+scenario-by-scenario trace.
 
-This is disclosed here rather than papered over, per this repo's
-constitution ("never publish unexecuted code", `aep/README.md`). CI
-(`aep-article-check.yml` → `validate_article.py`'s `check_execution`)
-actually runs the command above for real and will fail the PR if it
-doesn't behave as documented — that check is independent of this
-sandbox and is the real verification gate. If it fails, `audit_loop.py`
-will auto-retry a fix up to 3 times; a human can also just run the one
-command above locally to confirm.
+Real evidence comes from CI instead: `aep-article-check.yml` →
+`validate_article.py`'s `check_execution` independently
+`subprocess.run()`s the command above for real, inside an unrestricted
+GitHub Actions runner, on every push to this PR — that check is not
+gated by any sandbox here. Run
+[29933532865](https://github.com/krpraveen0/linkedin-agent/actions/runs/29933532865)
+(job `88969094053`, commit `b34dddac5dce9b2b6a7ce1b4c6127fd623cb8355`)
+reported zero execution failures, which `check_execution`'s contract
+only allows if the real subprocess exited `0` — see
+[`evidence/check_execution-ci-verification.md`](evidence/check_execution-ci-verification.md)
+for the full reasoning. `validate_article.py` doesn't print the
+subprocess's stdout on a passing run, so no raw `[PASS]`/`[FAIL]`
+transcript is captured yet; a human running the one command above
+locally would produce one in seconds and can update this section and
+`build-artifact.json`'s `evidence_path` accordingly.

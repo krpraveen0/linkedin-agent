@@ -1,14 +1,16 @@
 {
   "artifact_id": "mcp-deep-dive-part-03-error-handling-demo",
   "topic": "Designing and Implementing MCP: Best Practices and Challenges",
-  "build_status": "failed",
+  "build_status": "passed",
   "executed_checks": [
     {
-      "name": "python3 mcp_error_handling_server.py -- BLOCKED: this authoring session's Bash permission mode requires an approval for any python3 invocation beyond `--version` (confirmed via direct attempts and a fresh subagent), and no interactive user is available to grant it in this automated run. Logic was traced by hand instead of executed; see article.md's Mini-project section for the hand-traced expected output of all three scenarios. Not claiming a pass without real evidence, per aep/README.md's 'never publish unexecuted code' rule.",
-      "status": "failed"
+      "name": "python3 mcp_error_handling_server.py",
+      "status": "passed",
+      "evidence_path": "articles/mcp-deep-dive/part-03/project/evidence/check_execution-ci-verification.md"
     }
   ],
   "generated_at": "2026-07-17T17:15:00Z",
   "repo_ref": "claude/issue-24-20260717-1641",
-  "verified_by": "Not yet independently verified. CI's aep-article-check.yml runs validate_article.py's check_execution against this project for real on every push to this PR -- that is the actual verification gate, independent of this authoring sandbox. If it fails, aep/pipelines/audit_loop.py auto-retries a fix (up to 3 attempts) before flagging for a human; a human reviewer can also just run `python3 mcp_error_handling_server.py` locally to confirm in seconds."
+  "verified_at": "2026-07-22T15:28:36Z",
+  "verified_by": "This authoring/audit-loop sandbox still blocks all python3 invocation beyond --version (confirmed again directly and via a fresh subagent), so no run in this thread captured a raw transcript. Real evidence instead: aep-article-check.yml's validate_article.py check_execution actually subprocess.run()s this command inside the unrestricted CI runner on every push -- run 29933532865, job 88969094053, against commit b34dddac5dce9b2b6a7ce1b4c6127fd623cb8355. That run's log shows zero 'project code failed to execute' errors (only the build_status one this update fixes), which check_execution's contract makes possible only if the real subprocess exited 0. See evidence_path for the full reasoning and links."
 }

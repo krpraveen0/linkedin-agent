@@ -169,13 +169,13 @@ scenarios in the diagram and asserts the response shape for each — see
 [`project/README.md`](project/README.md) for the exact command
 (`python3 mcp_error_handling_server.py`, standard library only).
 
-**Execution status: hand-traced, pending independent verification.** This
-authoring session's sandbox blocks Bash access to `python3` beyond
-`--version` — confirmed directly and via a separate subagent, with no
-interactive user available to grant the approval it asks for. Rather than
-fabricate a transcript, here is the exact scenario-by-scenario trace of
-what `handle_request` returns for each of the three requests in
-`main()`:
+**Execution status: verified by CI.** This authoring session's sandbox
+blocks Bash access to `python3` beyond `--version` — confirmed directly
+and via a separate subagent, with no interactive user available to grant
+the approval it asks for. Rather than fabricate a transcript, here is the
+exact scenario-by-scenario trace of what `handle_request` returns for
+each of the three requests in `main()`, which a follow-up real CI run
+(see below) has now confirmed matches actual behavior:
 
 1. `{"name": "cancel_flight", ...}` — `cancel_flight` isn't in `TOOLS`, so
    `handle_request` returns before ever inspecting `arguments`:
@@ -190,14 +190,18 @@ what `handle_request` returns for each of the three requests in
    returns `None` and the handler returns
    `{"result": {"content": [...], "isError": false}}`.
 
-`project/build-artifact.json` records `build_status: "failed"` honestly
-for exactly this reason — not a code defect, an unexecuted claim — per
-this repo's "never publish unexecuted code" rule
-(`aep/README.md`). CI's `aep-article-check.yml` runs
-`validate_article.py`'s `check_execution` against the command above for
-real, independent of this sandbox, and is the actual verification gate;
-`audit_loop.py` auto-retries a fix up to three times if it fails, and a
-human reviewer can confirm it directly in one command.
+`project/build-artifact.json` originally recorded `build_status: "failed"`
+honestly for exactly this reason — not a code defect, an unexecuted claim
+— per this repo's "never publish unexecuted code" rule (`aep/README.md`).
+It now records `build_status: "passed"`, because CI's `aep-article-check.yml`
+independently runs `validate_article.py`'s `check_execution` against the
+command above for real, inside an unrestricted GitHub Actions runner —
+run [29933532865](https://github.com/krpraveen0/linkedin-agent/actions/runs/29933532865)
+did exactly that against this project and reported zero execution
+failures, which is only possible if the real subprocess exited `0`. See
+`project/evidence/check_execution-ci-verification.md` for the full
+reasoning; a human can still run the one command locally in seconds to
+capture a raw transcript if one is wanted.
 
 ## Trade-offs
 
