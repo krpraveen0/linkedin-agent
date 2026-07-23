@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="330" viewBox="0 0 640 330" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="640" height="330" fill="#ffffff"/>
+  <text x="320" y="28" font-size="16" font-weight="bold" fill="#333333" text-anchor="middle">Same wiring, one boolean of difference</text>
+
+  <!-- Row A: Worker, no escalate -->
+  <text x="30" y="70" font-size="13" font-weight="bold" fill="#333333">Worker: completes, never escalates (max_iterations=3)</text>
+  <g>
+    <rect x="30" y="82" width="90" height="40" rx="4" fill="#f0f0f0" stroke="#333333"/>
+    <text x="75" y="107" font-size="12" fill="#333333" text-anchor="middle">pass 1</text>
+    <rect x="150" y="82" width="90" height="40" rx="4" fill="#f0f0f0" stroke="#333333"/>
+    <text x="195" y="107" font-size="12" fill="#333333" text-anchor="middle">pass 2</text>
+    <rect x="270" y="82" width="90" height="40" rx="4" fill="#f0f0f0" stroke="#333333"/>
+    <text x="315" y="107" font-size="12" fill="#333333" text-anchor="middle">pass 3</text>
+    <rect x="390" y="82" width="130" height="40" rx="4" fill="#e0e0e0" stroke="#333333"/>
+    <text x="455" y="100" font-size="12" fill="#333333" text-anchor="middle">STOP: hit cap</text>
+    <text x="455" y="115" font-size="11" fill="#333333" text-anchor="middle">3 iterations</text>
+  </g>
+  <line x1="120" y1="102" x2="148" y2="102" stroke="#333333" marker-end="url(#b)"/>
+  <line x1="240" y1="102" x2="268" y2="102" stroke="#333333" marker-end="url(#b)"/>
+  <line x1="360" y1="102" x2="388" y2="102" stroke="#333333" marker-end="url(#b)"/>
+
+  <!-- Row B: Critic, escalate on pass 2 -->
+  <text x="30" y="200" font-size="13" font-weight="bold" fill="#333333">Critic: escalate=True on pass 2 (max_iterations=10)</text>
+  <g>
+    <rect x="30" y="212" width="90" height="40" rx="4" fill="#f0f0f0" stroke="#333333"/>
+    <text x="75" y="230" font-size="12" fill="#333333" text-anchor="middle">pass 1</text>
+    <text x="75" y="245" font-size="11" fill="#333333" text-anchor="middle">revise</text>
+    <rect x="150" y="212" width="110" height="40" rx="4" fill="#e0e0e0" stroke="#333333"/>
+    <text x="205" y="230" font-size="12" fill="#333333" text-anchor="middle">pass 2</text>
+    <text x="205" y="245" font-size="11" fill="#333333" text-anchor="middle">escalate=True</text>
+    <rect x="300" y="212" width="150" height="40" rx="4" fill="#e0e0e0" stroke="#333333"/>
+    <text x="375" y="230" font-size="12" fill="#333333" text-anchor="middle">STOP: escalated</text>
+    <text x="375" y="245" font-size="11" fill="#333333" text-anchor="middle">2 iterations (of 10)</text>
+  </g>
+  <line x1="120" y1="232" x2="148" y2="232" stroke="#333333" marker-end="url(#b)"/>
+  <line x1="260" y1="232" x2="298" y2="232" stroke="#333333" marker-end="url(#b)"/>
+
+  <text x="30" y="300" font-size="12" fill="#333333">Passes 3-10 never run in the second case: the escalate signal, not the agent finishing, ends the loop.</text>
+
+  <defs>
+    <marker id="b" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#333333"/>
+    </marker>
+  </defs>
+</svg>
