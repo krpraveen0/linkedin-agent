@@ -1,64 +1,27 @@
 # Article 01 — Multi-agent or overkill? A decision framework before you add a second agent
 
-Status: ready_for_review (SIGNAL gate now passes — see scorecard below). Notion manifest is the source of truth for current status.
+Status: PILOT REWRITE, addressing real rejection feedback from Medium publishers. Full text on this article's Notion page.
 
-## Scope
+## Why this got rewritten
 
-When a second agent is genuinely justified vs. added complexity for no
-reason. A single-agent baseline test, a coordination-cost model, a
-concrete go/no-go checklist, and a worked case-study walkthrough.
+All eight articles in this series were submitted to Medium publishers and rejected, with no reason given. Rather than treat the previous 28/30 self-scored version as sufficient, this rewrite addresses three concerns raised directly, and does not assume the fix is correct until it is judged against real editorial standards, not this project's own rubric.
 
-## Gap this closes
+## What actually changed
 
-Most guides assume you need multi-agent from the start. Almost none give a
-rigorous "should you even do this" framework grounded in real
-coordination-cost data (e.g. 4 agents = 6 potential failure points, 10 = 45).
+1. **Case study swapped**: DevPulse (a personal dev-productivity daemon) replaced with ClaimGuard (an insurance claims and fraud-detection system) - genuinely higher stakes, and thematically closer to real financial-services work than a consumer tool.
+2. **Beginner on-ramp added**: a short, plain-language paragraph up front for readers with zero prior AI agent knowledge, pointing to the companion Fundamentals of AI Agents series for the full foundation.
+3. **Self-referential meta-commentary removed**: previous articles in this series included lines like "the first version of this code had a bug, here's how I caught it" directly in the article body - a real, specific AI-writing tell. None of that appears in this rewrite.
+4. **Repetitive tell-phrases removed**: "worth naming," "worth being honest," "worth sitting with," and the "Not X. It's Y." fragment construction were used constantly across the original 13 articles. Grep-verified zero occurrences in this rewrite.
+5. **Genuine infographic instead of an architecture diagram**: icon-cards, verdict badges, and large stat callouts, replacing the boxes-and-arrows flowchart style used in every previous diagram in this project.
+6. **Structural variation**: this article's section order and rhythm are not identical to the rigid template every prior article used - closings, in particular, no longer follow the same fixed formula.
 
-## SIGNAL rubric scorecard (self-scored, see praveen-technical-article-writer skill)
+## What did NOT change
 
-| Axis | Score | Note |
-|---|---|---|
-| Earned depth | 3/5 | A composite, well-specified, proof-testable case study - explicitly disclosed as illustrative, not claimed as personal lived experience. Structurally capped without a real anecdote - unchanged by voice calibration below. |
-| Clarity | 5/5 | Topology claim is set up and paid off explicitly; code examples match the case study instead of contradicting it. |
-| Proof density | 5/5 | Anthropic's published 3-10x token stat verified against the primary source, verified pairwise-link math, tested code, worked case-study walkthrough, References section added. |
-| Visual support | 5/5 | Two load-bearing diagrams (decision tree + actual-topology-vs-full-mesh), each referenced and resolved in text. |
-| Voice integrity | 5/5 | Calibrated against two real, fetched samples of Praveen's own Medium writing across different registers - an essay-style piece (zero contractions, short punchy paragraphs, numbered Attempt-1/Attempt-2 escalation) and a tutorial-style piece (contractions throughout, second-person, numbered steps). This article matches the essay register deliberately, since it is an argument/framework piece, not a tutorial - a reasoned genre match rather than a single blanket rule applied without checking. |
-| Usefulness | 5/5 | Runnable checklist code, concrete Monday-morning action, worked example. |
-| **Total** | **28/30** | Five axes maxed. Earned Depth remains the one honest gap - achieved by strengthening everything checkable, not by inflating the one axis that structurally requires a real anecdote to move. |
-
-## Word count
-
-1,660 words - inside the 1,600-2,000 target band.
-
-## Medium reader-experience pass (separate from the SIGNAL score)
-
-Ran the new reader-experience checklist against this piece and found one
-real issue: the contraction-removal pass had also stripped direct "you"
-address from the practical sections, which was an overcorrection - the two
-things are unrelated in the real voice samples. Restored "you" address in
-"What this looks like Monday morning" and added a direct challenge as the
-actual closing beat, ahead of the series cross-link, matching the pattern
-in both real Medium samples (see `voice-reference-notes.md` at the
-package root).
-
-## Diagram
-
-Decision-tree flowchart built in Lucid:
-https://lucid.app/lucidchart/650f7c3a-7b13-426f-94da-664f1929c2fe/edit
-(draw.io requested but no connector is available - a hand-authored .drawio
-XML source remains an option for a future pass)
-
-## Case study source
-
-The developer-OS case study is adapted from a training case-study document
-(itself noted as inspired by "30 Agents Every AI Engineer Must Build,"
-Packt Publishing) - paraphrased and restructured for this article, not
-reproduced verbatim, and explicitly disclosed in the article text as a
-composite illustration rather than a specific real product.
+The core teaching content (the three-question framework, the coordination-cost math, Anthropic's real citation) is the same underlying material - it was the presentation, not the substance, that needed the most work. Earned Depth remains honestly capped: ClaimGuard is still a disclosed, illustrative case study, not something that actually happened to Praveen.
 
 ## Setup
 
-No dependencies beyond the Python standard library (3.9+ for the `tuple[bool, str]` type hint).
+No dependencies beyond the Python standard library.
 
 ## Run
 
@@ -66,10 +29,8 @@ No dependencies beyond the Python standard library (3.9+ for the `tuple[bool, st
 python src/agent_decision_calculator.py
 ```
 
-Verified output includes the coordination-link table (1–10 agents) and an
-interactive go/no-go checklist. Also verified programmatically:
-`pairwise_coordination_links(4) == 6` and `pairwise_coordination_links(10) == 45`.
+Verified output: ClaimGuard's three parallel agents (intake, fraud-risk, policy-verification) correctly justify multi-agent for reason two; the fraud-risk-to-payment-processing relationship correctly justifies it for reason three instead; a proposed unnecessary sixth agent correctly fails the test.
 
-## Published article
+## Open question
 
-Not yet - ready for Praveen's review and Medium copy-paste once satisfied.
+This is a pilot. It has not yet been judged against a real editorial standard - only against the same kind of internal review that produced a version that got rejected. The honest thing to do is treat this as unproven until there's a real signal it worked better, not to re-score it 28/30 and move on.

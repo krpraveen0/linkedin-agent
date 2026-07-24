@@ -1,128 +1,93 @@
 # Multi-agent or overkill? A decision framework before you add a second agent
 
-*Most teams reach for a second agent before they have exhausted what one agent with the right tools can do. Here is a framework for catching that, before the coordination bill comes due — walked through against a real-shaped case study, not a toy example.*
+*A framework for deciding whether a second agent actually earns its cost — walked through against ClaimGuard, an insurance claims and fraud-detection system, where getting the answer wrong has real financial and regulatory consequences.*
 
-## A case worth running the framework against
+New to AI agents? Quick grounding before this gets specific: an AI agent is software built around a model that decides what to do next based on what it observes, and can take real actions — call an API, update a record, move money — not just answer questions. This series' companion, *Fundamentals of AI Agents*, builds that idea up from a testable definition if you want the full foundation first. This article picks up from there and asks the next question: once you have one agent, when does a second one actually make sense?
 
-*(A composite, illustrative case study — not a specific product — built to be concrete enough to actually test a framework against, rather than staying abstract.)*
+## What ClaimGuard does
 
-Picture a developer-productivity system. Call it a daily-work OS for engineers.
+ClaimGuard processes insurance claims. A claim router receives each new submission and dispatches it to three checks that can run at the same time: an intake agent that parses the claim into a structured record, a fraud-risk agent that scores it against historical fraud patterns, and a policy-verification agent that checks it against actual coverage terms. Once those three finish, a payment-processing agent decides whether to pay out — and this is where the design gets interesting, because payment processing moves real money, and it cannot simply trust whatever the fraud-risk agent handed it.
 
-Five pieces: a supervisor, an inbox-triage agent, a file-classifier agent that sorts what lands in `~/Downloads`, a calendar and focus-planning agent, and a workspace provisioner that clones repos, spins up containers, and opens the IDE.
+This isn't a hypothetical stakes-raiser. Insurance carriers operate under real regulatory obligations most software never has to think about: a claims decision has to be explainable to a regulator on request, a payout has to be traceable to a specific authorization, and a false denial or a false payout both carry consequences that a dropped API call in a developer-productivity tool never will. That regulatory weight is exactly why the design questions in this series get sharper against ClaimGuard than they would against a lower-stakes system — not because the underlying framework changes, but because a wrong answer here is a wrong answer that matters.
 
-Five nodes. Mathematically, that is 10 possible pairwise links between them.
+Five agents. Ask the same question a coordination-theory result gives a precise answer to: how many potential links exist between five things? The formula is n(n−1)/2, which for five agents is ten. Ten possible relationships this system *could* have. Most systems never need most of them.
 
-The question worth asking before any of it gets built is not whether five agents sounds reasonable. It is how many of those 10 links this design actually uses, and whether each one earns its place.
+## The question nobody asks before drawing the diagram
 
-## The question nobody asks before the design doc
+Architecture diagrams for multi-agent systems tend to start from "here are the boxes" and work backward to justification, if they justify anything at all. The better order is the reverse: before a box exists, what earns it a place in the diagram?
 
-Multi-agent architecture diagrams are everywhere right now. Boxes, arrows, a supervisor node with three or four workers hanging off it.
+Anthropic's engineering team has shipped enough production multi-agent systems to put a real number on what skipping that question costs: multi-agent implementations typically use three to ten times more tokens than a single agent handling the same task. Every additional agent is another prompt to maintain, another boundary where context can get lost, another thing that fails in a way a single agent never could. None of that is an argument against multi-agent design. It's the reason the "why" has to come before the box.
 
-What is missing from almost all of them is the one paragraph that should come before the diagram: why does this need to be more than one agent?
+## Three reasons, and only three, that hold up
 
-Anthropic's own engineering team, who have published some of the more detailed production multi-agent write-ups available, put a number on what skipping that question costs. Multi-agent implementations typically use 3 to 10 times more tokens than single-agent approaches for the same task.
+Reason one: the task exceeds what a single agent can hold in context. Not "it would be tidier split up" — genuinely too much for one pass. A claims system reviewing a backlog of thousands of historical cases while also parsing today's incoming claim is a real example of this; most individual claim processing is not.
 
-Not a marginal tax. A multiplier.
+Reason two: independent, parallelizable work exists, and the speedup is worth what coordinating it costs. This is ClaimGuard's intake, fraud-risk, and policy-verification agents exactly. None needs the others' output to do its own job. Running all three at once instead of in sequence buys real thoroughness — a claim gets checked from three angles simultaneously rather than waiting on each check in turn.
 
-Every additional agent is another prompt to maintain, another context boundary where information gets lossy, another thing that can silently misbehave. That is not an argument against multi-agent systems. It is an argument for making the "why" explicit before you pay the cost.
+Reason three: failure isolation. One agent's mistake must not be able to reach into another's territory. This is why fraud-risk scoring and payment execution are different agents in the first place, and it's the reason this design gets interesting rather than obvious. Picture what happens if they aren't separated: a fraud-risk agent that misclassifies a batch of claims during a model update, or simply returns a malformed score under load, now sits in the same execution path as the code that actually authorizes a payout. Splitting them into separate agents doesn't prevent the fraud-risk agent from making a mistake — nothing can guarantee that — but it creates a real boundary where payment-processing has to independently confirm what it's about to do, rather than inheriting a scoring error as if it were a settled fact.
 
-## The coordination-cost model
+If a proposed agent doesn't clear one of these three, it isn't solving anything. It's decoration.
 
-Here is the part of the math that is easy to miss when you are staring at a clean architecture diagram: coordination cost does not grow linearly with agent count.
+## Running ClaimGuard's numbers
 
-The number of potential coordination links between agents grows as *n(n−1)/2* — the classic pairwise-interaction count.
-
-- 2 agents → 1 potential link
-- 4 agents → 6 potential links
-- 10 agents → 45 potential links
-
-This is a lower bound on surface area, not a measured failure rate. It is the number of places a handoff, a race, or a context-loss bug can occur. Real failure rates will vary by design. But the shape of the curve does not lie. It is quadratic, not linear. That is why a system that worked cleanly at 3 agents can become genuinely hard to reason about at 8.
-
-One catch worth flagging now, because it matters later in this article: that n(n−1)/2 figure assumes every agent could talk to every other agent. A full mesh. Most real systems are not meshes. They are hub-and-spoke, with a supervisor mediating, which means the actual number of links in use is usually far smaller than the formula's ceiling. The formula tells you the worst case you are capped by, not the coordination cost of any particular design.
-
-[DIAGRAM: multi-agent-or-overkill-decision-tree — see this folder's README for the source link]
-
-## The three legitimate reasons to add an agent
-
-Strip away the hype and there are exactly three defensible reasons to go multi-agent. Each one earns the coordination cost differently.
-
-**1. The task exceeds a single agent's context window.** Not "it would be cleaner to split this up." It genuinely does not fit. A coding agent reasoning across a 500-file codebase while running tests and tracking a long task history will hit a wall no matter how good the model is. Splitting by bounded, focused scope is the fix, and it is a real fix, not an aesthetic one.
-
-**2. Independent, parallelizable subtasks exist, and the speedup is worth the coordination cost.** The operative word is independent. If agent B needs agent A's output before it can start, there is no parallelism. There is a slower, more expensive sequential pipeline wearing a parallel architecture's clothes. Anthropic's framing here is useful: multi-agent parallelism buys thoroughness, not speed. Total token spend goes up even when wall-clock time goes down, because more ground gets covered, not the same work done faster.
-
-**3. Failure isolation is required.** One agent's mistake must not be able to cascade into another's work. This reason is about blast radius, not throughput. Worth naming separately, because "isolation" and "parallelism" get conflated constantly, and they justify very different architectures.
-
-If none of these three apply to what is being built, the extra agent is not solving a problem. It is decoration on an architecture diagram.
-
-## Running the case study through the framework
-
-Back to the five-piece developer-productivity system.
-
-None of its agents needs more context than a single agent could hold. Reason one is out immediately.
-
-That leaves reasons two and three, and they split the system in a revealing way.
-
-**Attempt at the parallel case: inbox triage, file classification, and calendar planning.** Each pulls from a separate system — IMAP or notifications, filesystem watchers, CalDAV — and none needs another's output to do its job. Run them as three parallel workers under a supervisor, and the coordination cost buys real thoroughness. Three problems get solved at once instead of in sequence. Verdict: justified.
-
-**Attempt at the same reasoning for the workspace provisioner.** In practice it depends on the file classifier having already run — it looks for a spec file the classifier already sorted into the right project folder. That is a handoff, not a peer relationship. Modeling it as just another parallel agent hides a real dependency. Modeling it explicitly as sequential-after-classification is the more honest design, and it is the detail a clean diagram tends to smooth over. Verdict: not parallel, and should not be modeled as if it were.
-
-**The supervisor itself exists for the third reason: isolation.** If the calendar agent throws an exception, that should not take down file classification or inbox triage. Splitting them into separate processes under a supervisor, rather than one agent doing all four jobs, is what actually buys that isolation.
-
-[DIAGRAM: devpulse-actual-topology-vs-full-mesh — see this folder's README for the source link]
-
-Here is the payoff on the "10 possible links" figure from the introduction. This design uses 5 of them. Four are the supervisor's spokes to each functional agent — the isolation boundary, and the correct use of an agent split for reason three. The fifth is the classifier-to-provisioner handoff, a deliberate sequential dependency, not a peer link. The other 5 mathematically possible pairs — inbox-to-classifier, inbox-to-calendar, and so on — were never going to exist, because this is a hub-and-spoke design, not a mesh. The n(n−1)/2 formula gave the ceiling. Diagramming the real dependencies is what showed how far under that ceiling this design actually sits.
-
-Four functional agents, justified by two different reasons: parallelism for three of them, isolation for the split itself. Plus one honest dependency that is not parallel at all. That is the kind of nuance the three-question framework is supposed to surface. Not "multi-agent good" or "multi-agent bad," but which specific link in this system earned its place, and which links the formula allowed for but the design correctly never used.
-
-## The go/no-go checklist, made concrete
-
-Run the actual decision through code, not vibes. `agent_decision_calculator.py`, in this folder's `src/`, implements exactly the three-question tree above.
-
-**Attempt 1: the inbox-triage agent from the case study.**
+`agent_decision_calculator.py`, in this folder's `src/`, checks all of this directly rather than asking you to take the argument's word for it.
 
 ```python
-inbox_agent = DecisionInputs(
+parallel_case = DecisionInputs(
     exceeds_single_context_window=False,
     has_independent_parallelizable_subtasks=True,
-    speedup_worth_coordination_cost=True,   # separate mail system, no dependency on the others
+    speedup_worth_coordination_cost=True,
     needs_failure_isolation=False,
 )
-decision, reason = should_use_multi_agent(inbox_agent)
+should_use_multi_agent(parallel_case)
 # -> (True, "parallel workers: subtasks are independent and the speedup earns the cost")
 ```
 
-Verdict: multi-agent, justified.
-
-**Attempt 2: a hypothetical sixth agent someone proposes adding.** A "notification summarizer" that just reformats what the inbox-triage agent already produced.
+That's intake, fraud-risk, and policy-verification. Now the relationship that actually matters:
 
 ```python
-notification_summarizer = DecisionInputs(
+sequential_case = DecisionInputs(
     exceeds_single_context_window=False,
-    has_independent_parallelizable_subtasks=True,   # looks parallel on the whiteboard
-    speedup_worth_coordination_cost=False,          # it is just reformatting, no real independent work
+    has_independent_parallelizable_subtasks=False,
+    speedup_worth_coordination_cost=False,
+    needs_failure_isolation=True,
+)
+should_use_multi_agent(sequential_case)
+# -> (True, "isolated agents: one agent's failure must not cascade into another's work")
+```
+
+Fraud-risk feeding payment-processing clears the bar for a completely different reason than the first three agents did. It isn't about speed. It's about making sure a fraud-scoring bug can never directly authorize a payout — which is a real, describable financial-services failure mode, not an abstraction. Two agents, same yes/no verdict, opposite justification. Collapsing that distinction into one generic "multi-agent good" answer would erase the actual design decision.
+
+<image src="file-upload://3a7c633a-e23a-81ee-b47b-00b237128858"></image>
+
+One more test worth running: a proposed sixth agent, a "claim summarizer" that just reformats what intake already produced.
+
+```python
+unnecessary_case = DecisionInputs(
+    exceeds_single_context_window=False,
+    has_independent_parallelizable_subtasks=True,
+    speedup_worth_coordination_cost=False,
     needs_failure_isolation=False,
 )
-decision, reason = should_use_multi_agent(notification_summarizer)
+should_use_multi_agent(unnecessary_case)
 # -> (False, "stay single-agent - add tools, not agents")
 ```
 
-Verdict: stay single-agent.
+Looks parallelizable on a whiteboard. Isn't, once the actual question — is the speedup worth the coordination cost — gets asked honestly. Most agents that never should have been built pass the first test and fail the second, quietly, because nobody asked it.
 
-Same first answer both times: subtasks look parallelizable. Different verdict, because the second attempt fails the honest follow-up question. Is the speedup actually worth the coordination cost, or does it just look parallel? That is the line most teams skip.
+## Five agents, ten possible links, five real ones
 
-Full runnable code: `github.com/krpraveen0/linkedin-agent/tree/main/article-series-engine/series/multi-agent-systems-design/article-01-multi-agent-or-overkill`
+ClaimGuard uses five of its ten mathematically possible links: the claim router's dispatch to each of the three parallel agents, and the fraud-risk-to-payment-processing relationship. The other five pairs — intake talking directly to policy-verification, fraud-risk talking directly to intake, and so on — were never going to exist, because nothing in this design needs them to. That's not a limitation. Building all ten links because the math allows them would be adding coordination cost for connections nobody asked for.
 
-## What this looks like Monday morning
+The fraud-risk-to-payment-processing link deserves more attention than the other four for a specific reason: it's the one point in the system where a design mistake has financial and regulatory consequences, not just an inconvenient bug. The next four articles in this series stay anchored to exactly this relationship — control and communication design, pattern choice, authorization, and failure prevention — because a system with real financial stakes is where these questions stop being academic.
 
-Before you open a new file for `agent_2.py`, run your own design through the three questions. The same way this article just ran the developer-OS case study through them.
+## What this means for the design in front of you
 
-If you land on "stay single-agent," that does not mean building a smaller version of the multi-agent system you were about to build. It means giving your one agent a better tool, a bigger context window, or a tighter loop. Adding tools is cheap. Adding agents is quadratic.
+Name each relationship in your own system separately before naming the system as a whole. A system that's mostly parallel with one sequential, isolation-driven exception is not the same design as five agents talking freely to each other, even if both diagrams have five boxes. The label you'd put on an architecture diagram is not the design decision. The answers to these three questions, asked per relationship, are.
 
-If you land on multi-agent, be as honest about the dependencies, like the provisioner's handoff above, as you are about the parallelism. A design that pretends a sequential handoff is a parallel worker will cost you exactly where that pretense breaks.
+If your own system has a relationship where a mistake carries real cost — money, a legal obligation, a customer's data — that relationship is the one to interrogate first, before the ones that are merely convenient to diagram. ClaimGuard's fraud-risk-to-payment link earns that scrutiny for a specific reason: everything downstream of it is harder to undo than everything upstream. Your own system almost certainly has an equivalent, even if it isn't moving money.
 
-The next time you sketch a fourth or fifth agent onto a diagram, do not just ask whether the task looks parallelizable. Ask which of the three reasons that specific agent earns, and whether you would still draw that link if you had to justify it out loud.
-
-The next article in this series picks up from here. Once your decision is genuinely multi-agent, the next question is how the agents coordinate — control, state, and communication, the three axes every orchestration pattern reduces to.
+The next article in this series stays with ClaimGuard and asks what happens once a relationship has cleared this bar: who controls sequencing, where does state actually live, and how does information move between the fraud-risk agent and the one downstream of it that has the authority to act on real financial consequences.
 
 ---
 
@@ -143,3 +108,4 @@ The next article in this series picks up from here. Once your decision is genuin
 
 1. When to use multi-agent systems (and when not to), Anthropic
    https://claude.com/blog/building-multi-agent-systems-when-and-how-to-use-them
+2. Fundamentals of AI Agents (companion series) — Article 01: What actually makes something an agent?
