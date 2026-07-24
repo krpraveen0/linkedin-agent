@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="330" viewBox="0 0 720 330" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="720" height="330" fill="#ffffff"/>
+  <text x="20" y="30" font-size="17" font-weight="bold" fill="#333333">When each durability mode flushes a checkpoint</text>
+  <text x="20" y="52" font-size="13" fill="#333333">Graph: node A &#8594; node B &#8594; node C, running left to right. &#9679; = checkpoint written to store.</text>
+
+  <!-- node lane template positions: A 120-240, B 300-420, C 480-600 -->
+  <!-- SYNC row -->
+  <text x="20" y="103" font-size="14" font-weight="bold" fill="#333333">sync</text>
+  <rect x="120" y="80" width="120" height="34" fill="#f0f0f0" stroke="#333333"/>
+  <text x="180" y="102" font-size="13" fill="#333333" text-anchor="middle">A</text>
+  <rect x="300" y="80" width="120" height="34" fill="#f0f0f0" stroke="#333333"/>
+  <text x="360" y="102" font-size="13" fill="#333333" text-anchor="middle">B</text>
+  <rect x="480" y="80" width="120" height="34" fill="#f0f0f0" stroke="#333333"/>
+  <text x="540" y="102" font-size="13" fill="#333333" text-anchor="middle">C</text>
+  <circle cx="270" cy="97" r="7" fill="#333333"/>
+  <circle cx="450" cy="97" r="7" fill="#333333"/>
+  <circle cx="630" cy="97" r="7" fill="#333333"/>
+  <text x="640" y="101" font-size="11" fill="#333333">before next step</text>
+
+  <!-- ASYNC row -->
+  <text x="20" y="163" font-size="14" font-weight="bold" fill="#333333">async</text>
+  <text x="20" y="180" font-size="11" fill="#333333">(default)</text>
+  <rect x="120" y="140" width="120" height="34" fill="#f0f0f0" stroke="#333333"/>
+  <text x="180" y="162" font-size="13" fill="#333333" text-anchor="middle">A</text>
+  <rect x="300" y="140" width="120" height="34" fill="#f0f0f0" stroke="#333333"/>
+  <text x="360" y="162" font-size="13" fill="#333333" text-anchor="middle">B</text>
+  <rect x="480" y="140" width="120" height="34" fill="#f0f0f0" stroke="#333333"/>
+  <text x="540" y="162" font-size="13" fill="#333333" text-anchor="middle">C</text>
+  <circle cx="300" cy="157" r="7" fill="#333333"/>
+  <circle cx="480" cy="157" r="7" fill="#333333"/>
+  <circle cx="620" cy="157" r="7" fill="#333333"/>
+  <text x="640" y="161" font-size="11" fill="#333333">while next runs</text>
+
+  <!-- EXIT row -->
+  <text x="20" y="223" font-size="14" font-weight="bold" fill="#333333">exit</text>
+  <rect x="120" y="200" width="120" height="34" fill="#f0f0f0" stroke="#333333"/>
+  <text x="180" y="222" font-size="13" fill="#333333" text-anchor="middle">A</text>
+  <rect x="300" y="200" width="120" height="34" fill="#f0f0f0" stroke="#333333"/>
+  <text x="360" y="222" font-size="13" fill="#333333" text-anchor="middle">B</text>
+  <rect x="480" y="200" width="120" height="34" fill="#f0f0f0" stroke="#333333"/>
+  <text x="540" y="222" font-size="13" fill="#333333" text-anchor="middle">C</text>
+  <circle cx="630" cy="217" r="7" fill="#333333"/>
+  <text x="640" y="221" font-size="11" fill="#333333">only on exit</text>
+
+  <line x1="120" y1="260" x2="600" y2="260" stroke="#333333" stroke-width="1"/>
+  <text x="120" y="278" font-size="11" fill="#333333">time &#8594;</text>
+  <text x="20" y="308" font-size="12" fill="#333333" font-style="italic">A crash before the next checkpoint loses everything written after the previous one. With `exit`, that</text>
+  <text x="20" y="324" font-size="12" fill="#333333" font-style="italic">means a mid-run crash loses the whole run.</text>
+</svg>
