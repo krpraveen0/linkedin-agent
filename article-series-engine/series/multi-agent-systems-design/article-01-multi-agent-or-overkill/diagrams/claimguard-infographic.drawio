@@ -1,0 +1,64 @@
+<mxfile host="app.diagrams.net" version="24.0.0">
+  <diagram name="ClaimGuard - 5 agents, 10 possible links" id="claimguard-01">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="ClaimGuard: 5 agents, 10 possible links" style="text;html=1;fontSize=22;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="300" y="20" width="500" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="Which ones actually earn their place?" style="text;html=1;fontSize=14;align=center;verticalAlign=middle;fontColor=#6B7280;" vertex="1" parent="1">
+          <mxGeometry x="300" y="50" width="500" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="intake" value="Intake&#10;Parses incoming claims into structured cases" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;fontSize=13;verticalAlign=top;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="60" y="100" width="220" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="intake-badge" value="parallel &#183; justified" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBF7D0;strokeColor=none;fontColor=#166534;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="95" y="205" width="150" height="24" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fraud" value="Fraud risk&#10;Scores claims against fraud patterns" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#B45309;strokeWidth=2;fontSize=13;verticalAlign=top;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="310" y="100" width="220" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="fraud-badge" value="parallel &#183; justified" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBF7D0;strokeColor=none;fontColor=#166534;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="345" y="205" width="150" height="24" as="geometry" />
+        </mxCell>
+
+        <mxCell id="policy" value="Policy verification&#10;Checks coverage terms and exclusions" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=2;fontSize=13;verticalAlign=top;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="560" y="100" width="220" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="policy-badge" value="parallel &#183; justified" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBF7D0;strokeColor=none;fontColor=#166534;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="595" y="205" width="150" height="24" as="geometry" />
+        </mxCell>
+
+        <mxCell id="payment" value="Payment processing&#10;Moves real money" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FECACA;strokeColor=#991B1B;strokeWidth=3;fontSize=13;verticalAlign=top;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="810" y="100" width="220" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="payment-badge" value="sequential &#183; caution" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FECACA;strokeColor=none;fontColor=#7F1D1D;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="845" y="205" width="150" height="24" as="geometry" />
+        </mxCell>
+
+        <mxCell id="risky-link" style="edgeStyle=none;html=1;dashed=1;strokeColor=#7F1D1D;strokeWidth=3;endArrow=none;" edge="1" parent="1" source="policy" target="payment">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="risky-label" value="the risky handoff" style="text;html=1;fontSize=12;fontStyle=1;fontColor=#7F1D1D;align=center;" vertex="1" parent="1">
+          <mxGeometry x="780" y="245" width="140" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="stat1" value="3 to 10x&#10;more tokens for multi-agent vs. single-agent, on equivalent tasks&#10;Anthropic, &quot;When to use multi-agent systems (and when not to)&quot;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=none;fontColor=#FFFFFF;fontSize=13;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="180" y="320" width="700" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="stat2" value="10 possible links&#10;only 5 of them are real in this design - the rest never needed to exist&#10;n(n-1)/2 for 5 agents = 10" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7F1D1D;strokeColor=none;fontColor=#FFFFFF;fontSize=13;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="180" y="450" width="700" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="footer" value="Every verdict above comes from the same runnable framework - not asserted, checked in code." style="text;html=1;fontSize=12;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="180" y="590" width="700" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
