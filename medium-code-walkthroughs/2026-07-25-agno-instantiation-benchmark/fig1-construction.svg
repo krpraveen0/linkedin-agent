@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="330" viewBox="0 0 720 330" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="720" height="330" fill="#ffffff"/>
+  <text x="360" y="30" font-size="17" font-weight="bold" fill="#333333" text-anchor="middle">What each framework does inside its constructor</text>
+  <text x="360" y="52" font-size="13" fill="#333333" text-anchor="middle">Same call ("instantiate an agent"), very different amounts of work</text>
+
+  <!-- Agno -->
+  <rect x="30" y="80" width="200" height="200" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="130" y="106" font-size="15" font-weight="bold" fill="#333333" text-anchor="middle">Agno</text>
+  <rect x="55" y="122" width="150" height="34" rx="4" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <text x="130" y="143" font-size="12" fill="#333333" text-anchor="middle">build lightweight object</text>
+  <text x="130" y="196" font-size="12" fill="#333333" text-anchor="middle">(model client + tools</text>
+  <text x="130" y="213" font-size="12" fill="#333333" text-anchor="middle">wired lazily, at run time)</text>
+  <text x="130" y="262" font-size="14" font-weight="bold" fill="#333333" text-anchor="middle">~9 us</text>
+
+  <!-- LangGraph -->
+  <rect x="260" y="80" width="200" height="200" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="360" y="106" font-size="15" font-weight="bold" fill="#333333" text-anchor="middle">LangGraph</text>
+  <rect x="285" y="122" width="150" height="34" rx="4" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <text x="360" y="143" font-size="12" fill="#333333" text-anchor="middle">compile a StateGraph</text>
+  <rect x="285" y="166" width="150" height="34" rx="4" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <text x="360" y="187" font-size="12" fill="#333333" text-anchor="middle">wire nodes + edges</text>
+  <text x="360" y="262" font-size="14" font-weight="bold" fill="#333333" text-anchor="middle">~2,792 us</text>
+
+  <!-- Pydantic AI -->
+  <rect x="490" y="80" width="200" height="200" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="590" y="106" font-size="15" font-weight="bold" fill="#333333" text-anchor="middle">Pydantic AI</text>
+  <rect x="515" y="122" width="150" height="30" rx="4" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <text x="590" y="141" font-size="12" fill="#333333" text-anchor="middle">build model provider</text>
+  <rect x="515" y="158" width="150" height="30" rx="4" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <text x="590" y="177" font-size="12" fill="#333333" text-anchor="middle">create httpx client</text>
+  <rect x="515" y="194" width="150" height="30" rx="4" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="590" y="213" font-size="12" font-weight="bold" fill="#333333" text-anchor="middle">load CA bundle (SSL)</text>
+  <text x="590" y="262" font-size="14" font-weight="bold" fill="#333333" text-anchor="middle">~49,122 us</text>
+
+  <text x="360" y="308" font-size="12" fill="#333333" text-anchor="middle" font-style="italic">Measured: Agno 2.8.2, LangGraph 1.2.9, Pydantic AI 2.17.0, Python 3.11, 1,000 runs each. No LLM calls.</text>
+</svg>
