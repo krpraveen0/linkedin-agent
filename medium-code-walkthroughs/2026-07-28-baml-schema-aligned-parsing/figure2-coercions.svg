@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="400" viewBox="0 0 760 400" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="760" height="400" fill="#ffffff"/>
+  <text x="380" y="30" text-anchor="middle" font-size="17" font-weight="bold" fill="#333333">What SAP coerces, guided by the Ticket schema</text>
+
+  <!-- Raw input box -->
+  <rect x="24" y="60" width="250" height="300" rx="4" fill="#f0f0f0" stroke="#333333"/>
+  <text x="40" y="84" font-size="13" font-weight="bold" fill="#333333">Raw model output</text>
+  <text x="40" y="112" font-size="12" fill="#333333" font-family="monospace">I looked at the report...</text>
+  <text x="40" y="132" font-size="12" fill="#333333" font-family="monospace">```json</text>
+  <text x="40" y="160" font-size="12" fill="#333333" font-family="monospace">"priority": "high",</text>
+  <text x="40" y="188" font-size="12" fill="#333333" font-family="monospace">"effort_days": "2 days",</text>
+  <text x="40" y="216" font-size="12" fill="#333333" font-family="monospace">"tags": "billing",</text>
+  <text x="40" y="244" font-size="12" fill="#333333" font-family="monospace">```</text>
+  <text x="40" y="292" font-size="12" fill="#333333" font-style="italic">json.loads() -&gt;</text>
+  <text x="40" y="312" font-size="12" fill="#333333" font-style="italic">error at char 0</text>
+
+  <!-- SAP box -->
+  <rect x="322" y="150" width="116" height="120" rx="4" fill="#e0e0e0" stroke="#333333"/>
+  <text x="380" y="200" text-anchor="middle" font-size="14" font-weight="bold" fill="#333333">SAP</text>
+  <text x="380" y="222" text-anchor="middle" font-size="11" fill="#333333">reads toward</text>
+  <text x="380" y="238" text-anchor="middle" font-size="11" fill="#333333">the type</text>
+
+  <line x1="274" y1="210" x2="320" y2="210" stroke="#333333" stroke-width="1.5" marker-end="url(#b)"/>
+
+  <!-- Output box -->
+  <rect x="486" y="60" width="250" height="300" rx="4" fill="#f0f0f0" stroke="#333333"/>
+  <text x="502" y="84" font-size="13" font-weight="bold" fill="#333333">Typed Ticket object</text>
+
+  <text x="502" y="128" font-size="12" fill="#333333" font-family="monospace">priority =</text>
+  <text x="502" y="146" font-size="12" fill="#333333" font-family="monospace">  Priority.High</text>
+  <text x="502" y="164" font-size="11" fill="#333333" font-style="italic">enum, case-matched</text>
+
+  <text x="502" y="204" font-size="12" fill="#333333" font-family="monospace">effort_days = 2</text>
+  <text x="502" y="222" font-size="11" fill="#333333" font-style="italic">int, from "2 days"</text>
+
+  <text x="502" y="262" font-size="12" fill="#333333" font-family="monospace">tags = ['billing']</text>
+  <text x="502" y="280" font-size="11" fill="#333333" font-style="italic">scalar lifted to list</text>
+
+  <text x="502" y="320" font-size="12" fill="#333333" font-family="monospace">summary = "..."</text>
+  <text x="502" y="338" font-size="11" fill="#333333" font-style="italic">prose + fence stripped</text>
+
+  <line x1="438" y1="210" x2="484" y2="210" stroke="#333333" stroke-width="1.5" marker-end="url(#b)"/>
+
+  <defs>
+    <marker id="b" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#333333"/>
+    </marker>
+  </defs>
+</svg>
