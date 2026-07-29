@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="360" viewBox="0 0 720 360" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="720" height="360" fill="#ffffff"/>
+  <text x="360" y="30" font-size="17" font-weight="bold" fill="#333333" text-anchor="middle">Two deployments, every call a 429 (num_retries=0)</text>
+
+  <!-- column headers -->
+  <text x="150" y="66" font-size="13.5" font-weight="bold" fill="#333333" text-anchor="middle">Call 1</text>
+  <text x="360" y="66" font-size="13.5" font-weight="bold" fill="#333333" text-anchor="middle">Call 2</text>
+  <text x="570" y="66" font-size="13.5" font-weight="bold" fill="#333333" text-anchor="middle">Call 3</text>
+
+  <!-- deploy-a row -->
+  <text x="40" y="120" font-size="13" fill="#333333">deploy-a</text>
+  <!-- deploy-b row -->
+  <text x="40" y="185" font-size="13" fill="#333333">deploy-b</text>
+
+  <!-- Call 1: routes to deploy-a, fails, cold -->
+  <rect x="90" y="98" width="120" height="34" rx="5" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="150" y="119" font-size="12" fill="#333333" text-anchor="middle">429 -&gt; now cold</text>
+  <rect x="90" y="163" width="120" height="34" rx="5" fill="#f0f0f0" stroke="#333333" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="150" y="184" font-size="12" fill="#333333" text-anchor="middle">idle</text>
+
+  <!-- Call 2: routes to deploy-b, fails, cold -->
+  <rect x="300" y="98" width="120" height="34" rx="5" fill="#f0f0f0" stroke="#333333" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="360" y="119" font-size="12" fill="#333333" text-anchor="middle">cold</text>
+  <rect x="300" y="163" width="120" height="34" rx="5" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="360" y="184" font-size="12" fill="#333333" text-anchor="middle">429 -&gt; now cold</text>
+
+  <!-- Call 3: both cold -->
+  <rect x="510" y="98" width="120" height="34" rx="5" fill="#f0f0f0" stroke="#333333" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="570" y="119" font-size="12" fill="#333333" text-anchor="middle">cold</text>
+  <rect x="510" y="163" width="120" height="34" rx="5" fill="#f0f0f0" stroke="#333333" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="570" y="184" font-size="12" fill="#333333" text-anchor="middle">cold</text>
+
+  <!-- caller sees -->
+  <line x1="40" y1="225" x2="680" y2="225" stroke="#333333" stroke-width="1"/>
+  <text x="40" y="252" font-size="12.5" font-weight="bold" fill="#333333">Caller receives:</text>
+  <text x="150" y="278" font-size="12" fill="#333333" text-anchor="middle">RateLimitError</text>
+  <text x="150" y="294" font-size="12" fill="#333333" text-anchor="middle">(raw 429)</text>
+  <text x="360" y="278" font-size="12" fill="#333333" text-anchor="middle">RateLimitError</text>
+  <text x="360" y="294" font-size="12" fill="#333333" text-anchor="middle">(raw 429)</text>
+
+  <rect x="500" y="262" width="150" height="60" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="2"/>
+  <text x="575" y="284" font-size="12" font-weight="bold" fill="#333333" text-anchor="middle">RouterRateLimitError</text>
+  <text x="575" y="301" font-size="11.5" fill="#333333" text-anchor="middle">ValueError, cooldown_time=5s,</text>
+  <text x="575" y="316" font-size="11.5" fill="#333333" text-anchor="middle">no Retry-After header</text>
+</svg>
