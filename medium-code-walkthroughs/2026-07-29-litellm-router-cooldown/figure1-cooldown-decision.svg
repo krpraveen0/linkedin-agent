@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="430" viewBox="0 0 720 430" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="720" height="430" fill="#ffffff"/>
+  <text x="360" y="30" font-size="17" font-weight="bold" fill="#333333" text-anchor="middle">LiteLLM Router: is this failure worth a cooldown?</text>
+
+  <!-- Start -->
+  <rect x="270" y="55" width="180" height="42" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="360" y="81" font-size="14" fill="#333333" text-anchor="middle">A request fails</text>
+
+  <!-- Decision 1: connection error? -->
+  <polygon points="360,115 500,157 360,199 220,157" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="360" y="153" font-size="13" fill="#333333" text-anchor="middle">APIConnectionError,</text>
+  <text x="360" y="169" font-size="13" fill="#333333" text-anchor="middle">or a 4xx not in {429,401,408,404}?</text>
+
+  <!-- Yes -> never cool (right) -->
+  <line x1="500" y1="157" x2="600" y2="157" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="548" y="149" font-size="12" fill="#333333" text-anchor="middle">yes</text>
+  <rect x="600" y="136" width="110" height="42" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="655" y="156" font-size="12.5" fill="#333333" text-anchor="middle">Never cool.</text>
+  <text x="655" y="171" font-size="12.5" fill="#333333" text-anchor="middle">Keep serving.</text>
+
+  <!-- No -> down -->
+  <line x1="360" y1="199" x2="360" y2="233" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="378" y="220" font-size="12" fill="#333333" text-anchor="start">no (429/401/408/404/5xx)</text>
+
+  <!-- Decision 2: single deployment? -->
+  <polygon points="360,233 500,275 360,317 220,275" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="360" y="271" font-size="13" fill="#333333" text-anchor="middle">Only one deployment</text>
+  <text x="360" y="287" font-size="13" fill="#333333" text-anchor="middle">in this model group?</text>
+
+  <!-- Yes -> keep serving (right) -->
+  <line x1="500" y1="275" x2="600" y2="275" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="548" y="267" font-size="12" fill="#333333" text-anchor="middle">yes</text>
+  <rect x="600" y="254" width="110" height="42" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="655" y="274" font-size="12.5" fill="#333333" text-anchor="middle">Never cool.</text>
+  <text x="655" y="289" font-size="12.5" fill="#333333" text-anchor="middle">Keep serving.</text>
+
+  <!-- No -> cool down -->
+  <line x1="360" y1="317" x2="360" y2="351" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="372" y="338" font-size="12" fill="#333333" text-anchor="start">no</text>
+  <rect x="245" y="351" width="230" height="46" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="2"/>
+  <text x="360" y="371" font-size="13.5" font-weight="bold" fill="#333333" text-anchor="middle">Cool this deployment down</text>
+  <text x="360" y="388" font-size="13.5" fill="#333333" text-anchor="middle">for 5s (default) on the first 429</text>
+
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L7,3 L0,6 z" fill="#333333"/>
+    </marker>
+  </defs>
+</svg>
