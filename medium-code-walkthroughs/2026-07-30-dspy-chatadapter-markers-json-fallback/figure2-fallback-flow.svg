@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="380" viewBox="0 0 760 380" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="760" height="380" fill="#ffffff"/>
+  <defs>
+    <marker id="arr2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#333333"/>
+    </marker>
+  </defs>
+
+  <!-- Call 1: ChatAdapter -->
+  <rect x="30" y="40" width="180" height="70" rx="6" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="120" y="68" font-size="13" font-weight="bold" text-anchor="middle" fill="#333333">Call 1: ChatAdapter</text>
+  <text x="120" y="90" font-size="11" text-anchor="middle" fill="#333333">sends [[ ## marker ## ]]</text>
+  <text x="120" y="104" font-size="11" text-anchor="middle" fill="#333333">prompt</text>
+
+  <!-- LM 1 -->
+  <rect x="290" y="40" width="150" height="70" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="365" y="70" font-size="13" font-weight="bold" text-anchor="middle" fill="#333333">LLM</text>
+  <text x="365" y="92" font-size="11" text-anchor="middle" fill="#333333">replies (maybe no</text>
+  <text x="365" y="106" font-size="11" text-anchor="middle" fill="#333333">markers)</text>
+
+  <!-- parse decision -->
+  <polygon points="565,75 620,45 675,75 620,105" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="620" y="72" font-size="12" font-weight="bold" text-anchor="middle" fill="#333333">markers</text>
+  <text x="620" y="88" font-size="12" font-weight="bold" text-anchor="middle" fill="#333333">parse?</text>
+
+  <line x1="210" y1="75" x2="288" y2="75" stroke="#333333" stroke-width="1.5" marker-end="url(#arr2)"/>
+  <line x1="440" y1="75" x2="563" y2="75" stroke="#333333" stroke-width="1.5" marker-end="url(#arr2)"/>
+
+  <!-- YES path -> typed result -->
+  <text x="690" y="70" font-size="12" fill="#333333">yes</text>
+  <rect x="600" y="150" width="140" height="55" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="670" y="175" font-size="12" font-weight="bold" text-anchor="middle" fill="#333333">Typed result</text>
+  <text x="670" y="193" font-size="11" text-anchor="middle" fill="#333333">1 LM call</text>
+  <line x1="620" y1="105" x2="655" y2="148" stroke="#333333" stroke-width="1.5" marker-end="url(#arr2)"/>
+
+  <!-- NO path -> JSONAdapter retry -->
+  <text x="530" y="140" font-size="12" fill="#333333">no (any error,</text>
+  <text x="530" y="155" font-size="12" fill="#333333">unless context</text>
+  <text x="530" y="170" font-size="12" fill="#333333">window exceeded)</text>
+  <line x1="600" y1="90" x2="230" y2="185" stroke="#333333" stroke-width="1.5" marker-end="url(#arr2)"/>
+
+  <!-- Call 2 JSONAdapter -->
+  <rect x="30" y="205" width="180" height="70" rx="6" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="120" y="233" font-size="13" font-weight="bold" text-anchor="middle" fill="#333333">Call 2: JSONAdapter</text>
+  <text x="120" y="255" font-size="11" text-anchor="middle" fill="#333333">re-sends, asks for a</text>
+  <text x="120" y="269" font-size="11" text-anchor="middle" fill="#333333">JSON object</text>
+
+  <!-- LM 2 -->
+  <rect x="290" y="205" width="150" height="70" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="365" y="235" font-size="13" font-weight="bold" text-anchor="middle" fill="#333333">LLM</text>
+  <text x="365" y="257" font-size="11" text-anchor="middle" fill="#333333">replies with JSON</text>
+
+  <line x1="210" y1="240" x2="288" y2="240" stroke="#333333" stroke-width="1.5" marker-end="url(#arr2)"/>
+
+  <!-- typed result 2 -->
+  <rect x="290" y="305" width="150" height="55" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="365" y="330" font-size="12" font-weight="bold" text-anchor="middle" fill="#333333">Typed result</text>
+  <text x="365" y="348" font-size="11" text-anchor="middle" fill="#333333">2 LM calls (2x cost)</text>
+  <line x1="365" y1="275" x2="365" y2="303" stroke="#333333" stroke-width="1.5" marker-end="url(#arr2)"/>
+
+  <!-- controlled by note -->
+  <text x="30" y="300" font-size="11" font-style="italic" fill="#333333">Retry controlled by use_json_adapter_fallback (default True)</text>
+</svg>
