@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="430" viewBox="0 0 720 430" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="720" height="430" fill="#ffffff"/>
+  <text x="360" y="30" font-size="17" font-weight="bold" fill="#333333" text-anchor="middle">How mcp 2.0 turns a tool's return annotation into an outputSchema</text>
+
+  <!-- source node -->
+  <rect x="270" y="55" width="180" height="46" rx="4" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="360" y="76" font-size="13" fill="#333333" text-anchor="middle">def tool(...) -&gt; T:</text>
+  <text x="360" y="93" font-size="12" fill="#333333" text-anchor="middle">return annotation = T</text>
+
+  <!-- connectors -->
+  <line x1="360" y1="101" x2="360" y2="120" stroke="#333333" stroke-width="1.5"/>
+  <line x1="120" y1="120" x2="600" y2="120" stroke="#333333" stroke-width="1.5"/>
+  <line x1="120" y1="120" x2="120" y2="150" stroke="#333333" stroke-width="1.5"/>
+  <line x1="300" y1="120" x2="300" y2="150" stroke="#333333" stroke-width="1.5"/>
+  <line x1="480" y1="120" x2="480" y2="150" stroke="#333333" stroke-width="1.5"/>
+  <line x1="600" y1="120" x2="600" y2="150" stroke="#333333" stroke-width="1.5"/>
+
+  <!-- bucket 1: wrapped -->
+  <rect x="30" y="150" width="180" height="70" rx="4" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="120" y="172" font-size="12.5" font-weight="bold" fill="#333333" text-anchor="middle">int, str, float, bool,</text>
+  <text x="120" y="189" font-size="12.5" font-weight="bold" fill="#333333" text-anchor="middle">bytes, None, list, tuple,</text>
+  <text x="120" y="206" font-size="12.5" font-weight="bold" fill="#333333" text-anchor="middle">Union, non-str-key dict</text>
+
+  <!-- bucket 2: dict[str,X] -->
+  <rect x="222" y="150" width="156" height="70" rx="4" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="300" y="181" font-size="12.5" font-weight="bold" fill="#333333" text-anchor="middle">dict[str, X]</text>
+  <text x="300" y="199" font-size="12.5" fill="#333333" text-anchor="middle">(string keys)</text>
+
+  <!-- bucket 3: object -->
+  <rect x="390" y="150" width="180" height="70" rx="4" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="480" y="176" font-size="12.5" font-weight="bold" fill="#333333" text-anchor="middle">BaseModel, TypedDict,</text>
+  <text x="480" y="193" font-size="12.5" font-weight="bold" fill="#333333" text-anchor="middle">dataclass, hinted class</text>
+
+  <!-- bucket 4: none -->
+  <rect x="582" y="150" width="108" height="70" rx="4" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="636" y="181" font-size="12.5" font-weight="bold" fill="#333333" text-anchor="middle">(no return</text>
+  <text x="636" y="199" font-size="12.5" font-weight="bold" fill="#333333" text-anchor="middle">annotation)</text>
+
+  <!-- down arrows -->
+  <line x1="120" y1="220" x2="120" y2="258" stroke="#333333" stroke-width="1.5" marker-end="url(#a)"/>
+  <line x1="300" y1="220" x2="300" y2="258" stroke="#333333" stroke-width="1.5" marker-end="url(#a)"/>
+  <line x1="480" y1="220" x2="480" y2="258" stroke="#333333" stroke-width="1.5" marker-end="url(#a)"/>
+  <line x1="636" y1="220" x2="636" y2="258" stroke="#333333" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <!-- outcome 1 -->
+  <rect x="30" y="260" width="180" height="86" rx="4" fill="#ffffff" stroke="#333333" stroke-width="1.5"/>
+  <text x="120" y="282" font-size="12" font-weight="bold" fill="#333333" text-anchor="middle">WRAPPED</text>
+  <text x="120" y="303" font-size="12" fill="#333333" text-anchor="middle">object with one field:</text>
+  <text x="120" y="322" font-size="12.5" fill="#333333" text-anchor="middle" font-family="monospace">{ "result": T }</text>
+  <text x="120" y="339" font-size="11.5" fill="#333333" text-anchor="middle">title: toolOutput</text>
+
+  <!-- outcome 2 -->
+  <rect x="222" y="260" width="156" height="86" rx="4" fill="#ffffff" stroke="#333333" stroke-width="1.5"/>
+  <text x="300" y="282" font-size="12" font-weight="bold" fill="#333333" text-anchor="middle">OPEN MAP</text>
+  <text x="300" y="305" font-size="12" fill="#333333" text-anchor="middle">additionalProperties</text>
+  <text x="300" y="323" font-size="12" fill="#333333" text-anchor="middle">typed as X</text>
+  <text x="300" y="340" font-size="11.5" fill="#333333" text-anchor="middle">(not wrapped)</text>
+
+  <!-- outcome 3 -->
+  <rect x="390" y="260" width="180" height="86" rx="4" fill="#ffffff" stroke="#333333" stroke-width="1.5"/>
+  <text x="480" y="282" font-size="12" font-weight="bold" fill="#333333" text-anchor="middle">OBJECT</text>
+  <text x="480" y="305" font-size="12" fill="#333333" text-anchor="middle">your field names,</text>
+  <text x="480" y="323" font-size="12" fill="#333333" text-anchor="middle">used directly</text>
+  <text x="480" y="340" font-size="11.5" fill="#333333" text-anchor="middle">(not wrapped)</text>
+
+  <!-- outcome 4 -->
+  <rect x="582" y="260" width="108" height="86" rx="4" fill="#ffffff" stroke="#333333" stroke-width="1.5"/>
+  <text x="636" y="290" font-size="12" font-weight="bold" fill="#333333" text-anchor="middle">NO SCHEMA</text>
+  <text x="636" y="312" font-size="12" fill="#333333" text-anchor="middle">text-only,</text>
+  <text x="636" y="330" font-size="12" fill="#333333" text-anchor="middle">unstructured</text>
+
+  <text x="360" y="392" font-size="12" fill="#333333" text-anchor="middle">All structured results also carry a text content block for backwards compatibility (spec 2025-06-18).</text>
+  <text x="360" y="412" font-size="12" fill="#333333" text-anchor="middle">The server validates the return value against this schema before the client sees it.</text>
+
+  <defs>
+    <marker id="a" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#333333"/>
+    </marker>
+  </defs>
+</svg>
