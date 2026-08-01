@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="360" viewBox="0 0 720 360" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="720" height="360" fill="#ffffff"/>
+  <text x="360" y="30" font-size="17" font-weight="bold" text-anchor="middle" fill="#333333">virtual_mode=True: model paths are anchored, traversal is rejected</text>
+
+  <!-- model path input -->
+  <rect x="40" y="70" width="220" height="50" rx="4" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="150" y="90" font-size="12" text-anchor="middle" fill="#333333">model writes to</text>
+  <text x="150" y="108" font-size="13" font-weight="bold" text-anchor="middle" fill="#333333">"/etc/passwd"</text>
+
+  <rect x="40" y="230" width="220" height="50" rx="4" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="150" y="250" font-size="12" text-anchor="middle" fill="#333333">model writes to</text>
+  <text x="150" y="268" font-size="13" font-weight="bold" text-anchor="middle" fill="#333333">"/../escape.txt"</text>
+
+  <!-- resolver -->
+  <rect x="300" y="140" width="130" height="70" rx="4" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="365" y="170" font-size="13" font-weight="bold" text-anchor="middle" fill="#333333">virtual_mode</text>
+  <text x="365" y="190" font-size="12" text-anchor="middle" fill="#333333">resolver</text>
+
+  <line x1="260" y1="95" x2="300" y2="155" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow2)"/>
+  <line x1="260" y1="255" x2="300" y2="195" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow2)"/>
+
+  <!-- outcomes -->
+  <rect x="480" y="70" width="220" height="70" rx="4" fill="#ffffff" stroke="#333333" stroke-width="1.5"/>
+  <text x="590" y="95" font-size="12" text-anchor="middle" fill="#333333">anchored under root_dir</text>
+  <text x="590" y="114" font-size="12" font-weight="bold" text-anchor="middle" fill="#333333">&lt;root_dir&gt;/etc/passwd</text>
+  <text x="590" y="131" font-size="12" text-anchor="middle" fill="#333333">real /etc/passwd untouched</text>
+
+  <rect x="480" y="210" width="220" height="70" rx="4" fill="#ffffff" stroke="#333333" stroke-width="1.5"/>
+  <text x="590" y="235" font-size="12" text-anchor="middle" fill="#333333">".." detected</text>
+  <text x="590" y="254" font-size="12" font-weight="bold" text-anchor="middle" fill="#333333">ValueError</text>
+  <text x="590" y="271" font-size="12" text-anchor="middle" fill="#333333">"Path traversal not allowed"</text>
+
+  <line x1="430" y1="160" x2="480" y2="110" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow2)"/>
+  <line x1="430" y1="190" x2="480" y2="240" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow2)"/>
+
+  <text x="360" y="325" font-size="12" font-style="italic" text-anchor="middle" fill="#333333">Default since deepagents 0.7.0 (29 Jul 2026). Path containment, not a security sandbox.</text>
+
+  <defs>
+    <marker id="arrow2" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#333333"/>
+    </marker>
+  </defs>
+</svg>
