@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="330" viewBox="0 0 720 330" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="720" height="330" fill="#ffffff"/>
+  <text x="360" y="28" font-size="16" fill="#333333" text-anchor="middle" font-weight="bold">Same attack, two versions: session.json swapped for a symlink</text>
+
+  <!-- shared attacker setup -->
+  <rect x="270" y="50" width="180" height="52" fill="#f0f0f0" stroke="#333333" stroke-width="1.5" rx="4"/>
+  <text x="360" y="72" font-size="12" fill="#333333" text-anchor="middle">session.json  --&gt;  (symlink)</text>
+  <text x="360" y="90" font-size="12" fill="#333333" text-anchor="middle">attacker.json {"session_id":"INJECTED"}</text>
+
+  <line x1="360" y1="102" x2="360" y2="125" stroke="#333333" stroke-width="1.5"/>
+  <polygon points="355,125 360,135 365,125" fill="#333333"/>
+  <text x="360" y="122" font-size="11" fill="#333333" text-anchor="middle">mgr.read_session("chat-001")</text>
+
+  <!-- left: 1.47.0 -->
+  <rect x="60" y="150" width="270" height="140" fill="#f0f0f0" stroke="#333333" stroke-width="1.5" rx="4"/>
+  <text x="195" y="174" font-size="13" fill="#333333" text-anchor="middle" font-weight="bold">strands 1.47.0 (pre-fix)</text>
+  <text x="195" y="200" font-size="12" fill="#333333" text-anchor="middle">no islink check</text>
+  <text x="195" y="222" font-size="12" fill="#333333" text-anchor="middle">open() follows the symlink</text>
+  <rect x="85" y="238" width="220" height="38" fill="#ffffff" stroke="#333333" stroke-width="1.5" rx="4"/>
+  <text x="195" y="262" font-size="12" fill="#333333" text-anchor="middle" font-weight="bold">session_id = "INJECTED"</text>
+
+  <!-- right: 1.50.2 -->
+  <rect x="390" y="150" width="270" height="140" fill="#e0e0e0" stroke="#333333" stroke-width="1.5" rx="4"/>
+  <text x="525" y="174" font-size="13" fill="#333333" text-anchor="middle" font-weight="bold">strands 1.50.2 (current)</text>
+  <text x="525" y="200" font-size="12" fill="#333333" text-anchor="middle">os.path.islink(path) is True</text>
+  <text x="525" y="222" font-size="12" fill="#333333" text-anchor="middle">raises before open()</text>
+  <rect x="415" y="238" width="220" height="38" fill="#ffffff" stroke="#333333" stroke-width="1.5" rx="4"/>
+  <text x="525" y="262" font-size="12" fill="#333333" text-anchor="middle" font-weight="bold">"Refusing to read symlink"</text>
+
+  <!-- branch arrows -->
+  <line x1="360" y1="135" x2="195" y2="148" stroke="#333333" stroke-width="1.5"/>
+  <polygon points="192,141 187,150 200,149" fill="#333333"/>
+  <line x1="360" y1="135" x2="525" y2="148" stroke="#333333" stroke-width="1.5"/>
+  <polygon points="520,149 533,150 528,141" fill="#333333"/>
+
+  <text x="360" y="315" font-size="11" fill="#333333" text-anchor="middle">Left silently trusts attacker-chosen state; right refuses it.</text>
+</svg>
