@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="430" viewBox="0 0 720 430" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="720" height="430" fill="#ffffff"/>
+  <text x="360" y="30" font-size="17" font-weight="bold" fill="#333333" text-anchor="middle">interrupt() before a side effect: the node body runs on every pass</text>
+
+  <!-- Pass 1 column -->
+  <rect x="40" y="60" width="290" height="300" fill="#f7f7f7" stroke="#333333" stroke-width="1.5"/>
+  <text x="185" y="85" font-size="14" font-weight="bold" fill="#333333" text-anchor="middle">Pass 1: invoke({"amount": 42})</text>
+
+  <rect x="70" y="105" width="230" height="46" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="185" y="127" font-size="13" fill="#333333" text-anchor="middle">charge_card($42)</text>
+  <text x="185" y="143" font-size="11" fill="#333333" text-anchor="middle">charges -> [42]</text>
+
+  <line x1="185" y1="151" x2="185" y2="176" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="70" y="178" width="230" height="46" fill="#f0f0f0" stroke="#333333" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="185" y="200" font-size="13" fill="#333333" text-anchor="middle">interrupt("Approve?")</text>
+  <text x="185" y="216" font-size="11" fill="#333333" text-anchor="middle">raises GraphInterrupt — halts</text>
+
+  <text x="185" y="255" font-size="12" fill="#333333" text-anchor="middle" font-style="italic">state checkpointed,</text>
+  <text x="185" y="271" font-size="12" fill="#333333" text-anchor="middle" font-style="italic">code below never runs</text>
+
+  <rect x="70" y="290" width="230" height="40" fill="#ffffff" stroke="#333333" stroke-width="1" stroke-dasharray="3 3"/>
+  <text x="185" y="315" font-size="12" fill="#333333" text-anchor="middle">return {"approved": ...}  (skipped)</text>
+
+  <!-- Resume column -->
+  <rect x="390" y="60" width="290" height="300" fill="#f7f7f7" stroke="#333333" stroke-width="1.5"/>
+  <text x="535" y="85" font-size="14" font-weight="bold" fill="#333333" text-anchor="middle">Pass 2: invoke(Command(resume="yes"))</text>
+
+  <rect x="420" y="105" width="230" height="46" fill="#e0e0e0" stroke="#333333" stroke-width="2.5"/>
+  <text x="535" y="127" font-size="13" fill="#333333" text-anchor="middle" font-weight="bold">charge_card($42)  AGAIN</text>
+  <text x="535" y="143" font-size="11" fill="#333333" text-anchor="middle">charges -> [42, 42]</text>
+
+  <line x1="535" y1="151" x2="535" y2="176" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="420" y="178" width="230" height="46" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="535" y="200" font-size="13" fill="#333333" text-anchor="middle">interrupt(...) returns "yes"</text>
+  <text x="535" y="216" font-size="11" fill="#333333" text-anchor="middle">resume value injected here</text>
+
+  <line x1="535" y1="224" x2="535" y2="286" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="420" y="288" width="230" height="42" fill="#ffffff" stroke="#333333" stroke-width="1.5"/>
+  <text x="535" y="313" font-size="12" fill="#333333" text-anchor="middle">return {"approved": "yes"}</text>
+
+  <!-- replay arrow between columns -->
+  <path d="M 330 200 C 355 200, 365 128, 388 128" fill="none" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="360" y="175" font-size="11" fill="#333333" text-anchor="middle">replays</text>
+  <text x="360" y="188" font-size="11" fill="#333333" text-anchor="middle">from top</text>
+
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#333333"/>
+    </marker>
+  </defs>
+</svg>
