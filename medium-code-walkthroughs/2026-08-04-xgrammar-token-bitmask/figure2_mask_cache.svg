@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="300" viewBox="0 0 720 300" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="720" height="300" fill="#ffffff"/>
+  <text x="360" y="30" font-size="16" font-weight="bold" fill="#333333" text-anchor="middle">Why the per-token mask is cheap: most work is precomputed</text>
+
+  <!-- Vocabulary bar -->
+  <text x="60" y="92" font-size="13" fill="#333333" text-anchor="start">Vocabulary (~128,000 tokens)</text>
+  <!-- context-independent portion (large) -->
+  <rect x="60" y="100" width="560" height="54" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="340" y="124" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">context-independent  ( &gt; 99% )</text>
+  <text x="340" y="142" font-size="12" fill="#333333" text-anchor="middle">legality fixed for this grammar</text>
+  <!-- context-dependent portion (small) -->
+  <rect x="620" y="100" width="40" height="54" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="640" y="176" font-size="12" fill="#333333" text-anchor="middle">&#8592; &lt;1%</text>
+
+  <!-- Compile-time label -->
+  <line x1="340" y1="154" x2="340" y2="210" stroke="#333333" stroke-width="1.5" marker-end="url(#a2)"/>
+  <defs>
+    <marker id="a2" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#333333"/>
+    </marker>
+  </defs>
+  <rect x="150" y="212" width="380" height="46" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="340" y="232" font-size="13" fill="#333333" text-anchor="middle">Precomputed ONCE at grammar compile</text>
+  <text x="340" y="250" font-size="12" fill="#333333" text-anchor="middle">(adaptive token mask cache)</text>
+
+  <!-- Runtime label for the small slice -->
+  <line x1="640" y1="154" x2="640" y2="210" stroke="#333333" stroke-width="1.5" marker-end="url(#a2)"/>
+  <rect x="560" y="212" width="150" height="46" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="635" y="232" font-size="12" fill="#333333" text-anchor="middle">Evaluated per</text>
+  <text x="635" y="248" font-size="12" fill="#333333" text-anchor="middle">token at runtime</text>
+
+  <text x="360" y="286" font-size="12" fill="#333333" text-anchor="middle" font-style="italic">Only the thin context-dependent slice is touched during generation.</text>
+</svg>

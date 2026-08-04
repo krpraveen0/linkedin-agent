@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="330" viewBox="0 0 720 330" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="720" height="330" fill="#ffffff"/>
+  <text x="360" y="28" font-size="16" font-weight="bold" fill="#333333" text-anchor="middle">One decoding step with a grammar bitmask</text>
+
+  <!-- LLM -->
+  <rect x="24" y="70" width="120" height="60" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="84" y="96" font-size="13" fill="#333333" text-anchor="middle">LLM forward</text>
+  <text x="84" y="114" font-size="13" fill="#333333" text-anchor="middle">pass</text>
+
+  <!-- logits -->
+  <rect x="184" y="70" width="120" height="60" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="244" y="96" font-size="13" fill="#333333" text-anchor="middle">logits</text>
+  <text x="244" y="114" font-size="12" fill="#333333" text-anchor="middle">(one per token)</text>
+
+  <!-- bitmask apply -->
+  <rect x="344" y="66" width="150" height="68" rx="6" fill="#e0e0e0" stroke="#333333" stroke-width="2"/>
+  <text x="419" y="90" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">apply bitmask</text>
+  <text x="419" y="108" font-size="12" fill="#333333" text-anchor="middle">illegal token</text>
+  <text x="419" y="124" font-size="12" fill="#333333" text-anchor="middle">logits &#8594; &#8722;&#8734;</text>
+
+  <!-- sample -->
+  <rect x="534" y="70" width="120" height="60" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="594" y="96" font-size="13" fill="#333333" text-anchor="middle">sample</text>
+  <text x="594" y="114" font-size="12" fill="#333333" text-anchor="middle">next token</text>
+
+  <!-- arrows row 1 -->
+  <defs>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#333333"/>
+    </marker>
+  </defs>
+  <line x1="144" y1="100" x2="180" y2="100" stroke="#333333" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="304" y1="100" x2="340" y2="100" stroke="#333333" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="494" y1="100" x2="530" y2="100" stroke="#333333" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- matcher box feeding the mask -->
+  <rect x="344" y="200" width="150" height="66" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="419" y="224" font-size="13" fill="#333333" text-anchor="middle">GrammarMatcher</text>
+  <text x="419" y="242" font-size="12" fill="#333333" text-anchor="middle">fill_next_token</text>
+  <text x="419" y="257" font-size="12" fill="#333333" text-anchor="middle">_bitmask()</text>
+
+  <line x1="419" y1="200" x2="419" y2="138" stroke="#333333" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="500" y="172" font-size="12" fill="#333333" text-anchor="start">supplies the mask</text>
+
+  <!-- accept_token feedback -->
+  <line x1="594" y1="130" x2="594" y2="233" stroke="#333333" stroke-width="1.5"/>
+  <line x1="594" y1="233" x2="498" y2="233" stroke="#333333" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="600" y="185" font-size="12" fill="#333333" text-anchor="start">accept_token()</text>
+  <text x="600" y="201" font-size="12" fill="#333333" text-anchor="start">advances state</text>
+
+  <text x="360" y="305" font-size="12" fill="#333333" text-anchor="middle" font-style="italic">The matcher and the sampler loop once per generated token.</text>
+</svg>
