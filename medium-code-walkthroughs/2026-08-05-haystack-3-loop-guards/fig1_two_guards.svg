@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="440" viewBox="0 0 760 440" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="760" height="440" fill="#ffffff"/>
+  <text x="380" y="30" font-size="17" font-weight="bold" fill="#333333" text-anchor="middle">Two ways to loop in Haystack 3.0, two guards, opposite failure</text>
+  <text x="380" y="52" font-size="12" fill="#333333" text-anchor="middle" font-style="italic">both limits default to 100</text>
+
+  <!-- Left: Pipeline cycle -->
+  <rect x="30" y="70" width="330" height="330" fill="#f7f7f7" stroke="#333333" stroke-width="1.5"/>
+  <text x="195" y="94" font-size="14" font-weight="bold" fill="#333333" text-anchor="middle">Pipeline cycle</text>
+
+  <rect x="70" y="112" width="110" height="40" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="125" y="137" font-size="12" fill="#333333" text-anchor="middle">BranchJoiner</text>
+  <rect x="210" y="112" width="110" height="40" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="265" y="137" font-size="12" fill="#333333" text-anchor="middle">Worker</text>
+  <line x1="180" y1="132" x2="206" y2="132" stroke="#333333" stroke-width="1.5" marker-end="url(#a)"/>
+  <path d="M 265 152 C 265 178, 125 178, 125 154" fill="none" stroke="#333333" stroke-width="1.5" marker-end="url(#a)"/>
+  <text x="195" y="197" font-size="11" fill="#333333" text-anchor="middle">output fed back in, no exit route</text>
+
+  <rect x="70" y="212" width="250" height="46" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="195" y="232" font-size="12" fill="#333333" text-anchor="middle">guard: visits &gt;= max_runs_per_component</text>
+  <text x="195" y="249" font-size="11" fill="#333333" text-anchor="middle">checked before each run</text>
+  <line x1="195" y1="258" x2="195" y2="288" stroke="#333333" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <rect x="70" y="290" width="250" height="72" fill="#ffffff" stroke="#333333" stroke-width="2.5"/>
+  <text x="195" y="315" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">raise PipelineMaxComponentRuns</text>
+  <text x="195" y="336" font-size="12" fill="#333333" text-anchor="middle">the whole run dies</text>
+  <text x="195" y="352" font-size="11" fill="#333333" text-anchor="middle" font-style="italic">impossible to miss</text>
+
+  <!-- Right: Agent loop -->
+  <rect x="400" y="70" width="330" height="330" fill="#f7f7f7" stroke="#333333" stroke-width="1.5"/>
+  <text x="565" y="94" font-size="14" font-weight="bold" fill="#333333" text-anchor="middle">Agent component</text>
+
+  <rect x="440" y="112" width="110" height="40" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="495" y="137" font-size="12" fill="#333333" text-anchor="middle">LLM call</text>
+  <rect x="580" y="112" width="110" height="40" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="635" y="137" font-size="12" fill="#333333" text-anchor="middle">run tools</text>
+  <line x1="550" y1="132" x2="576" y2="132" stroke="#333333" stroke-width="1.5" marker-end="url(#a)"/>
+  <path d="M 635 152 C 635 178, 495 178, 495 154" fill="none" stroke="#333333" stroke-width="1.5" marker-end="url(#a)"/>
+  <text x="565" y="197" font-size="11" fill="#333333" text-anchor="middle">exit condition never met, loop never ends</text>
+
+  <rect x="440" y="212" width="250" height="46" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="565" y="232" font-size="12" fill="#333333" text-anchor="middle">guard: counter &gt;= max_agent_steps</text>
+  <text x="565" y="249" font-size="11" fill="#333333" text-anchor="middle">checked by the while loop</text>
+  <line x1="565" y1="258" x2="565" y2="288" stroke="#333333" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <rect x="440" y="290" width="250" height="72" fill="#ffffff" stroke="#333333" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="565" y="315" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">log a WARNING, return partial</text>
+  <text x="565" y="336" font-size="12" fill="#333333" text-anchor="middle">step_count == max_agent_steps</text>
+  <text x="565" y="352" font-size="11" fill="#333333" text-anchor="middle" font-style="italic">looks like a normal result</text>
+
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#333333"/>
+    </marker>
+  </defs>
+</svg>
