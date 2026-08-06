@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="360" viewBox="0 0 700 360" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="700" height="360" fill="#ffffff"/>
+  <text x="350" y="30" font-size="17" font-weight="bold" fill="#333333" text-anchor="middle">Where the durability lives: body in memory, steps on disk</text>
+
+  <!-- Workflow box -->
+  <rect x="40" y="60" width="300" height="260" fill="#f7f7f7" stroke="#333333" stroke-width="1.3"/>
+  <text x="190" y="84" font-size="14" font-weight="bold" fill="#333333" text-anchor="middle">@DBOS.workflow  (replayed)</text>
+  <text x="190" y="102" font-size="11" fill="#666666" text-anchor="middle">re-runs top-to-bottom on recovery</text>
+
+  <rect x="65" y="118" width="250" height="26" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <text x="190" y="136" font-size="12" fill="#333333" text-anchor="middle">record("BODY start")   &#8592; body code</text>
+
+  <rect x="65" y="150" width="250" height="30" fill="#e0e0e0" stroke="#333333" stroke-width="1.3"/>
+  <text x="190" y="169" font-size="12" fill="#333333" text-anchor="middle">plan()      @DBOS.step</text>
+
+  <rect x="65" y="186" width="250" height="30" fill="#e0e0e0" stroke="#333333" stroke-width="1.3"/>
+  <text x="190" y="205" font-size="12" fill="#333333" text-anchor="middle">gather()    @DBOS.step</text>
+
+  <rect x="65" y="222" width="250" height="26" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <text x="190" y="240" font-size="12" fill="#333333" text-anchor="middle">record("BODY after gather")  &#8592; body code</text>
+
+  <rect x="65" y="254" width="250" height="30" fill="#e0e0e0" stroke="#333333" stroke-width="1.3"/>
+  <text x="190" y="273" font-size="12" fill="#333333" text-anchor="middle">write()     @DBOS.step</text>
+
+  <!-- SQLite box -->
+  <rect x="430" y="90" width="230" height="200" fill="#f0f0f0" stroke="#333333" stroke-width="1.3"/>
+  <text x="545" y="114" font-size="14" font-weight="bold" fill="#333333" text-anchor="middle">research_agent.sqlite</text>
+  <text x="545" y="132" font-size="11" fill="#666666" text-anchor="middle">operation_outputs table</text>
+
+  <rect x="450" y="146" width="190" height="30" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <text x="545" y="165" font-size="12" fill="#333333" text-anchor="middle">step#1 plan &#8594; "outline for..."</text>
+
+  <rect x="450" y="182" width="190" height="30" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <text x="545" y="201" font-size="12" fill="#333333" text-anchor="middle">step#2 gather &#8594; 28</text>
+
+  <rect x="450" y="218" width="190" height="30" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <text x="545" y="237" font-size="12" fill="#333333" text-anchor="middle">step#3 write &#8594; "draft(28..."</text>
+
+  <!-- arrows from steps to table -->
+  <line x1="315" y1="165" x2="450" y2="161" stroke="#333333" stroke-width="1.3" marker-end="url(#a2)"/>
+  <line x1="315" y1="201" x2="450" y2="197" stroke="#333333" stroke-width="1.3" marker-end="url(#a2)"/>
+  <line x1="315" y1="269" x2="450" y2="233" stroke="#333333" stroke-width="1.3" marker-end="url(#a2)"/>
+  <text x="382" y="150" font-size="11" fill="#333333" text-anchor="middle">checkpoint</text>
+
+  <defs>
+    <marker id="a2" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#333333"/>
+    </marker>
+  </defs>
+
+  <text x="350" y="335" font-size="12" fill="#333333" text-anchor="middle">On recovery each step reads its row back instead of running; the body code between them just runs again.</text>
+</svg>
