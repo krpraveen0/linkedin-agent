@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="430" viewBox="0 0 760 430" font-family="Helvetica, Arial, sans-serif">
+  <rect width="760" height="430" fill="#ffffff"/>
+
+  <text x="24" y="30" font-size="16" font-weight="bold" fill="#333333">The pairing contract: every tool call must be answered</text>
+
+  <!-- LEFT PANEL: paired -->
+  <rect x="24" y="52" width="330" height="330" fill="#ffffff" stroke="#333333" stroke-width="1.5"/>
+  <rect x="24" y="52" width="330" height="30" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="40" y="72" font-size="13" font-weight="bold" fill="#333333">Paired history</text>
+  <text x="330" y="72" font-size="13" font-weight="bold" fill="#333333" text-anchor="end">accepted</text>
+
+  <rect x="44" y="100" width="290" height="34" fill="#f0f0f0" stroke="#333333"/>
+  <text x="56" y="121" font-size="12" fill="#333333">user: "charge the card and look up the user"</text>
+
+  <rect x="44" y="146" width="290" height="52" fill="#e0e0e0" stroke="#333333"/>
+  <text x="56" y="165" font-size="12" font-weight="bold" fill="#333333">assistant  tool_calls</text>
+  <text x="56" y="182" font-size="12" fill="#333333">call_a lookup_user     call_b charge_card</text>
+
+  <rect x="44" y="216" width="140" height="42" fill="#f0f0f0" stroke="#333333"/>
+  <text x="54" y="234" font-size="12" font-weight="bold" fill="#333333">tool  call_a</text>
+  <text x="54" y="250" font-size="12" fill="#333333">"user u_1: ok"</text>
+
+  <rect x="194" y="216" width="140" height="42" fill="#f0f0f0" stroke="#333333"/>
+  <text x="204" y="234" font-size="12" font-weight="bold" fill="#333333">tool  call_b</text>
+  <text x="204" y="250" font-size="12" fill="#333333">"Error: timeout"</text>
+
+  <!-- pairing arrows -->
+  <path d="M 94 198 L 94 216" stroke="#333333" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M 264 198 L 264 216" stroke="#333333" stroke-width="1.5" marker-end="url(#ar)"/>
+
+  <rect x="44" y="280" width="290" height="34" fill="#ffffff" stroke="#333333" stroke-dasharray="4 3"/>
+  <text x="56" y="301" font-size="12" fill="#333333">next request goes out</text>
+
+  <text x="44" y="345" font-size="12" fill="#333333">2 calls open, 2 answered.</text>
+  <text x="44" y="363" font-size="12" fill="#333333">orphans: none</text>
+
+  <!-- RIGHT PANEL: orphaned -->
+  <rect x="406" y="52" width="330" height="330" fill="#ffffff" stroke="#333333" stroke-width="1.5"/>
+  <rect x="406" y="52" width="330" height="30" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="422" y="72" font-size="13" font-weight="bold" fill="#333333">Orphaned history</text>
+  <text x="712" y="72" font-size="13" font-weight="bold" fill="#333333" text-anchor="end">400, every time</text>
+
+  <rect x="426" y="100" width="290" height="34" fill="#f0f0f0" stroke="#333333"/>
+  <text x="438" y="121" font-size="12" fill="#333333">user: "charge the card and look up the user"</text>
+
+  <rect x="426" y="146" width="290" height="52" fill="#e0e0e0" stroke="#333333"/>
+  <text x="438" y="165" font-size="12" font-weight="bold" fill="#333333">assistant  tool_calls</text>
+  <text x="438" y="182" font-size="12" fill="#333333">call_a lookup_user     call_b charge_card</text>
+
+  <rect x="426" y="216" width="290" height="42" fill="#ffffff" stroke="#333333" stroke-dasharray="5 4"/>
+  <text x="571" y="234" font-size="12" font-style="italic" fill="#333333" text-anchor="middle">no tool results recorded</text>
+  <text x="571" y="250" font-size="12" font-style="italic" fill="#333333" text-anchor="middle">(node raised before writing any)</text>
+
+  <path d="M 476 198 L 476 214" stroke="#333333" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <path d="M 666 198 L 666 214" stroke="#333333" stroke-width="1.5" stroke-dasharray="3 3"/>
+
+  <rect x="426" y="280" width="290" height="34" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="438" y="301" font-size="12" fill="#333333">"tool_call_ids did not have response messages"</text>
+
+  <text x="426" y="345" font-size="12" fill="#333333">2 calls open, 0 answered.</text>
+  <text x="426" y="363" font-size="12" fill="#333333">orphans: call_a, call_b, and history is append-only,</text>
+  <text x="426" y="381" font-size="12" fill="#333333">so every later turn replays them.</text>
+
+  <defs>
+    <marker id="ar" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#333333"/>
+    </marker>
+  </defs>
+</svg>

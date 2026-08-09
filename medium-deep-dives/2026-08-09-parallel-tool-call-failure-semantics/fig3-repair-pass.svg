@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="380" viewBox="0 0 780 380" font-family="Helvetica, Arial, sans-serif">
+  <rect width="780" height="380" fill="#ffffff"/>
+
+  <text x="24" y="30" font-size="16" font-weight="bold" fill="#333333">Where the repair pass sits: between your stored history and the provider</text>
+
+  <!-- stored history -->
+  <rect x="24" y="60" width="180" height="150" fill="#ffffff" stroke="#333333" stroke-width="1.5"/>
+  <rect x="24" y="60" width="180" height="28" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="114" y="79" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">stored history</text>
+  <rect x="38" y="100" width="152" height="26" fill="#f0f0f0" stroke="#333333"/>
+  <text x="46" y="117" font-size="12" fill="#333333">call_a  lookup_user</text>
+  <rect x="38" y="130" width="152" height="26" fill="#f0f0f0" stroke="#333333"/>
+  <text x="46" y="147" font-size="12" fill="#333333">call_b  charge_card</text>
+  <rect x="38" y="160" width="152" height="26" fill="#f0f0f0" stroke="#333333"/>
+  <text x="46" y="177" font-size="12" fill="#333333">result  call_a  ok</text>
+  <text x="38" y="202" font-size="12" font-style="italic" fill="#333333">call_b dangling</text>
+
+  <path d="M 210 135 L 254 135" stroke="#333333" stroke-width="1.5" marker-end="url(#a3)"/>
+
+  <!-- pipeline -->
+  <rect x="258" y="60" width="250" height="230" fill="#ffffff" stroke="#333333" stroke-width="1.5"/>
+  <rect x="258" y="60" width="250" height="28" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="383" y="79" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">_clean_message_history</text>
+
+  <rect x="274" y="100" width="218" height="42" fill="#f0f0f0" stroke="#333333"/>
+  <text x="284" y="117" font-size="12" font-weight="bold" fill="#333333">1. find dangling calls</text>
+  <text x="284" y="134" font-size="12" fill="#333333">ordered walk, no false matches</text>
+
+  <path d="M 383 142 L 383 158" stroke="#333333" stroke-width="1.5" marker-end="url(#a3)"/>
+
+  <rect x="274" y="160" width="218" height="42" fill="#f0f0f0" stroke="#333333"/>
+  <text x="284" y="177" font-size="12" font-weight="bold" fill="#333333">2. synthesize a result each</text>
+  <text x="284" y="194" font-size="12" fill="#333333">outcome='interrupted'</text>
+
+  <path d="M 383 202 L 383 218" stroke="#333333" stroke-width="1.5" marker-end="url(#a3)"/>
+
+  <rect x="274" y="220" width="218" height="42" fill="#f0f0f0" stroke="#333333"/>
+  <text x="284" y="237" font-size="12" font-weight="bold" fill="#333333">3. merge adjacent messages</text>
+  <text x="284" y="254" font-size="12" fill="#333333">into the shape providers expect</text>
+
+  <text x="274" y="282" font-size="12" font-style="italic" fill="#333333">last response gated by repair_last_response</text>
+
+  <path d="M 514 135 L 558 135" stroke="#333333" stroke-width="1.5" marker-end="url(#a3)"/>
+
+  <!-- sent -->
+  <rect x="562" y="60" width="194" height="180" fill="#ffffff" stroke="#333333" stroke-width="1.5"/>
+  <rect x="562" y="60" width="194" height="28" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="659" y="79" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">sent to provider</text>
+  <rect x="576" y="100" width="166" height="26" fill="#f0f0f0" stroke="#333333"/>
+  <text x="584" y="117" font-size="12" fill="#333333">call_a  lookup_user</text>
+  <rect x="576" y="130" width="166" height="26" fill="#f0f0f0" stroke="#333333"/>
+  <text x="584" y="147" font-size="12" fill="#333333">call_b  charge_card</text>
+  <rect x="576" y="160" width="166" height="26" fill="#f0f0f0" stroke="#333333"/>
+  <text x="584" y="177" font-size="12" fill="#333333">result  call_a  ok</text>
+  <rect x="576" y="190" width="166" height="26" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="584" y="207" font-size="12" fill="#333333">result  call_b  interrupted</text>
+  <text x="576" y="232" font-size="12" font-style="italic" fill="#333333">orphans: none</text>
+
+  <!-- footnote -->
+  <rect x="24" y="310" width="732" height="52" fill="#f0f0f0" stroke="#333333"/>
+  <text x="38" y="330" font-size="12" fill="#333333">Synthesized parts take their timestamp from the response they repair and carry no wall-clock or random data, so the pass is</text>
+  <text x="38" y="348" font-size="12" fill="#333333">idempotent: it can run before every request without changing bytes, and without invalidating the provider's prompt-cache prefix.</text>
+
+  <defs>
+    <marker id="a3" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#333333"/>
+    </marker>
+  </defs>
+</svg>
