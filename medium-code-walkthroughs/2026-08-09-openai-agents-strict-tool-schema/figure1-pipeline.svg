@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="270" viewBox="0 0 760 270" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="760" height="270" fill="#ffffff"/>
+  <text x="380" y="28" font-size="15" font-weight="bold" fill="#333333" text-anchor="middle">How @function_tool turns your Python signature into the model's schema</text>
+
+  <!-- Box 1: Python function -->
+  <rect x="24" y="70" width="210" height="150" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="129" y="94" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">Your function</text>
+  <text x="40" y="122" font-size="12" fill="#333333" font-family="monospace">origin: str</text>
+  <text x="40" y="144" font-size="12" fill="#333333" font-family="monospace">destination: str</text>
+  <text x="40" y="166" font-size="12" fill="#333333" font-family="monospace">max_price=500.0</text>
+  <text x="40" y="188" font-size="12" fill="#333333" font-family="monospace">nonstop=False</text>
+  <text x="129" y="210" font-size="11" fill="#333333" text-anchor="middle" font-style="italic">2 required, 2 defaulted</text>
+
+  <!-- Arrow 1 -->
+  <line x1="234" y1="145" x2="292" y2="145" stroke="#333333" stroke-width="1.5"/>
+  <polygon points="292,145 282,140 282,150" fill="#333333"/>
+
+  <!-- Box 2: processing -->
+  <rect x="294" y="70" width="188" height="150" rx="6" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="388" y="112" font-size="12" fill="#333333" text-anchor="middle">inspect</text>
+  <text x="388" y="134" font-size="12" fill="#333333" text-anchor="middle">+ griffe (docstring)</text>
+  <text x="388" y="156" font-size="12" fill="#333333" text-anchor="middle">+ pydantic</text>
+  <text x="388" y="188" font-size="12" font-weight="bold" fill="#333333" text-anchor="middle">strict mode = ON</text>
+  <text x="388" y="205" font-size="11" fill="#333333" text-anchor="middle" font-style="italic">(the default)</text>
+
+  <!-- Arrow 2 -->
+  <line x1="482" y1="145" x2="540" y2="145" stroke="#333333" stroke-width="1.5"/>
+  <polygon points="540,145 530,140 530,150" fill="#333333"/>
+
+  <!-- Box 3: schema -->
+  <rect x="542" y="70" width="200" height="150" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="642" y="94" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">Schema sent to model</text>
+  <text x="558" y="122" font-size="12" fill="#333333" font-family="monospace">required: [origin,</text>
+  <text x="558" y="140" font-size="12" fill="#333333" font-family="monospace">  destination,</text>
+  <text x="558" y="158" font-size="12" fill="#333333" font-family="monospace">  max_price,</text>
+  <text x="558" y="176" font-size="12" fill="#333333" font-family="monospace">  nonstop]</text>
+  <text x="558" y="200" font-size="12" fill="#333333" font-family="monospace">additionalProps:</text>
+  <text x="558" y="214" font-size="12" fill="#333333" font-family="monospace">  false</text>
+
+  <text x="642" y="248" font-size="12" font-weight="bold" fill="#333333" text-anchor="middle">All 4 required.</text>
+</svg>
