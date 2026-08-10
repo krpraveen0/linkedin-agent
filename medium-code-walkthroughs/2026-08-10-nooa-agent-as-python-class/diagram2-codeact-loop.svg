@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="300" viewBox="0 0 760 300" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="760" height="300" fill="#ffffff"/>
+  <text x="380" y="30" text-anchor="middle" font-size="18" font-weight="bold" fill="#333333">NOOA's default CodeActStrategy loop</text>
+
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#333333"/>
+    </marker>
+  </defs>
+
+  <!-- Box 1: prompt built from class -->
+  <rect x="20" y="90" width="150" height="80" fill="#f0f0f0" stroke="#333333" stroke-width="1.5" rx="6"/>
+  <text x="95" y="122" text-anchor="middle" font-size="13" fill="#333333">Prompt built</text>
+  <text x="95" y="140" text-anchor="middle" font-size="13" fill="#333333">from the class</text>
+  <text x="95" y="158" text-anchor="middle" font-size="11" fill="#666666">(docstring + hints)</text>
+
+  <!-- Box 2: model writes code -->
+  <rect x="210" y="90" width="150" height="80" fill="#e0e0e0" stroke="#333333" stroke-width="1.5" rx="6"/>
+  <text x="285" y="118" text-anchor="middle" font-size="13" fill="#333333">Model writes</text>
+  <text x="285" y="136" text-anchor="middle" font-size="13" fill="#333333">a Python cell</text>
+  <text x="285" y="156" text-anchor="middle" font-size="11" font-family="Menlo, Consolas, monospace" fill="#666666">execute_python()</text>
+
+  <!-- Box 3: sandbox runs it -->
+  <rect x="400" y="90" width="150" height="80" fill="#f0f0f0" stroke="#333333" stroke-width="1.5" rx="6"/>
+  <text x="475" y="118" text-anchor="middle" font-size="13" fill="#333333">Sandbox runs</text>
+  <text x="475" y="136" text-anchor="middle" font-size="13" fill="#333333">the cell</text>
+  <text x="475" y="156" text-anchor="middle" font-size="11" fill="#666666">restricted builtins</text>
+
+  <!-- Box 4: return_result -->
+  <rect x="590" y="90" width="150" height="80" fill="#e0e0e0" stroke="#333333" stroke-width="1.5" rx="6"/>
+  <text x="665" y="118" text-anchor="middle" font-size="13" fill="#333333">return_result()</text>
+  <text x="665" y="136" text-anchor="middle" font-size="13" fill="#333333">typed value</text>
+  <text x="665" y="156" text-anchor="middle" font-size="11" font-family="Menlo, Consolas, monospace" fill="#666666">-&gt; int</text>
+
+  <!-- forward arrows -->
+  <g stroke="#333333" stroke-width="1.4" fill="none">
+    <line x1="170" y1="130" x2="210" y2="130" marker-end="url(#arr)"/>
+    <line x1="360" y1="130" x2="400" y2="130" marker-end="url(#arr)"/>
+    <line x1="550" y1="130" x2="590" y2="130" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- loop-back arrow: sandbox output feeds next model turn -->
+  <path d="M475,170 L475,235 L285,235 L285,170" stroke="#333333" stroke-width="1.4" fill="none" stroke-dasharray="5,4" marker-end="url(#arr)"/>
+  <text x="380" y="258" text-anchor="middle" font-size="12" fill="#666666">stdout / errors feed the next turn until return_result is called</text>
+</svg>
