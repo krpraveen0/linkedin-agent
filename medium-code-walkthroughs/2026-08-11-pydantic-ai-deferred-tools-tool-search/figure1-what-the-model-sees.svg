@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="380" viewBox="0 0 760 380" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="760" height="380" fill="#ffffff"/>
+  <text x="380" y="30" font-size="17" font-weight="bold" fill="#333333" text-anchor="middle">What the model sees on its first request</text>
+
+  <!-- Column 1: no deferral -->
+  <text x="140" y="66" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">No deferral</text>
+  <rect x="30" y="80" width="220" height="150" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="140" y="102" font-size="12" fill="#333333" text-anchor="middle">model request carries:</text>
+  <rect x="50" y="114" width="180" height="26" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <text x="140" y="131" font-size="12" fill="#333333" text-anchor="middle">get_weather</text>
+  <rect x="50" y="146" width="180" height="26" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <text x="140" y="163" font-size="12" fill="#333333" text-anchor="middle">convert_currency</text>
+  <rect x="50" y="178" width="180" height="26" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <text x="140" y="195" font-size="12" fill="#333333" text-anchor="middle">search_flights</text>
+  <text x="140" y="222" font-size="12" fill="#333333" text-anchor="middle">3 full schemas</text>
+
+  <!-- Column 2: deferral + tool search -->
+  <text x="380" y="66" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">Deferral + tool search</text>
+  <rect x="270" y="80" width="220" height="150" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="380" y="102" font-size="12" fill="#333333" text-anchor="middle">model request carries:</text>
+  <rect x="290" y="114" width="180" height="26" fill="#ffffff" stroke="#333333" stroke-width="1.5"/>
+  <text x="380" y="131" font-size="12" font-weight="bold" fill="#333333" text-anchor="middle">search_tools</text>
+  <text x="380" y="168" font-size="12" fill="#333333" text-anchor="middle">3 real tools hidden</text>
+  <text x="380" y="188" font-size="12" fill="#333333" text-anchor="middle">behind one meta-tool</text>
+  <text x="380" y="222" font-size="12" fill="#333333" text-anchor="middle">1 schema</text>
+
+  <!-- Column 3: after search -->
+  <text x="620" y="66" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">After search("weather")</text>
+  <rect x="510" y="80" width="220" height="150" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="620" y="102" font-size="12" fill="#333333" text-anchor="middle">model request carries:</text>
+  <rect x="530" y="114" width="180" height="26" fill="#ffffff" stroke="#333333" stroke-width="1.5"/>
+  <text x="620" y="131" font-size="12" font-weight="bold" fill="#333333" text-anchor="middle">search_tools</text>
+  <rect x="530" y="146" width="180" height="26" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="620" y="163" font-size="12" fill="#333333" text-anchor="middle">get_weather (revealed)</text>
+  <text x="620" y="196" font-size="12" fill="#333333" text-anchor="middle">other 2 still hidden</text>
+
+  <!-- arrows -->
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#333333"/>
+    </marker>
+  </defs>
+  <line x1="250" y1="155" x2="268" y2="155" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="490" y1="155" x2="508" y2="155" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <text x="380" y="300" font-size="13" fill="#333333" text-anchor="middle" font-style="italic">Captured with FunctionModel: info.function_tools is exactly the tool list sent to the model.</text>
+  <text x="380" y="330" font-size="12" fill="#333333" text-anchor="middle">no deferral -&gt; 3 tools   ·   deferral -&gt; 1 tool   ·   deferral + no strategy -&gt; 0 reachable tools</text>
+</svg>
