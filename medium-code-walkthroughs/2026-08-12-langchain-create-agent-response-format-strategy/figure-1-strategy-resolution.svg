@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="470" viewBox="0 0 720 470" font-family="Helvetica, Arial, sans-serif">
+  <rect width="720" height="470" fill="#ffffff"/>
+  <text x="360" y="30" font-size="17" font-weight="bold" fill="#333333" text-anchor="middle">How create_agent resolves a raw response_format schema</text>
+
+  <!-- Step 1 -->
+  <rect x="250" y="52" width="220" height="46" rx="4" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="360" y="74" font-size="13" fill="#333333" text-anchor="middle">response_format = Weather</text>
+  <text x="360" y="90" font-size="12" fill="#333333" text-anchor="middle">(a raw Pydantic schema)</text>
+
+  <!-- arrow -->
+  <line x1="360" y1="98" x2="360" y2="120" stroke="#333333" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <!-- Step 2 -->
+  <rect x="230" y="122" width="260" height="46" rx="4" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="360" y="144" font-size="13" fill="#333333" text-anchor="middle">wrapped in AutoStrategy, then a</text>
+  <text x="360" y="160" font-size="13" fill="#333333" text-anchor="middle">ToolStrategy tool is built upfront</text>
+
+  <line x1="360" y1="168" x2="360" y2="190" stroke="#333333" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <!-- Decision -->
+  <polygon points="360,192 500,244 360,296 220,244" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="360" y="238" font-size="13" fill="#333333" text-anchor="middle">_supports_provider_strategy?</text>
+  <text x="360" y="256" font-size="12" fill="#333333" text-anchor="middle">profile flag, else name on list</text>
+
+  <!-- Yes branch -->
+  <line x1="500" y1="244" x2="560" y2="244" stroke="#333333" stroke-width="1.5" marker-end="url(#a)"/>
+  <text x="530" y="236" font-size="12" fill="#333333" text-anchor="middle">yes</text>
+  <rect x="560" y="210" width="150" height="68" rx="4" fill="#ffffff" stroke="#333333" stroke-width="1.5"/>
+  <text x="635" y="234" font-size="12" font-weight="bold" fill="#333333" text-anchor="middle">ProviderStrategy</text>
+  <text x="635" y="252" font-size="12" fill="#333333" text-anchor="middle">native output;</text>
+  <text x="635" y="268" font-size="12" fill="#333333" text-anchor="middle">real tools only</text>
+
+  <!-- No branch -->
+  <line x1="220" y1="244" x2="160" y2="244" stroke="#333333" stroke-width="1.5" marker-end="url(#a)"/>
+  <text x="190" y="236" font-size="12" fill="#333333" text-anchor="middle">no</text>
+  <rect x="10" y="210" width="150" height="68" rx="4" fill="#ffffff" stroke="#333333" stroke-width="1.5"/>
+  <text x="85" y="234" font-size="12" font-weight="bold" fill="#333333" text-anchor="middle">ToolStrategy</text>
+  <text x="85" y="252" font-size="12" fill="#333333" text-anchor="middle">real tools +</text>
+  <text x="85" y="268" font-size="12" fill="#333333" text-anchor="middle">schema-tool</text>
+
+  <!-- List detail -->
+  <rect x="150" y="330" width="420" height="106" rx="4" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="360" y="352" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">FALLBACK_MODELS_WITH_STRUCTURED_OUTPUT (name regexes)</text>
+  <text x="360" y="374" font-size="12" fill="#333333" text-anchor="middle">on the list: gpt-4o, gpt-4.1, gpt-5.x, some Claude, Grok</text>
+  <text x="360" y="394" font-size="12" fill="#333333" text-anchor="middle">not on the list: Gemini, Llama, Mistral, local models</text>
+  <text x="360" y="420" font-size="12" fill="#333333" text-anchor="middle" font-style="italic">no profile + not matched  →  ToolStrategy path (left)</text>
+
+  <defs>
+    <marker id="a" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L7,3 L0,6 z" fill="#333333"/>
+    </marker>
+  </defs>
+</svg>

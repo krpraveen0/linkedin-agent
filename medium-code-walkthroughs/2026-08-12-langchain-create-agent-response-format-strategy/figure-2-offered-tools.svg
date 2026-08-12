@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="330" viewBox="0 0 720 330" font-family="Helvetica, Arial, sans-serif">
+  <rect width="720" height="330" fill="#ffffff"/>
+  <text x="360" y="30" font-size="17" font-weight="bold" fill="#333333" text-anchor="middle">Same schema, same tool — different tool list offered to the model</text>
+
+  <!-- Local model -->
+  <rect x="30" y="60" width="300" height="230" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="180" y="86" font-size="14" font-weight="bold" fill="#333333" text-anchor="middle">Local model (profile = None)</text>
+  <text x="180" y="106" font-size="12" fill="#333333" text-anchor="middle">not on the fallback list  →  ToolStrategy</text>
+
+  <rect x="60" y="128" width="240" height="42" rx="4" fill="#ffffff" stroke="#333333" stroke-width="1.5"/>
+  <text x="180" y="154" font-size="13" fill="#333333" text-anchor="middle">get_weather  (your real tool)</text>
+
+  <rect x="60" y="182" width="240" height="42" rx="4" fill="#e0e0e0" stroke="#333333" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="180" y="202" font-size="13" fill="#333333" text-anchor="middle">Weather  (synthetic schema-tool)</text>
+  <text x="180" y="218" font-size="12" fill="#333333" text-anchor="middle" font-style="italic">injected by the framework</text>
+
+  <text x="180" y="256" font-size="12" fill="#333333" text-anchor="middle">offered = ['get_weather', 'Weather']</text>
+  <text x="180" y="276" font-size="12" fill="#333333" text-anchor="middle">model must pick between two tools</text>
+
+  <!-- Capable model -->
+  <rect x="390" y="60" width="300" height="230" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="540" y="86" font-size="14" font-weight="bold" fill="#333333" text-anchor="middle">Model with structured-output profile</text>
+  <text x="540" y="106" font-size="12" fill="#333333" text-anchor="middle">capable  →  ProviderStrategy (native)</text>
+
+  <rect x="420" y="128" width="240" height="42" rx="4" fill="#ffffff" stroke="#333333" stroke-width="1.5"/>
+  <text x="540" y="154" font-size="13" fill="#333333" text-anchor="middle">get_weather  (your real tool)</text>
+
+  <rect x="420" y="182" width="240" height="42" rx="4" fill="#ffffff" stroke="#cccccc" stroke-width="1.5" stroke-dasharray="4,4"/>
+  <text x="540" y="207" font-size="12" fill="#777777" text-anchor="middle" font-style="italic">no schema-tool added</text>
+
+  <text x="540" y="256" font-size="12" fill="#333333" text-anchor="middle">offered = ['get_weather']</text>
+  <text x="540" y="276" font-size="12" fill="#333333" text-anchor="middle">schema handled by native output</text>
+</svg>
