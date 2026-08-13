@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="360" viewBox="0 0 720 360" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="720" height="360" fill="#ffffff"/>
+  <!-- Divider -->
+  <line x1="360" y1="20" x2="360" y2="340" stroke="#333333" stroke-width="1" stroke-dasharray="4 4"/>
+
+  <!-- Left column: 2025 design -->
+  <text x="180" y="34" text-anchor="middle" font-size="15" font-weight="bold" fill="#333333">2025 design: reconcile on write</text>
+
+  <rect x="70" y="52" width="220" height="38" rx="4" fill="#f0f0f0" stroke="#333333"/>
+  <text x="180" y="76" text-anchor="middle" font-size="13" fill="#333333">New facts from conversation</text>
+
+  <rect x="70" y="108" width="220" height="38" rx="4" fill="#f0f0f0" stroke="#333333"/>
+  <text x="180" y="132" text-anchor="middle" font-size="13" fill="#333333">Retrieve similar memories</text>
+
+  <rect x="70" y="164" width="220" height="52" rx="4" fill="#e0e0e0" stroke="#333333" stroke-width="2"/>
+  <text x="180" y="185" text-anchor="middle" font-size="13" font-weight="bold" fill="#333333">LLM reconcile (2nd call)</text>
+  <text x="180" y="203" text-anchor="middle" font-size="12" fill="#333333">ADD / UPDATE / DELETE / NOOP</text>
+
+  <rect x="70" y="234" width="220" height="38" rx="4" fill="#f0f0f0" stroke="#333333"/>
+  <text x="180" y="258" text-anchor="middle" font-size="13" fill="#333333">Store is mutated in place</text>
+
+  <line x1="180" y1="90" x2="180" y2="108" stroke="#333333" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="180" y1="146" x2="180" y2="164" stroke="#333333" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="180" y1="216" x2="180" y2="234" stroke="#333333" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Right column: 2.0.18 -->
+  <text x="540" y="34" text-anchor="middle" font-size="15" font-weight="bold" fill="#333333">2.0.18 default: ADD-only</text>
+
+  <rect x="430" y="52" width="220" height="38" rx="4" fill="#f0f0f0" stroke="#333333"/>
+  <text x="540" y="76" text-anchor="middle" font-size="13" fill="#333333">New facts from conversation</text>
+
+  <rect x="430" y="108" width="220" height="52" rx="4" fill="#e0e0e0" stroke="#333333" stroke-width="2"/>
+  <text x="540" y="129" text-anchor="middle" font-size="13" font-weight="bold" fill="#333333">Extract (1 LLM call)</text>
+  <text x="540" y="147" text-anchor="middle" font-size="12" fill="#333333">"Your sole operation is ADD"</text>
+
+  <rect x="430" y="178" width="220" height="38" rx="4" fill="#f0f0f0" stroke="#333333"/>
+  <text x="540" y="202" text-anchor="middle" font-size="13" fill="#333333">Hash dedup + entity link</text>
+
+  <rect x="430" y="234" width="220" height="38" rx="4" fill="#f0f0f0" stroke="#333333"/>
+  <text x="540" y="258" text-anchor="middle" font-size="13" fill="#333333">Store: append only</text>
+
+  <line x1="540" y1="90" x2="540" y2="108" stroke="#333333" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="540" y1="160" x2="540" y2="178" stroke="#333333" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="540" y1="216" x2="540" y2="234" stroke="#333333" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <text x="540" y="300" text-anchor="middle" font-size="12" font-style="italic" fill="#333333">No UPDATE. No DELETE. Nothing overwritten.</text>
+  <text x="180" y="300" text-anchor="middle" font-size="12" font-style="italic" fill="#333333">Prompt still ships, but is never called.</text>
+
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#333333"/>
+    </marker>
+  </defs>
+</svg>

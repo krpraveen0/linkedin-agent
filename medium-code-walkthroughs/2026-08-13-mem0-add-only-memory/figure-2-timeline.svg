@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="330" viewBox="0 0 720 330" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="720" height="330" fill="#ffffff"/>
+  <text x="360" y="30" text-anchor="middle" font-size="15" font-weight="bold" fill="#333333">Two turns, three inserts, one unresolved contradiction</text>
+
+  <!-- Turn 1 -->
+  <rect x="30" y="60" width="250" height="44" rx="4" fill="#f0f0f0" stroke="#333333"/>
+  <text x="45" y="80" font-size="13" fill="#333333">Turn 1 (user):</text>
+  <text x="45" y="97" font-size="13" fill="#333333">"I love cheese pizza."</text>
+
+  <rect x="320" y="60" width="120" height="44" rx="4" fill="#e0e0e0" stroke="#333333"/>
+  <text x="380" y="87" text-anchor="middle" font-size="13" font-weight="bold" fill="#333333">ADD &#215;1</text>
+
+  <line x1="280" y1="82" x2="320" y2="82" stroke="#333333" stroke-width="1.5" marker-end="url(#arr2)"/>
+
+  <!-- Turn 2 -->
+  <rect x="30" y="132" width="250" height="44" rx="4" fill="#f0f0f0" stroke="#333333"/>
+  <text x="45" y="152" font-size="13" fill="#333333">Turn 2 (user):</text>
+  <text x="45" y="169" font-size="13" fill="#333333">"I stopped that — I went vegan."</text>
+
+  <rect x="320" y="132" width="120" height="44" rx="4" fill="#e0e0e0" stroke="#333333"/>
+  <text x="380" y="159" text-anchor="middle" font-size="13" font-weight="bold" fill="#333333">ADD &#215;2</text>
+
+  <line x1="280" y1="154" x2="320" y2="154" stroke="#333333" stroke-width="1.5" marker-end="url(#arr2)"/>
+
+  <!-- Store -->
+  <rect x="480" y="60" width="210" height="200" rx="6" fill="#ffffff" stroke="#333333" stroke-width="2"/>
+  <text x="585" y="82" text-anchor="middle" font-size="13" font-weight="bold" fill="#333333">Store afterwards</text>
+
+  <rect x="498" y="96" width="174" height="34" rx="3" fill="#e0e0e0" stroke="#333333"/>
+  <text x="585" y="117" text-anchor="middle" font-size="12" fill="#333333">loves cheese pizza  (stale)</text>
+
+  <rect x="498" y="138" width="174" height="34" rx="3" fill="#f0f0f0" stroke="#333333"/>
+  <text x="585" y="159" text-anchor="middle" font-size="12" fill="#333333">no longer eats cheese pizza</text>
+
+  <rect x="498" y="180" width="174" height="34" rx="3" fill="#f0f0f0" stroke="#333333"/>
+  <text x="585" y="201" text-anchor="middle" font-size="12" fill="#333333">became vegan</text>
+
+  <text x="585" y="240" text-anchor="middle" font-size="12" font-style="italic" fill="#333333">history events: {ADD: 3}</text>
+
+  <line x1="440" y1="82" x2="480" y2="110" stroke="#333333" stroke-width="1.5" marker-end="url(#arr2)"/>
+  <line x1="440" y1="154" x2="480" y2="165" stroke="#333333" stroke-width="1.5" marker-end="url(#arr2)"/>
+
+  <text x="360" y="300" text-anchor="middle" font-size="12.5" fill="#333333">The stale "loves cheese pizza" is never retired. Conflict resolution moves to read time.</text>
+
+  <defs>
+    <marker id="arr2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#333333"/>
+    </marker>
+  </defs>
+</svg>
