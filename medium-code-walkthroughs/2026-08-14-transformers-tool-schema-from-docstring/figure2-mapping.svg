@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="330" viewBox="0 0 720 330" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="720" height="330" fill="#ffffff"/>
+  <text x="360" y="30" font-size="16" font-weight="bold" fill="#333333" text-anchor="middle">What each part of your function maps to in the schema</text>
+
+  <!-- Left header -->
+  <rect x="30" y="55" width="290" height="34" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="175" y="78" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">In your Python function</text>
+  <!-- Right header -->
+  <rect x="400" y="55" width="290" height="34" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="545" y="78" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">In the schema the model sees</text>
+
+  <defs>
+    <marker id="arrow2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#333333"/>
+    </marker>
+  </defs>
+
+  <!-- Row 1 -->
+  <rect x="30" y="100" width="290" height="34" fill="#f0f0f0" stroke="#333333" stroke-width="1"/>
+  <text x="42" y="122" font-size="12" fill="#333333">Docstring summary line</text>
+  <rect x="400" y="100" width="290" height="34" fill="#f0f0f0" stroke="#333333" stroke-width="1"/>
+  <text x="412" y="122" font-size="12" fill="#333333">"description" of the tool</text>
+  <line x1="322" y1="117" x2="398" y2="117" stroke="#333333" stroke-width="1.2" marker-end="url(#arrow2)"/>
+
+  <!-- Row 2 -->
+  <rect x="30" y="142" width="290" height="34" fill="#f0f0f0" stroke="#333333" stroke-width="1"/>
+  <text x="42" y="164" font-size="12" fill="#333333">Args: description per argument</text>
+  <rect x="400" y="142" width="290" height="34" fill="#f0f0f0" stroke="#333333" stroke-width="1"/>
+  <text x="412" y="164" font-size="12" fill="#333333">parameter "description"</text>
+  <line x1="322" y1="159" x2="398" y2="159" stroke="#333333" stroke-width="1.2" marker-end="url(#arrow2)"/>
+
+  <!-- Row 3 -->
+  <rect x="30" y="184" width="290" height="34" fill="#f0f0f0" stroke="#333333" stroke-width="1"/>
+  <text x="42" y="206" font-size="12" fill="#333333">Type hint (str, int, float)</text>
+  <rect x="400" y="184" width="290" height="34" fill="#f0f0f0" stroke="#333333" stroke-width="1"/>
+  <text x="412" y="206" font-size="12" fill="#333333">"type" (string, integer, number)</text>
+  <line x1="322" y1="201" x2="398" y2="201" stroke="#333333" stroke-width="1.2" marker-end="url(#arrow2)"/>
+
+  <!-- Row 4 -->
+  <rect x="30" y="226" width="290" height="34" fill="#f0f0f0" stroke="#333333" stroke-width="1"/>
+  <text x="42" y="248" font-size="12" fill="#333333">(choices: [...]) in a description</text>
+  <rect x="400" y="226" width="290" height="34" fill="#f0f0f0" stroke="#333333" stroke-width="1"/>
+  <text x="412" y="248" font-size="12" fill="#333333">"enum" of allowed values</text>
+  <line x1="322" y1="243" x2="398" y2="243" stroke="#333333" stroke-width="1.2" marker-end="url(#arrow2)"/>
+
+  <!-- Row 5 -->
+  <rect x="30" y="268" width="290" height="34" fill="#f0f0f0" stroke="#333333" stroke-width="1"/>
+  <text x="42" y="284" font-size="12" fill="#333333">Default value / Optional[...]</text>
+  <text x="42" y="298" font-size="11" fill="#333333">on a parameter</text>
+  <rect x="400" y="268" width="290" height="34" fill="#f0f0f0" stroke="#333333" stroke-width="1"/>
+  <text x="412" y="284" font-size="12" fill="#333333">dropped from "required" /</text>
+  <text x="412" y="298" font-size="12" fill="#333333">"nullable": true</text>
+  <line x1="322" y1="285" x2="398" y2="285" stroke="#333333" stroke-width="1.2" marker-end="url(#arrow2)"/>
+</svg>
