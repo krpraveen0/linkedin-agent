@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="360" viewBox="0 0 760 360" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="760" height="360" fill="#ffffff"/>
+  <text x="380" y="30" font-size="17" font-weight="bold" fill="#333333" text-anchor="middle">One Pydantic model, three different requests</text>
+
+  <!-- Model box -->
+  <rect x="24" y="130" width="150" height="96" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="99" y="155" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">User (model)</text>
+  <line x1="40" y1="166" x2="158" y2="166" stroke="#e0e0e0" stroke-width="1"/>
+  <text x="40" y="188" font-size="12" fill="#333333">name: str</text>
+  <text x="40" y="208" font-size="12" fill="#333333">age: int</text>
+
+  <!-- Function box -->
+  <rect x="230" y="132" width="196" height="92" rx="6" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="328" y="170" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">handle_response_model</text>
+  <text x="328" y="192" font-size="12" fill="#333333" text-anchor="middle">(model, mode=...)</text>
+
+  <!-- arrow model -> function -->
+  <line x1="174" y1="178" x2="228" y2="178" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Three output boxes -->
+  <rect x="500" y="40" width="236" height="76" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="512" y="62" font-size="13" font-weight="bold" fill="#333333">Mode.TOOLS</text>
+  <text x="512" y="82" font-size="12" fill="#333333">tools=[...], tool_choice forced</text>
+  <text x="512" y="100" font-size="12" fill="#333333">schema travels as an API param</text>
+
+  <rect x="500" y="142" width="236" height="76" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="512" y="164" font-size="13" font-weight="bold" fill="#333333">Mode.JSON</text>
+  <text x="512" y="184" font-size="12" fill="#333333">response_format: json_object</text>
+  <text x="512" y="202" font-size="12" fill="#333333">+ schema in a system message</text>
+
+  <rect x="500" y="244" width="236" height="82" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="512" y="266" font-size="13" font-weight="bold" fill="#333333">Mode.MD_JSON</text>
+  <text x="512" y="286" font-size="12" fill="#333333">no response_format;</text>
+  <text x="512" y="304" font-size="12" fill="#333333">schema in system msg +</text>
+  <text x="512" y="320" font-size="12" fill="#333333">your user message rewritten</text>
+
+  <!-- arrows function -> outputs -->
+  <line x1="426" y1="160" x2="498" y2="80" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="426" y1="178" x2="498" y2="180" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="426" y1="196" x2="498" y2="282" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L7,3 L0,6 z" fill="#333333"/>
+    </marker>
+  </defs>
+</svg>
