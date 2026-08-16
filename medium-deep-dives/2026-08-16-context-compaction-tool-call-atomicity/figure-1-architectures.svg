@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="540" viewBox="0 0 900 540" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#333333"/>
+    </marker>
+    <pattern id="hatch" width="6" height="6" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+      <rect width="6" height="6" fill="#f0f0f0"/>
+      <line x1="0" y1="0" x2="0" y2="6" stroke="#333333" stroke-width="1" opacity="0.45"/>
+    </pattern>
+  </defs>
+
+  <rect width="900" height="540" fill="#ffffff"/>
+
+  <text x="30" y="30" font-size="17" font-weight="bold" fill="#333333">One tool-calling history, three ways to make it smaller</text>
+  <text x="30" y="52" font-size="13" fill="#333333">The assistant message at [2] issues three parallel tool calls. [3]–[5] are their results.</text>
+
+  <!-- ============ PANEL 1 : LangChain ============ -->
+  <g>
+    <text x="30" y="90" font-size="14" font-weight="bold" fill="#333333">LangChain</text>
+    <text x="30" y="108" font-size="12.5" fill="#333333">move one cutoff, repair the seam</text>
+
+    <rect x="30" y="122" width="230" height="36" fill="#f0f0f0" stroke="#333333"/>
+    <text x="42" y="145" font-size="12.5" fill="#333333">[0] system</text>
+    <rect x="30" y="162" width="230" height="36" fill="#f0f0f0" stroke="#333333"/>
+    <text x="42" y="185" font-size="12.5" fill="#333333">[1] user</text>
+
+    <rect x="30" y="202" width="230" height="36" fill="#e0e0e0" stroke="#333333" stroke-width="2"/>
+    <text x="42" y="225" font-size="12.5" fill="#333333">[2] assistant · 3 tool calls</text>
+    <rect x="30" y="242" width="230" height="30" fill="#e0e0e0" stroke="#333333"/>
+    <text x="42" y="262" font-size="12.5" fill="#333333">[3] tool result</text>
+    <rect x="30" y="276" width="230" height="30" fill="#e0e0e0" stroke="#333333"/>
+    <text x="42" y="296" font-size="12.5" fill="#333333">[4] tool result</text>
+    <rect x="30" y="310" width="230" height="30" fill="#e0e0e0" stroke="#333333"/>
+    <text x="42" y="330" font-size="12.5" fill="#333333">[5] tool result</text>
+
+    <rect x="30" y="344" width="230" height="36" fill="#f0f0f0" stroke="#333333"/>
+    <text x="42" y="367" font-size="12.5" fill="#333333">[6] assistant text</text>
+
+    <!-- requested cutoff between [4] and [5] -->
+    <line x1="22" y1="308" x2="268" y2="308" stroke="#333333" stroke-width="1.5" stroke-dasharray="5 4"/>
+    <text x="30" y="404" font-size="12.5" fill="#333333">requested cutoff (dashed): keep 2</text>
+
+    <!-- actual cutoff at [2] -->
+    <line x1="22" y1="200" x2="268" y2="200" stroke="#333333" stroke-width="2.5"/>
+    <path d="M 20 306 L 20 204" stroke="#333333" stroke-width="1.5" marker-end="url(#arw)" fill="none"/>
+    <text x="30" y="422" font-size="12.5" fill="#333333">actual cutoff (solid): snaps back to [2]</text>
+    <text x="30" y="440" font-size="12.5" font-weight="bold" fill="#333333">keeps 5, not 2</text>
+    <text x="30" y="464" font-size="12" fill="#333333">Everything above the solid line is</text>
+    <text x="30" y="480" font-size="12" fill="#333333">replaced by one LLM-written summary.</text>
+  </g>
+
+  <!-- ============ PANEL 2 : Agent Framework ============ -->
+  <g>
+    <text x="330" y="90" font-size="14" font-weight="bold" fill="#333333">Microsoft Agent Framework</text>
+    <text x="330" y="108" font-size="12.5" fill="#333333">annotate groups, exclude whole groups</text>
+
+    <rect x="330" y="122" width="230" height="36" fill="#f0f0f0" stroke="#333333"/>
+    <text x="342" y="145" font-size="12.5" fill="#333333">[0] system</text>
+    <rect x="330" y="162" width="230" height="36" fill="url(#hatch)" stroke="#333333"/>
+    <text x="342" y="185" font-size="12.5" fill="#333333">[1] user</text>
+
+    <rect x="330" y="202" width="230" height="138" fill="url(#hatch)" stroke="#333333" stroke-width="2"/>
+    <text x="342" y="225" font-size="12.5" fill="#333333">[2] assistant · 3 tool calls</text>
+    <text x="342" y="252" font-size="12.5" fill="#333333">[3] tool result</text>
+    <text x="342" y="278" font-size="12.5" fill="#333333">[4] tool result</text>
+    <text x="342" y="304" font-size="12.5" fill="#333333">[5] tool result</text>
+    <text x="342" y="330" font-size="12" font-style="italic" fill="#333333">one atomic group</text>
+
+    <rect x="330" y="344" width="230" height="36" fill="#f0f0f0" stroke="#333333"/>
+    <text x="342" y="367" font-size="12.5" fill="#333333">[6] assistant text</text>
+
+    <text x="330" y="404" font-size="12.5" fill="#333333">hatched = excluded, all-or-nothing</text>
+    <text x="330" y="422" font-size="12.5" fill="#333333">a partial tool block cannot be</text>
+    <text x="330" y="440" font-size="12.5" font-weight="bold" fill="#333333">represented at all</text>
+    <text x="330" y="464" font-size="12" fill="#333333">Nothing is deleted: excluded messages</text>
+    <text x="330" y="480" font-size="12" fill="#333333">keep _exclude_reason for later audit.</text>
+  </g>
+
+  <!-- ============ PANEL 3 : context editing ============ -->
+  <g>
+    <text x="630" y="90" font-size="14" font-weight="bold" fill="#333333">Context editing</text>
+    <text x="630" y="108" font-size="12.5" fill="#333333">keep the skeleton, blank the contents</text>
+
+    <rect x="630" y="122" width="230" height="36" fill="#f0f0f0" stroke="#333333"/>
+    <text x="642" y="145" font-size="12.5" fill="#333333">[0] system</text>
+    <rect x="630" y="162" width="230" height="36" fill="#f0f0f0" stroke="#333333"/>
+    <text x="642" y="185" font-size="12.5" fill="#333333">[1] user</text>
+
+    <rect x="630" y="202" width="230" height="36" fill="#f0f0f0" stroke="#333333" stroke-width="2"/>
+    <text x="642" y="225" font-size="12.5" fill="#333333">[2] assistant · 3 tool calls</text>
+    <rect x="630" y="242" width="230" height="30" fill="#e0e0e0" stroke="#333333"/>
+    <text x="642" y="262" font-size="12.5" fill="#333333">[3] "[cleared]"</text>
+    <rect x="630" y="276" width="230" height="30" fill="#e0e0e0" stroke="#333333"/>
+    <text x="642" y="296" font-size="12.5" fill="#333333">[4] "[cleared]"</text>
+    <rect x="630" y="310" width="230" height="30" fill="#f0f0f0" stroke="#333333"/>
+    <text x="642" y="330" font-size="12.5" fill="#333333">[5] tool result (kept)</text>
+
+    <rect x="630" y="344" width="230" height="36" fill="#f0f0f0" stroke="#333333"/>
+    <text x="642" y="367" font-size="12.5" fill="#333333">[6] assistant text</text>
+
+    <text x="630" y="404" font-size="12.5" fill="#333333">message count never changes, so</text>
+    <text x="630" y="422" font-size="12.5" fill="#333333">there is no seam to repair and</text>
+    <text x="630" y="440" font-size="12.5" font-weight="bold" fill="#333333">no cutoff to get wrong</text>
+    <text x="630" y="464" font-size="12" fill="#333333">The model sees that it called the tool,</text>
+    <text x="630" y="480" font-size="12" fill="#333333">not the answer. The prompt cache drops.</text>
+  </g>
+
+  <line x1="30" y1="504" x2="860" y2="504" stroke="#333333" stroke-width="1" opacity="0.35"/>
+  <text x="30" y="524" font-size="12" fill="#333333">All three keep every tool call paired with its result. They disagree about what "keep N" costs.</text>
+</svg>

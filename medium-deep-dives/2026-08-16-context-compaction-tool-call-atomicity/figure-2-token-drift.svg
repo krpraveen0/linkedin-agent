@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="450" viewBox="0 0 880 450" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <pattern id="hatch2" width="6" height="6" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+      <rect width="6" height="6" fill="#ffffff"/>
+      <line x1="0" y1="0" x2="0" y2="6" stroke="#333333" stroke-width="1.6"/>
+    </pattern>
+  </defs>
+
+  <rect width="880" height="450" fill="#ffffff"/>
+
+  <text x="30" y="32" font-size="17" font-weight="bold" fill="#333333">Default token estimators, measured against GPT-2 BPE</text>
+  <text x="30" y="54" font-size="13" fill="#333333">Error in the count each framework uses to decide when to compact. 0% would be exact.</text>
+
+  <!-- legend -->
+  <rect x="30" y="70" width="15" height="15" fill="#333333"/>
+  <text x="52" y="82" font-size="12.5" fill="#333333">LangChain count_tokens_approximately</text>
+  <rect x="330" y="70" width="15" height="15" fill="url(#hatch2)" stroke="#333333"/>
+  <text x="352" y="82" font-size="12.5" fill="#333333">Agent Framework len // 4</text>
+
+  <!-- gridlines -->
+  <g stroke="#333333" opacity="0.22" stroke-width="1">
+    <line x1="239" y1="102" x2="239" y2="366"/>
+    <line x1="318" y1="102" x2="318" y2="366"/>
+    <line x1="396" y1="102" x2="396" y2="366"/>
+    <line x1="475" y1="102" x2="475" y2="366"/>
+    <line x1="633" y1="102" x2="633" y2="366"/>
+    <line x1="712" y1="102" x2="712" y2="366"/>
+    <line x1="790" y1="102" x2="790" y2="366"/>
+  </g>
+  <g font-size="12" fill="#333333" text-anchor="middle">
+    <text x="239" y="386">-80%</text>
+    <text x="318" y="386">-60%</text>
+    <text x="396" y="386">-40%</text>
+    <text x="475" y="386">-20%</text>
+    <text x="554" y="386">0%</text>
+    <text x="633" y="386">+20%</text>
+    <text x="712" y="386">+40%</text>
+    <text x="790" y="386">+60%</text>
+  </g>
+
+  <!-- zero baseline -->
+  <line x1="554" y1="98" x2="554" y2="370" stroke="#333333" stroke-width="2"/>
+
+  <!-- ===== english prose: +58 / +38 ===== -->
+  <text x="180" y="128" font-size="13" fill="#333333" text-anchor="end">english prose</text>
+  <rect x="554" y="115" width="228" height="20" rx="4" fill="#333333"/>
+  <text x="790" y="130" font-size="12" fill="#333333">+58%</text>
+  <rect x="554" y="139" width="150" height="20" rx="4" fill="url(#hatch2)" stroke="#333333"/>
+  <text x="712" y="154" font-size="12" fill="#333333">+38%</text>
+
+  <!-- ===== japanese prose: -78 / -84 ===== -->
+  <text x="180" y="198" font-size="13" fill="#333333" text-anchor="end">japanese prose</text>
+  <rect x="247" y="185" width="307" height="20" rx="4" fill="#333333"/>
+  <text x="239" y="200" font-size="12" fill="#333333" text-anchor="end">-78%</text>
+  <rect x="223" y="209" width="331" height="20" rx="4" fill="url(#hatch2)" stroke="#333333"/>
+  <text x="215" y="224" font-size="12" fill="#333333" text-anchor="end">-84%</text>
+
+  <!-- ===== hindi prose: -82 / -84 ===== -->
+  <text x="180" y="268" font-size="13" fill="#333333" text-anchor="end">hindi prose</text>
+  <rect x="231" y="255" width="323" height="20" rx="4" fill="#333333"/>
+  <text x="223" y="270" font-size="12" fill="#333333" text-anchor="end">-82%</text>
+  <rect x="223" y="279" width="331" height="20" rx="4" fill="url(#hatch2)" stroke="#333333"/>
+  <text x="215" y="294" font-size="12" fill="#333333" text-anchor="end">-84%</text>
+
+  <!-- ===== json tool result: -40 / -44 ===== -->
+  <text x="180" y="338" font-size="13" fill="#333333" text-anchor="end">json tool result</text>
+  <rect x="396" y="325" width="158" height="20" rx="4" fill="#333333"/>
+  <text x="388" y="340" font-size="12" fill="#333333" text-anchor="end">-40%</text>
+  <rect x="381" y="349" width="173" height="20" rx="4" fill="url(#hatch2)" stroke="#333333"/>
+  <text x="373" y="364" font-size="12" fill="#333333" text-anchor="end">-44%</text>
+
+  <!-- annotations -->
+  <text x="546" y="410" font-size="12.5" fill="#333333" text-anchor="end">undercounts, so compaction fires late</text>
+  <text x="562" y="410" font-size="12.5" fill="#333333">overcounts, so compaction fires early</text>
+
+  <line x1="30" y1="424" x2="850" y2="424" stroke="#333333" stroke-width="1" opacity="0.35"/>
+  <text x="30" y="442" font-size="12" fill="#333333">The sign of the error flips with the script, so no single correction factor fixes both. Measured with blingfire 0.1.8 gpt2.bin.</text>
+</svg>
