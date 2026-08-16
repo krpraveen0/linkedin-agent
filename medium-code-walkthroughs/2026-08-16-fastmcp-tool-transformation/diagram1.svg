@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="360" viewBox="0 0 760 360" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="760" height="360" fill="#ffffff"/>
+
+  <!-- Left: raw tool -->
+  <rect x="30" y="40" width="270" height="230" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="165" y="66" text-anchor="middle" font-size="15" font-weight="bold" fill="#333333">get_forecast (raw tool)</text>
+  <text x="165" y="86" text-anchor="middle" font-size="12" fill="#333333">what the model would see</text>
+  <line x1="50" y1="98" x2="280" y2="98" stroke="#333333" stroke-width="1"/>
+  <text x="50" y="126" font-size="13" fill="#333333">lat        (required)</text>
+  <text x="50" y="152" font-size="13" fill="#333333">lon        (required)</text>
+  <rect x="44" y="164" width="242" height="26" rx="3" fill="#e0e0e0" stroke="#333333" stroke-width="1"/>
+  <text x="50" y="182" font-size="13" fill="#333333" font-weight="bold">appid    (required)  ← secret</text>
+  <text x="50" y="212" font-size="13" fill="#333333">units      (optional)</text>
+  <text x="165" y="248" text-anchor="middle" font-size="12" fill="#333333">4 params, secret exposed</text>
+
+  <!-- Arrow -->
+  <line x1="310" y1="155" x2="450" y2="155" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="380" y="140" text-anchor="middle" font-size="12" fill="#333333">Tool.from_tool</text>
+  <text x="380" y="176" text-anchor="middle" font-size="12" fill="#333333">+ ArgTransform</text>
+
+  <!-- Right: transformed tool -->
+  <rect x="460" y="40" width="270" height="150" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="595" y="66" text-anchor="middle" font-size="15" font-weight="bold" fill="#333333">forecast (transformed)</text>
+  <text x="595" y="86" text-anchor="middle" font-size="12" fill="#333333">what the model actually sees</text>
+  <line x1="480" y1="98" x2="710" y2="98" stroke="#333333" stroke-width="1"/>
+  <text x="480" y="126" font-size="13" fill="#333333">latitude   (required)</text>
+  <text x="480" y="152" font-size="13" fill="#333333">longitude  (required)</text>
+  <text x="595" y="178" text-anchor="middle" font-size="12" fill="#333333">2 params, clearly named</text>
+
+  <!-- Hidden/injected box -->
+  <rect x="460" y="210" width="270" height="110" rx="6" fill="#e0e0e0" stroke="#333333" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="595" y="234" text-anchor="middle" font-size="13" font-weight="bold" fill="#333333">hidden from model,</text>
+  <text x="595" y="252" text-anchor="middle" font-size="13" font-weight="bold" fill="#333333">injected server-side</text>
+  <text x="480" y="282" font-size="13" fill="#333333">appid = "sk-demo-..."  (constant)</text>
+  <text x="480" y="304" font-size="13" fill="#333333">units = "metric"        (constant)</text>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#333333"/>
+    </marker>
+  </defs>
+</svg>

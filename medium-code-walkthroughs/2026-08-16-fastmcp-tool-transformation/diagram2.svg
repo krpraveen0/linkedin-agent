@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="330" viewBox="0 0 760 330" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="760" height="330" fill="#ffffff"/>
+
+  <!-- Model -->
+  <rect x="30" y="120" width="150" height="80" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="105" y="150" text-anchor="middle" font-size="14" font-weight="bold" fill="#333333">Model / client</text>
+  <text x="105" y="172" text-anchor="middle" font-size="12" fill="#333333">calls forecast(</text>
+  <text x="105" y="188" text-anchor="middle" font-size="12" fill="#333333">latitude, longitude)</text>
+
+  <!-- Transform layer -->
+  <rect x="270" y="95" width="210" height="130" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="375" y="120" text-anchor="middle" font-size="14" font-weight="bold" fill="#333333">FastMCP transform</text>
+  <text x="375" y="146" text-anchor="middle" font-size="12" fill="#333333">rename latitude → lat</text>
+  <text x="375" y="164" text-anchor="middle" font-size="12" fill="#333333">rename longitude → lon</text>
+  <text x="375" y="182" text-anchor="middle" font-size="12" fill="#333333">inject appid, units</text>
+  <text x="375" y="208" text-anchor="middle" font-size="12" fill="#333333" font-style="italic">(via forward())</text>
+
+  <!-- Parent function -->
+  <rect x="570" y="120" width="160" height="80" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="650" y="150" text-anchor="middle" font-size="14" font-weight="bold" fill="#333333">get_forecast</text>
+  <text x="650" y="172" text-anchor="middle" font-size="12" fill="#333333">runs with lat, lon,</text>
+  <text x="650" y="188" text-anchor="middle" font-size="12" fill="#333333">appid, units</text>
+
+  <!-- Arrows -->
+  <line x1="182" y1="160" x2="266" y2="160" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow2)"/>
+  <line x1="482" y1="160" x2="566" y2="160" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow2)"/>
+
+  <!-- Rejected injection path -->
+  <rect x="270" y="255" width="360" height="52" rx="6" fill="#e0e0e0" stroke="#333333" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="450" y="278" text-anchor="middle" font-size="12" fill="#333333" font-weight="bold">caller passes appid="attacker-key"</text>
+  <text x="450" y="296" text-anchor="middle" font-size="12" fill="#333333">→ rejected: "unexpected keyword argument(s): appid"</text>
+  <line x1="105" y1="200" x2="105" y2="281" stroke="#333333" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <line x1="105" y1="281" x2="266" y2="281" stroke="#333333" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow2)"/>
+
+  <defs>
+    <marker id="arrow2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#333333"/>
+    </marker>
+  </defs>
+</svg>
