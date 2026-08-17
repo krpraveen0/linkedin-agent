@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="330" viewBox="0 0 720 330" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="720" height="330" fill="#ffffff"/>
+  <text x="360" y="28" font-size="16" font-weight="bold" fill="#333333" text-anchor="middle">Same query, same threshold. Adding examples flips the winner.</text>
+
+  <!-- LEFT PANEL: Scenario A -->
+  <rect x="24" y="52" width="300" height="238" rx="8" fill="#f0f0f0" stroke="#333333"/>
+  <text x="174" y="76" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">A: refunds has 1 example</text>
+
+  <rect x="44" y="92" width="260" height="30" rx="4" fill="#e0e0e0" stroke="#333333"/>
+  <text x="54" y="111" font-size="11" fill="#333333">refunds  mean = 0.816</text>
+  <text x="294" y="111" font-size="11" fill="#333333" text-anchor="end" font-weight="bold">&#8805; 0.40</text>
+
+  <rect x="44" y="128" width="260" height="30" rx="4" fill="#ffffff" stroke="#333333"/>
+  <text x="54" y="147" font-size="11" fill="#333333">shipping  mean = 0.272</text>
+
+  <line x1="174" y1="168" x2="174" y2="196" stroke="#333333" stroke-width="1.5"/>
+  <polygon points="174,196 170,188 178,188" fill="#333333"/>
+  <rect x="84" y="200" width="180" height="46" rx="6" fill="#e0e0e0" stroke="#333333"/>
+  <text x="174" y="222" font-size="12" fill="#333333" text-anchor="middle">router picks</text>
+  <text x="174" y="239" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">refunds  (correct)</text>
+
+  <!-- RIGHT PANEL: Scenario B -->
+  <rect x="396" y="52" width="300" height="238" rx="8" fill="#f0f0f0" stroke="#333333"/>
+  <text x="546" y="76" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">B: refunds has 4 examples</text>
+
+  <rect x="416" y="92" width="260" height="30" rx="4" fill="#ffffff" stroke="#333333"/>
+  <text x="426" y="111" font-size="11" fill="#333333">refunds  mean = 0.345</text>
+  <text x="666" y="111" font-size="11" fill="#333333" text-anchor="end" font-weight="bold">&lt; 0.40  skipped</text>
+
+  <rect x="416" y="128" width="260" height="30" rx="4" fill="#e0e0e0" stroke="#333333"/>
+  <text x="426" y="147" font-size="11" fill="#333333">shipping  mean = 0.272</text>
+  <text x="666" y="147" font-size="11" fill="#333333" text-anchor="end">no threshold</text>
+
+  <line x1="546" y1="168" x2="546" y2="196" stroke="#333333" stroke-width="1.5"/>
+  <polygon points="546,196 542,188 550,188" fill="#333333"/>
+  <rect x="456" y="200" width="180" height="46" rx="6" fill="#e0e0e0" stroke="#333333"/>
+  <text x="546" y="222" font-size="12" fill="#333333" text-anchor="middle">router picks</text>
+  <text x="546" y="239" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">shipping  (wrong)</text>
+
+  <text x="360" y="312" font-size="11" fill="#333333" text-anchor="middle" font-style="italic">The 0.816 utterance is still in the refunds route in panel B. The mean of the four just fell below 0.40.</text>
+</svg>
