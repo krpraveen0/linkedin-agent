@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="330" viewBox="0 0 720 330" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="720" height="330" fill="#ffffff"/>
+  <defs>
+    <marker id="arrow2" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#333333"/>
+    </marker>
+  </defs>
+
+  <!-- Source boxes -->
+  <rect x="70" y="34" width="230" height="56" fill="#e0e0e0" stroke="#333333" stroke-width="1"/>
+  <text x="185" y="58" text-anchor="middle" font-size="13" fill="#333333">Tool body calls</text>
+  <text x="185" y="77" text-anchor="middle" font-size="14" font-weight="bold" fill="#333333">ctx.elicit(...)</text>
+
+  <rect x="420" y="34" width="230" height="56" fill="#e0e0e0" stroke="#333333" stroke-width="1"/>
+  <text x="535" y="58" text-anchor="middle" font-size="13" fill="#333333">Parameter uses</text>
+  <text x="535" y="77" text-anchor="middle" font-size="14" font-weight="bold" fill="#333333">Resolve(Elicit[...])</text>
+
+  <!-- arrows to band -->
+  <line x1="185" y1="90" x2="185" y2="136" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow2)"/>
+  <line x1="535" y1="90" x2="535" y2="136" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow2)"/>
+
+  <!-- connection band -->
+  <rect x="40" y="140" width="640" height="42" fill="#f0f0f0" stroke="#333333" stroke-width="1"/>
+  <text x="360" y="166" text-anchor="middle" font-size="14" font-weight="bold" fill="#333333">2026-07-28 connection  (no server-to-client back-channel)</text>
+
+  <!-- arrows to outcomes -->
+  <line x1="185" y1="182" x2="185" y2="222" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow2)"/>
+  <line x1="535" y1="182" x2="535" y2="222" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow2)"/>
+
+  <!-- outcome boxes -->
+  <rect x="70" y="226" width="230" height="72" fill="#ffffff" stroke="#333333" stroke-width="2"/>
+  <text x="185" y="252" text-anchor="middle" font-size="14" font-weight="bold" fill="#333333">&#10007; raises</text>
+  <text x="185" y="272" text-anchor="middle" font-size="12" fill="#333333">NoBackChannelError,</text>
+  <text x="185" y="289" text-anchor="middle" font-size="12" fill="#333333">before the user sees it</text>
+
+  <rect x="420" y="226" width="230" height="72" fill="#ffffff" stroke="#333333" stroke-width="2"/>
+  <text x="535" y="252" text-anchor="middle" font-size="14" font-weight="bold" fill="#333333">&#10003; input_required</text>
+  <text x="535" y="272" text-anchor="middle" font-size="12" fill="#333333">client retries, value is</text>
+  <text x="535" y="289" text-anchor="middle" font-size="12" fill="#333333">injected into the tool</text>
+</svg>

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="380" viewBox="0 0 760 380" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="760" height="380" fill="#ffffff"/>
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#333333"/>
+    </marker>
+  </defs>
+
+  <!-- LEFT PANEL: 2025 handshake -->
+  <rect x="20" y="20" width="340" height="340" fill="#f7f7f7" stroke="#cccccc" stroke-width="1"/>
+  <text x="190" y="44" text-anchor="middle" font-size="15" font-weight="bold" fill="#333333">2025 handshake: server-initiated</text>
+
+  <rect x="55" y="60" width="80" height="28" fill="#e0e0e0" stroke="#333333" stroke-width="1"/>
+  <text x="95" y="79" text-anchor="middle" font-size="13" fill="#333333">Client</text>
+  <rect x="245" y="60" width="80" height="28" fill="#e0e0e0" stroke="#333333" stroke-width="1"/>
+  <text x="285" y="79" text-anchor="middle" font-size="13" fill="#333333">Server</text>
+  <line x1="95" y1="88" x2="95" y2="330" stroke="#999999" stroke-width="1" stroke-dasharray="3,3"/>
+  <line x1="285" y1="88" x2="285" y2="330" stroke="#999999" stroke-width="1" stroke-dasharray="3,3"/>
+
+  <line x1="95" y1="115" x2="283" y2="115" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="189" y="110" text-anchor="middle" font-size="12" fill="#333333">call_tool</text>
+
+  <line x1="285" y1="150" x2="97" y2="150" stroke="#333333" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+  <text x="189" y="145" text-anchor="middle" font-size="12" fill="#333333">elicitation/create</text>
+  <text x="189" y="165" text-anchor="middle" font-size="11" fill="#666666" font-style="italic">(back-channel)</text>
+
+  <line x1="95" y1="195" x2="283" y2="195" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="189" y="190" text-anchor="middle" font-size="12" fill="#333333">user's answer</text>
+
+  <line x1="285" y1="230" x2="97" y2="230" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="189" y="225" text-anchor="middle" font-size="12" fill="#333333">tool result</text>
+
+  <text x="190" y="300" text-anchor="middle" font-size="12" fill="#333333">One held-open stream,</text>
+  <text x="190" y="318" text-anchor="middle" font-size="12" fill="#333333">both sides stay alive.</text>
+
+  <!-- RIGHT PANEL: 2026-07-28 MRTR -->
+  <rect x="400" y="20" width="340" height="340" fill="#f7f7f7" stroke="#cccccc" stroke-width="1"/>
+  <text x="570" y="44" text-anchor="middle" font-size="15" font-weight="bold" fill="#333333">2026-07-28: return &amp; retry (MRTR)</text>
+
+  <rect x="435" y="60" width="80" height="28" fill="#e0e0e0" stroke="#333333" stroke-width="1"/>
+  <text x="475" y="79" text-anchor="middle" font-size="13" fill="#333333">Client</text>
+  <rect x="625" y="60" width="80" height="28" fill="#e0e0e0" stroke="#333333" stroke-width="1"/>
+  <text x="665" y="79" text-anchor="middle" font-size="13" fill="#333333">Server</text>
+  <line x1="475" y1="88" x2="475" y2="330" stroke="#999999" stroke-width="1" stroke-dasharray="3,3"/>
+  <line x1="665" y1="88" x2="665" y2="330" stroke="#999999" stroke-width="1" stroke-dasharray="3,3"/>
+
+  <line x1="475" y1="115" x2="663" y2="115" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="569" y="110" text-anchor="middle" font-size="12" fill="#333333">call_tool</text>
+
+  <line x1="665" y1="150" x2="477" y2="150" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="569" y="145" text-anchor="middle" font-size="12" fill="#333333">input_required</text>
+
+  <line x1="475" y1="195" x2="663" y2="195" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="569" y="190" text-anchor="middle" font-size="12" fill="#333333">retry + inputResponses</text>
+
+  <line x1="665" y1="230" x2="477" y2="230" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="569" y="225" text-anchor="middle" font-size="12" fill="#333333">tool result</text>
+
+  <text x="570" y="300" text-anchor="middle" font-size="12" fill="#333333">Two independent round trips.</text>
+  <text x="570" y="318" text-anchor="middle" font-size="12" fill="#333333">No back-channel needed.</text>
+</svg>
