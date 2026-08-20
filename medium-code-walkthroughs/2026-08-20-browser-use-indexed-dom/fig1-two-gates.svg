@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="470" viewBox="0 0 780 470" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="780" height="470" fill="#ffffff"/>
+  <text x="390" y="30" font-size="17" font-weight="bold" text-anchor="middle" fill="#333333">What a browser-use agent actually receives</text>
+  <text x="390" y="50" font-size="12" text-anchor="middle" fill="#333333">Every DOM element must pass both gates to get a [N] index</text>
+
+  <!-- Column headers -->
+  <text x="110" y="88" font-size="13" font-weight="bold" text-anchor="middle" fill="#333333">Elements on the page</text>
+  <text x="330" y="88" font-size="13" font-weight="bold" text-anchor="middle" fill="#333333">Gate 1: is_interactive</text>
+  <text x="500" y="88" font-size="13" font-weight="bold" text-anchor="middle" fill="#333333">Gate 2: is_visible</text>
+  <text x="680" y="88" font-size="13" font-weight="bold" text-anchor="middle" fill="#333333">Result for the LLM</text>
+
+  <!-- Gate boxes -->
+  <rect x="278" y="100" width="104" height="320" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.2"/>
+  <rect x="448" y="100" width="104" height="320" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="1.2"/>
+  <text x="330" y="412" font-size="10" text-anchor="middle" fill="#333333">tag / role / handler / cursor</text>
+  <text x="500" y="412" font-size="10" text-anchor="middle" fill="#333333">rendered &amp; not hidden</text>
+
+  <!-- Rows: y positions -->
+  <!-- Row template: element box left, arrows through gates, result right -->
+
+  <!-- Row 1: button pay -->
+  <rect x="20" y="108" width="180" height="34" rx="4" fill="#e0e0e0" stroke="#333333"/>
+  <text x="30" y="129" font-size="12" fill="#333333">&lt;button&gt; Pay now</text>
+  <line x1="200" y1="125" x2="278" y2="125" stroke="#333333" stroke-width="1"/>
+  <text x="330" y="129" font-size="15" text-anchor="middle" fill="#333333">&#10003;</text>
+  <line x1="382" y1="125" x2="448" y2="125" stroke="#333333" stroke-width="1"/>
+  <text x="500" y="129" font-size="15" text-anchor="middle" fill="#333333">&#10003;</text>
+  <line x1="552" y1="125" x2="612" y2="125" stroke="#333333" stroke-width="1"/>
+  <rect x="612" y="110" width="150" height="30" rx="4" fill="#ffffff" stroke="#333333"/>
+  <text x="622" y="130" font-size="12" font-weight="bold" fill="#333333">[19] indexed</text>
+
+  <!-- Row 2: a terms -->
+  <rect x="20" y="156" width="180" height="34" rx="4" fill="#e0e0e0" stroke="#333333"/>
+  <text x="30" y="177" font-size="12" fill="#333333">&lt;a href&gt; Read the terms</text>
+  <line x1="200" y1="173" x2="278" y2="173" stroke="#333333" stroke-width="1"/>
+  <text x="330" y="177" font-size="15" text-anchor="middle" fill="#333333">&#10003;</text>
+  <line x1="382" y1="173" x2="448" y2="173" stroke="#333333" stroke-width="1"/>
+  <text x="500" y="177" font-size="15" text-anchor="middle" fill="#333333">&#10003;</text>
+  <line x1="552" y1="173" x2="612" y2="173" stroke="#333333" stroke-width="1"/>
+  <rect x="612" y="158" width="150" height="30" rx="4" fill="#ffffff" stroke="#333333"/>
+  <text x="622" y="178" font-size="12" font-weight="bold" fill="#333333">[24] indexed</text>
+
+  <!-- Row 3: input -->
+  <rect x="20" y="204" width="180" height="34" rx="4" fill="#e0e0e0" stroke="#333333"/>
+  <text x="30" y="225" font-size="12" fill="#333333">&lt;input type=text&gt;</text>
+  <line x1="200" y1="221" x2="278" y2="221" stroke="#333333" stroke-width="1"/>
+  <text x="330" y="225" font-size="15" text-anchor="middle" fill="#333333">&#10003;</text>
+  <line x1="382" y1="221" x2="448" y2="221" stroke="#333333" stroke-width="1"/>
+  <text x="500" y="225" font-size="15" text-anchor="middle" fill="#333333">&#10003;</text>
+  <line x1="552" y1="221" x2="612" y2="221" stroke="#333333" stroke-width="1"/>
+  <rect x="612" y="206" width="150" height="30" rx="4" fill="#ffffff" stroke="#333333"/>
+  <text x="622" y="226" font-size="12" font-weight="bold" fill="#333333">[2] indexed</text>
+
+  <!-- Row 4: div onclick -->
+  <rect x="20" y="252" width="180" height="34" rx="4" fill="#e0e0e0" stroke="#333333"/>
+  <text x="30" y="273" font-size="12" fill="#333333">&lt;div onclick&gt; Gift wrap</text>
+  <line x1="200" y1="269" x2="278" y2="269" stroke="#333333" stroke-width="1"/>
+  <text x="330" y="273" font-size="15" text-anchor="middle" fill="#333333">&#10003;</text>
+  <line x1="382" y1="269" x2="448" y2="269" stroke="#333333" stroke-width="1"/>
+  <text x="500" y="273" font-size="15" text-anchor="middle" fill="#333333">&#10003;</text>
+  <line x1="552" y1="269" x2="612" y2="269" stroke="#333333" stroke-width="1"/>
+  <rect x="612" y="254" width="150" height="30" rx="4" fill="#ffffff" stroke="#333333"/>
+  <text x="622" y="274" font-size="12" font-weight="bold" fill="#333333">[4] indexed</text>
+
+  <!-- Row 5: styled div, no handler -->
+  <rect x="20" y="300" width="180" height="34" rx="4" fill="#e0e0e0" stroke="#333333" stroke-dasharray="4 2"/>
+  <text x="30" y="321" font-size="12" fill="#333333">&lt;div style&gt; Apply discount</text>
+  <line x1="200" y1="317" x2="278" y2="317" stroke="#333333" stroke-width="1"/>
+  <text x="330" y="321" font-size="15" text-anchor="middle" fill="#333333">&#10007;</text>
+  <line x1="382" y1="317" x2="612" y2="317" stroke="#333333" stroke-width="1" stroke-dasharray="4 2"/>
+  <rect x="612" y="302" width="150" height="30" rx="4" fill="#f0f0f0" stroke="#333333" stroke-dasharray="4 2"/>
+  <text x="622" y="322" font-size="11" fill="#333333">plain text, no index</text>
+
+  <!-- Row 6: hidden button -->
+  <rect x="20" y="348" width="180" height="34" rx="4" fill="#e0e0e0" stroke="#333333" stroke-dasharray="4 2"/>
+  <text x="30" y="369" font-size="12" fill="#333333">&lt;button display:none&gt;</text>
+  <line x1="200" y1="365" x2="278" y2="365" stroke="#333333" stroke-width="1"/>
+  <text x="330" y="369" font-size="15" text-anchor="middle" fill="#333333">&#10003;</text>
+  <line x1="382" y1="365" x2="448" y2="365" stroke="#333333" stroke-width="1"/>
+  <text x="500" y="369" font-size="15" text-anchor="middle" fill="#333333">&#10007;</text>
+  <line x1="552" y1="365" x2="612" y2="365" stroke="#333333" stroke-width="1" stroke-dasharray="4 2"/>
+  <rect x="612" y="350" width="150" height="30" rx="4" fill="#f0f0f0" stroke="#333333" stroke-dasharray="4 2"/>
+  <text x="622" y="370" font-size="11" fill="#333333">dropped entirely</text>
+
+  <text x="390" y="445" font-size="11" text-anchor="middle" fill="#333333">&#10003; = passes gate    &#10007; = fails gate    dashed = never reaches the model as an action</text>
+</svg>
