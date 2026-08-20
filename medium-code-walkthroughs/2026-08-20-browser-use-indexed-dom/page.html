@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Checkout</title></head>
+<body>
+  <h1>Checkout</h1>
+
+  <!-- A real, standard interactive control -->
+  <button id="pay">Pay now</button>
+
+  <!-- A real link -->
+  <a id="terms" href="/terms">Read the terms</a>
+
+  <!-- A real text field -->
+  <input id="coupon" type="text" placeholder="Coupon code">
+
+  <!-- Looks like a button (styled div) but has NO handler and no role -->
+  <div id="fakebtn" style="border:1px solid #333;padding:6px;display:inline-block;background:#eee">
+    Apply discount
+  </div>
+
+  <!-- A genuinely interactive div: has a click handler -->
+  <div id="realdiv" onclick="void 0" style="border:1px solid #333;padding:6px;display:inline-block">
+    Gift wrap
+  </div>
+
+  <!-- An interactive control that is hidden from view -->
+  <button id="hidden" style="display:none">Secret admin action</button>
+</body>
+</html>
