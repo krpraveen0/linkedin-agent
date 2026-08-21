@@ -1,0 +1,14 @@
+{
+  "name": "aisdk7-single-step-tool-loop",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Runnable demo: AI SDK 7 generateText is single-step by default; stopWhen / the Agent class enable the tool loop.",
+  "scripts": {
+    "start": "node agent-loop.mjs"
+  },
+  "dependencies": {
+    "ai": "7.0.71",
+    "zod": "4.4.3"
+  }
+}
