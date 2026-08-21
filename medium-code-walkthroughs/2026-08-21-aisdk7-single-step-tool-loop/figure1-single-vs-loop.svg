@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="760" height="460" fill="#ffffff"/>
+  <!-- Divider -->
+  <line x1="380" y1="60" x2="380" y2="440" stroke="#cccccc" stroke-width="1" stroke-dasharray="4 4"/>
+
+  <!-- Column headers -->
+  <text x="190" y="36" font-size="16" font-weight="bold" fill="#333333" text-anchor="middle">generateText — no stopWhen</text>
+  <text x="190" y="54" font-size="12" fill="#333333" text-anchor="middle">one step, then it stops</text>
+  <text x="570" y="36" font-size="16" font-weight="bold" fill="#333333" text-anchor="middle">stopWhen: isStepCount(5)</text>
+  <text x="570" y="54" font-size="12" fill="#333333" text-anchor="middle">loops until the model writes text</text>
+
+  <!-- Arrow marker -->
+  <defs>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#333333"/>
+    </marker>
+  </defs>
+
+  <!-- LEFT column -->
+  <rect x="115" y="72" width="150" height="40" rx="4" fill="#f0f0f0" stroke="#333333"/>
+  <text x="190" y="97" font-size="13" fill="#333333" text-anchor="middle">Prompt + tool</text>
+  <line x1="190" y1="112" x2="190" y2="140" stroke="#333333" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="115" y="142" width="150" height="40" rx="4" fill="#e0e0e0" stroke="#333333"/>
+  <text x="190" y="167" font-size="13" fill="#333333" text-anchor="middle">Model (call 1)</text>
+  <line x1="190" y1="182" x2="190" y2="210" stroke="#333333" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="196" y="200" font-size="11" fill="#333333" text-anchor="start">tool call</text>
+
+  <rect x="115" y="212" width="150" height="40" rx="4" fill="#f0f0f0" stroke="#333333"/>
+  <text x="190" y="237" font-size="13" fill="#333333" text-anchor="middle">Execute tool</text>
+  <line x1="190" y1="252" x2="190" y2="280" stroke="#333333" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="105" y="282" width="170" height="66" rx="4" fill="#ffffff" stroke="#333333" stroke-width="2"/>
+  <text x="190" y="305" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">STOP</text>
+  <text x="190" y="323" font-size="11.5" fill="#333333" text-anchor="middle">finishReason: tool-calls</text>
+  <text x="190" y="339" font-size="11.5" fill="#333333" text-anchor="middle">text: "" (empty)</text>
+
+  <!-- RIGHT column -->
+  <rect x="495" y="72" width="150" height="40" rx="4" fill="#f0f0f0" stroke="#333333"/>
+  <text x="570" y="97" font-size="13" fill="#333333" text-anchor="middle">Prompt + tool</text>
+  <line x1="570" y1="112" x2="570" y2="140" stroke="#333333" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="495" y="142" width="150" height="40" rx="4" fill="#e0e0e0" stroke="#333333"/>
+  <text x="570" y="167" font-size="13" fill="#333333" text-anchor="middle">Model (call 1)</text>
+  <line x1="570" y1="182" x2="570" y2="210" stroke="#333333" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="576" y="200" font-size="11" fill="#333333" text-anchor="start">tool call</text>
+
+  <rect x="495" y="212" width="150" height="40" rx="4" fill="#f0f0f0" stroke="#333333"/>
+  <text x="570" y="237" font-size="13" fill="#333333" text-anchor="middle">Execute tool</text>
+
+  <!-- feedback arrow: result fed back to model -->
+  <path d="M645,232 H705 V162 H645" fill="none" stroke="#333333" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="712" y="197" font-size="11" fill="#333333" text-anchor="start">result</text>
+  <text x="712" y="211" font-size="11" fill="#333333" text-anchor="start">fed back</text>
+
+  <rect x="495" y="282" width="150" height="40" rx="4" fill="#e0e0e0" stroke="#333333"/>
+  <text x="570" y="307" font-size="13" fill="#333333" text-anchor="middle">Model (call 2)</text>
+  <line x1="570" y1="252" x2="570" y2="200" stroke="#ffffff" stroke-width="0.1"/>
+  <line x1="570" y1="322" x2="570" y2="350" stroke="#333333" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="576" y="342" font-size="11" fill="#333333" text-anchor="start">text</text>
+
+  <rect x="495" y="352" width="150" height="60" rx="4" fill="#ffffff" stroke="#333333" stroke-width="2"/>
+  <text x="570" y="375" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">STOP</text>
+  <text x="570" y="393" font-size="11.5" fill="#333333" text-anchor="middle">finishReason: stop</text>
+  <text x="570" y="408" font-size="11.5" fill="#333333" text-anchor="middle">text: the answer</text>
+</svg>
