@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="330" viewBox="0 0 760 330" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="760" height="330" fill="#ffffff"/>
+  <text x="380" y="30" font-size="16" font-weight="bold" fill="#333333" text-anchor="middle">Why int failures never move the pass rate</text>
+
+  <!-- MatchesBool row -->
+  <rect x="40" y="60" width="200" height="70" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="140" y="85" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">MatchesBool</text>
+  <text x="140" y="104" font-size="12" fill="#333333" text-anchor="middle">returns True / False</text>
+  <text x="140" y="121" font-size="12" fill="#333333" text-anchor="middle">→ assertions bucket</text>
+
+  <!-- MatchesInt row -->
+  <rect x="40" y="200" width="200" height="70" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="140" y="225" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">MatchesInt</text>
+  <text x="140" y="244" font-size="12" fill="#333333" text-anchor="middle">returns 1 / 0</text>
+  <text x="140" y="261" font-size="12" fill="#333333" text-anchor="middle">→ scores bucket</text>
+
+  <!-- pass rate box -->
+  <rect x="470" y="60" width="250" height="70" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="595" y="84" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">Assertion pass rate</text>
+  <text x="595" y="103" font-size="12" fill="#333333" text-anchor="middle">n_passing / n_assertions</text>
+  <text x="595" y="120" font-size="12" fill="#333333" text-anchor="middle">= 50.0%</text>
+
+  <!-- score average box -->
+  <rect x="470" y="200" width="250" height="70" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="595" y="224" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">Score average</text>
+  <text x="595" y="243" font-size="12" fill="#333333" text-anchor="middle">(1 + 0) / 2</text>
+  <text x="595" y="260" font-size="12" fill="#333333" text-anchor="middle">= 0.500</text>
+
+  <!-- arrows -->
+  <line x1="240" y1="95" x2="468" y2="95" stroke="#333333" stroke-width="1.5" marker-end="url(#arr2)"/>
+  <line x1="240" y1="235" x2="468" y2="235" stroke="#333333" stroke-width="1.5" marker-end="url(#arr2)"/>
+
+  <!-- crossed-out non-link: int does not reach pass rate -->
+  <line x1="240" y1="220" x2="465" y2="112" stroke="#333333" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#arr2)"/>
+  <line x1="342" y1="150" x2="366" y2="182" stroke="#333333" stroke-width="2"/>
+  <line x1="366" y1="150" x2="342" y2="182" stroke="#333333" stroke-width="2"/>
+  <text x="300" y="150" font-size="11" fill="#333333">int results are</text>
+  <text x="300" y="164" font-size="11" fill="#333333">not counted here</text>
+
+  <text x="380" y="305" font-size="12" fill="#333333" text-anchor="middle">The pass rate is computed only from bool results, so a 0 lowers no pass rate.</text>
+
+  <defs>
+    <marker id="arr2" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#333333"/>
+    </marker>
+  </defs>
+</svg>
