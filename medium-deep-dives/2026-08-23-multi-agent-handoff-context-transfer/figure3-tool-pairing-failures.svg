@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="430" viewBox="0 0 900 430" font-family="Helvetica, Arial, sans-serif">
+  <rect width="900" height="430" fill="#ffffff"/>
+  <text x="20" y="30" font-size="17" font-weight="bold" fill="#333333">Two ways a handoff breaks tool-call pairing</text>
+  <text x="20" y="52" font-size="13" fill="#333333">Providers validate in both directions. A call with no result and a result with no call are both rejectable.</text>
+
+  <!-- left: dangling call -->
+  <rect x="20" y="72" width="410" height="150" fill="#ffffff" stroke="#333333"/>
+  <text x="34" y="94" font-size="13" font-weight="bold" fill="#333333">Dangling tool call</text>
+  <text x="34" y="112" font-size="11" fill="#333333">filter removed the result but kept the call</text>
+  <rect x="34" y="124" width="180" height="32" fill="#f0f0f0" stroke="#333333"/>
+  <text x="44" y="145" font-size="11" fill="#333333">AIMessage  tool_call id=X</text>
+  <rect x="34" y="164" width="180" height="32" fill="#ffffff" stroke="#333333" stroke-dasharray="4 3"/>
+  <text x="44" y="185" font-size="11" fill="#333333">ToolMessage  id=X   (absent)</text>
+  <path d="M 224 140 L 262 140" stroke="#333333" stroke-width="1.4" marker-end="url(#a3)"/>
+  <path d="M 224 180 L 262 180" stroke="#333333" stroke-width="1.4" stroke-dasharray="3 3"/>
+  <text x="272" y="152" font-size="12" fill="#333333">model asked,</text>
+  <text x="272" y="170" font-size="12" fill="#333333">never answered</text>
+
+  <!-- right: orphan result -->
+  <rect x="470" y="72" width="410" height="150" fill="#ffffff" stroke="#333333"/>
+  <text x="484" y="94" font-size="13" font-weight="bold" fill="#333333">Orphan tool result</text>
+  <text x="484" y="112" font-size="11" fill="#333333">Command wrote the result but not the call</text>
+  <rect x="484" y="124" width="180" height="32" fill="#ffffff" stroke="#333333" stroke-dasharray="4 3"/>
+  <text x="494" y="145" font-size="11" fill="#333333">AIMessage  tool_call id=X   (absent)</text>
+  <rect x="484" y="164" width="180" height="32" fill="#f0f0f0" stroke="#333333"/>
+  <text x="494" y="185" font-size="11" fill="#333333">ToolMessage  id=X</text>
+  <path d="M 674 140 L 712 140" stroke="#333333" stroke-width="1.4" stroke-dasharray="3 3"/>
+  <path d="M 674 180 L 712 180" stroke="#333333" stroke-width="1.4" marker-end="url(#a3)"/>
+  <text x="722" y="152" font-size="12" fill="#333333">answer to a</text>
+  <text x="722" y="170" font-size="12" fill="#333333">question never asked</text>
+
+  <!-- mitigations -->
+  <text x="20" y="256" font-size="14" font-weight="bold" fill="#333333">How each framework avoids them</text>
+
+  <rect x="20" y="268" width="280" height="112" fill="#f0f0f0" stroke="#333333"/>
+  <text x="34" y="290" font-size="12" font-weight="bold" fill="#333333">OpenAI Agents SDK</text>
+  <text x="34" y="311" font-size="11" fill="#333333">Forwards the whole item list, so the</text>
+  <text x="34" y="328" font-size="11" fill="#333333">pair is intact by construction.</text>
+  <text x="34" y="349" font-size="11" fill="#333333">nest_handoff_history collapses both</text>
+  <text x="34" y="366" font-size="11" fill="#333333">halves into one summary message.</text>
+
+  <rect x="310" y="268" width="280" height="112" fill="#f0f0f0" stroke="#333333"/>
+  <text x="324" y="290" font-size="12" font-weight="bold" fill="#333333">Microsoft Agent Framework</text>
+  <text x="324" y="311" font-size="11" fill="#333333">Deletes all tool-control content on</text>
+  <text x="324" y="328" font-size="11" fill="#333333">every handoff, so neither half can</text>
+  <text x="324" y="349" font-size="11" fill="#333333">survive to be unmatched. Docstring</text>
+  <text x="324" y="366" font-size="11" fill="#333333">names this as the reason.</text>
+
+  <rect x="600" y="268" width="280" height="112" fill="#f0f0f0" stroke="#333333"/>
+  <text x="614" y="290" font-size="12" font-weight="bold" fill="#333333">LangGraph</text>
+  <text x="614" y="311" font-size="11" fill="#333333">You carry the pair by hand: the docs</text>
+  <text x="614" y="328" font-size="11" fill="#333333">put last_ai_message next to the</text>
+  <text x="614" y="349" font-size="11" fill="#333333">ToolMessage in the Command update.</text>
+  <text x="614" y="366" font-size="11" fill="#333333">Omit it and you get the orphan above.</text>
+
+  <text x="20" y="410" font-size="12" fill="#333333">Reproduced in 03_langgraph_handoff.py, variant A: orphan ToolMessages in final transcript: ['call_handoff_1'].</text>
+
+  <defs>
+    <marker id="a3" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#333333"/>
+    </marker>
+  </defs>
+</svg>

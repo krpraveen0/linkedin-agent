@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="470" viewBox="0 0 900 470" font-family="Helvetica, Arial, sans-serif">
+  <rect width="900" height="470" fill="#ffffff"/>
+  <text x="20" y="30" font-size="17" font-weight="bold" fill="#333333">Inside nest_handoff_history: how the transcript is partitioned</text>
+  <text x="20" y="52" font-size="13" fill="#333333">agents/handoffs/history.py — every item is tested, then either buffered into a summary or forwarded verbatim.</text>
+
+  <!-- input column -->
+  <text x="20" y="88" font-size="13" font-weight="bold" fill="#333333">Transcript items</text>
+  <rect x="20" y="98" width="190" height="34" fill="#f0f0f0" stroke="#333333"/>
+  <text x="30" y="119" font-size="12" fill="#333333">user message</text>
+  <rect x="20" y="138" width="190" height="34" fill="#f0f0f0" stroke="#333333"/>
+  <text x="30" y="159" font-size="12" fill="#333333">function_call</text>
+  <rect x="20" y="178" width="190" height="34" fill="#f0f0f0" stroke="#333333"/>
+  <text x="30" y="199" font-size="12" fill="#333333">function_call_output</text>
+  <rect x="20" y="218" width="190" height="34" fill="#f0f0f0" stroke="#333333"/>
+  <text x="30" y="239" font-size="12" fill="#333333">reasoning</text>
+  <rect x="20" y="258" width="190" height="34" fill="#f0f0f0" stroke="#333333"/>
+  <text x="30" y="279" font-size="12" fill="#333333">assistant message</text>
+
+  <!-- predicate -->
+  <path d="M 215 115 L 265 115" stroke="#333333" stroke-width="1.4" marker-end="url(#a2)"/>
+  <path d="M 215 155 L 265 155" stroke="#333333" stroke-width="1.4" marker-end="url(#a2)"/>
+  <path d="M 215 195 L 265 195" stroke="#333333" stroke-width="1.4" marker-end="url(#a2)"/>
+  <path d="M 215 235 L 265 235" stroke="#333333" stroke-width="1.4" marker-end="url(#a2)"/>
+  <path d="M 215 275 L 265 275" stroke="#333333" stroke-width="1.4" marker-end="url(#a2)"/>
+
+  <rect x="268" y="98" width="210" height="194" fill="#ffffff" stroke="#333333" stroke-width="2"/>
+  <text x="373" y="122" font-size="12" font-weight="bold" fill="#333333" text-anchor="middle">_should_forward_*_item()</text>
+  <text x="280" y="146" font-size="11" fill="#333333">False if type is in</text>
+  <text x="280" y="164" font-size="11" fill="#333333">_SUMMARY_ONLY_INPUT_TYPES:</text>
+  <text x="292" y="182" font-size="11" fill="#333333">"function_call"</text>
+  <text x="292" y="199" font-size="11" fill="#333333">"function_call_output"</text>
+  <text x="292" y="216" font-size="11" fill="#333333">"reasoning"</text>
+  <text x="280" y="240" font-size="11" fill="#333333">False if role == "assistant"</text>
+  <text x="280" y="264" font-size="11" fill="#333333">(pre-handoff items)</text>
+  <text x="280" y="283" font-size="11" fill="#333333">otherwise: forward verbatim</text>
+
+  <!-- outputs -->
+  <path d="M 483 150 L 533 150" stroke="#333333" stroke-width="1.4" marker-end="url(#a2)"/>
+  <text x="508" y="143" font-size="10" fill="#333333" text-anchor="middle">no</text>
+  <path d="M 483 250 L 533 250" stroke="#333333" stroke-width="1.4" marker-end="url(#a2)"/>
+  <text x="508" y="243" font-size="10" fill="#333333" text-anchor="middle">yes</text>
+
+  <rect x="538" y="98" width="342" height="118" fill="#e0e0e0" stroke="#333333"/>
+  <text x="550" y="120" font-size="12" font-weight="bold" fill="#333333">buffered → one assistant summary message</text>
+  <text x="550" y="142" font-size="11" fill="#333333">For context, here is the conversation so far…</text>
+  <text x="550" y="160" font-size="11" fill="#333333">&lt;CONVERSATION HISTORY&gt;</text>
+  <text x="562" y="177" font-size="11" fill="#333333">1. user: Order A-1183 arrived damaged…</text>
+  <text x="562" y="194" font-size="11" fill="#333333">2. {"arguments": "{\"order_id\":\"A-1183\"}", …</text>
+  <text x="550" y="211" font-size="11" fill="#333333">&lt;/CONVERSATION HISTORY&gt;</text>
+
+  <rect x="538" y="228" width="342" height="46" fill="#f0f0f0" stroke="#333333"/>
+  <text x="550" y="248" font-size="12" font-weight="bold" fill="#333333">forwarded verbatim, in original position</text>
+  <text x="550" y="266" font-size="11" fill="#333333">(nothing qualified in this run's transcript)</text>
+
+  <!-- result -->
+  <rect x="20" y="320" width="860" height="76" fill="#ffffff" stroke="#333333" stroke-width="2"/>
+  <text x="34" y="343" font-size="13" font-weight="bold" fill="#333333">Measured result on this transcript</text>
+  <text x="34" y="365" font-size="12" fill="#333333">5 structured items  →  1 assistant message.   Item count falls.</text>
+  <text x="34" y="385" font-size="12" fill="#333333">574 tokens  →  830 tokens.   Token count rises 45%: escaped JSON inside a text block costs more than the typed items.</text>
+
+  <text x="20" y="428" font-size="12" fill="#333333">Default is off: run_config.py declares nest_handoff_history: bool = False, and the opt-in is skipped entirely</text>
+  <text x="20" y="446" font-size="12" fill="#333333">if the handoff or the run already sets an input filter. Measured on openai-agents 0.22.0.</text>
+
+  <defs>
+    <marker id="a2" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#333333"/>
+    </marker>
+  </defs>
+</svg>
