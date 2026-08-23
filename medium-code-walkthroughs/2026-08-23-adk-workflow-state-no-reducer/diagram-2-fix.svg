@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="330" viewBox="0 0 720 330" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="720" height="330" fill="#ffffff"/>
+  <text x="360" y="30" font-size="16" font-weight="bold" fill="#333333" text-anchor="middle">The fix: branch-private keys + a JoinNode</text>
+
+  <defs>
+    <marker id="arrow2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 z" fill="#333333"/>
+    </marker>
+  </defs>
+
+  <!-- fan_out -->
+  <rect x="40" y="140" width="110" height="46" rx="6" fill="#f0f0f0" stroke="#333333"/>
+  <text x="95" y="168" font-size="14" fill="#333333" text-anchor="middle">start node</text>
+
+  <!-- sentiment -->
+  <rect x="210" y="70" width="170" height="46" rx="6" fill="#f0f0f0" stroke="#333333"/>
+  <text x="295" y="92" font-size="13" fill="#333333" text-anchor="middle">sentiment</text>
+  <text x="295" y="108" font-size="12" fill="#333333" text-anchor="middle">state['sentiment'] = ...</text>
+
+  <!-- keywords -->
+  <rect x="210" y="210" width="170" height="46" rx="6" fill="#f0f0f0" stroke="#333333"/>
+  <text x="295" y="232" font-size="13" fill="#333333" text-anchor="middle">keywords</text>
+  <text x="295" y="248" font-size="12" fill="#333333" text-anchor="middle">state['keywords'] = ...</text>
+
+  <!-- JoinNode -->
+  <rect x="430" y="140" width="110" height="46" rx="6" fill="#e0e0e0" stroke="#333333" stroke-width="2"/>
+  <text x="485" y="162" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">JoinNode</text>
+  <text x="485" y="178" font-size="12" fill="#333333" text-anchor="middle">waits for both</text>
+
+  <!-- aggregate -->
+  <rect x="575" y="132" width="120" height="62" rx="6" fill="#f0f0f0" stroke="#333333"/>
+  <text x="635" y="153" font-size="12" fill="#333333" text-anchor="middle">aggregate dict</text>
+  <text x="635" y="169" font-size="12" fill="#333333" text-anchor="middle">{ sentiment,</text>
+  <text x="635" y="185" font-size="12" fill="#333333" text-anchor="middle">keywords }</text>
+
+  <!-- edges -->
+  <line x1="150" y1="150" x2="206" y2="100" stroke="#333333" marker-end="url(#arrow2)"/>
+  <line x1="150" y1="176" x2="206" y2="228" stroke="#333333" marker-end="url(#arrow2)"/>
+  <line x1="380" y1="98" x2="428" y2="150" stroke="#333333" marker-end="url(#arrow2)"/>
+  <line x1="380" y1="228" x2="428" y2="178" stroke="#333333" marker-end="url(#arrow2)"/>
+  <line x1="540" y1="163" x2="571" y2="163" stroke="#333333" marker-end="url(#arrow2)"/>
+
+  <text x="360" y="300" font-size="12" fill="#333333" text-anchor="middle">No two branches share a key, so nothing is overwritten — both results survive.</text>
+</svg>
