@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="330" viewBox="0 0 720 330" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="720" height="330" fill="#ffffff"/>
+  <text x="360" y="30" font-size="16" font-weight="bold" fill="#333333" text-anchor="middle">Fan-out with a shared state key (no reducer)</text>
+
+  <!-- defs: arrowhead -->
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 z" fill="#333333"/>
+    </marker>
+  </defs>
+
+  <!-- START -->
+  <rect x="40" y="140" width="90" height="46" rx="6" fill="#e0e0e0" stroke="#333333"/>
+  <text x="85" y="168" font-size="14" fill="#333333" text-anchor="middle">START</text>
+
+  <!-- fan_out -->
+  <rect x="180" y="140" width="110" height="46" rx="6" fill="#f0f0f0" stroke="#333333"/>
+  <text x="235" y="168" font-size="14" fill="#333333" text-anchor="middle">start node</text>
+
+  <!-- sentiment -->
+  <rect x="360" y="70" width="150" height="46" rx="6" fill="#f0f0f0" stroke="#333333"/>
+  <text x="435" y="92" font-size="13" fill="#333333" text-anchor="middle">sentiment (parallel)</text>
+  <text x="435" y="108" font-size="12" fill="#333333" text-anchor="middle">state['summary'] = ...</text>
+
+  <!-- keywords -->
+  <rect x="360" y="210" width="150" height="46" rx="6" fill="#f0f0f0" stroke="#333333"/>
+  <text x="435" y="232" font-size="13" fill="#333333" text-anchor="middle">keywords (parallel)</text>
+  <text x="435" y="248" font-size="12" fill="#333333" text-anchor="middle">state['summary'] = ...</text>
+
+  <!-- shared state -->
+  <rect x="560" y="140" width="130" height="46" rx="6" fill="#e0e0e0" stroke="#333333" stroke-width="2"/>
+  <text x="625" y="162" font-size="13" font-weight="bold" fill="#333333" text-anchor="middle">state['summary']</text>
+  <text x="625" y="178" font-size="12" fill="#333333" text-anchor="middle">one slot</text>
+
+  <!-- edges -->
+  <line x1="130" y1="163" x2="176" y2="163" stroke="#333333" marker-end="url(#arrow)"/>
+  <line x1="290" y1="150" x2="356" y2="100" stroke="#333333" marker-end="url(#arrow)"/>
+  <line x1="290" y1="176" x2="356" y2="228" stroke="#333333" marker-end="url(#arrow)"/>
+  <line x1="510" y1="98" x2="558" y2="150" stroke="#333333" marker-end="url(#arrow)"/>
+  <line x1="510" y1="228" x2="558" y2="178" stroke="#333333" marker-end="url(#arrow)"/>
+
+  <!-- last write wins label -->
+  <text x="625" y="215" font-size="12" fill="#333333" text-anchor="middle">last delta committed</text>
+  <text x="625" y="231" font-size="12" font-weight="bold" fill="#333333" text-anchor="middle">wins — silently</text>
+</svg>
