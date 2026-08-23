@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520" font-family="Helvetica, Arial, sans-serif">
+  <rect width="900" height="520" fill="#ffffff"/>
+  <text x="20" y="30" font-size="17" font-weight="bold" fill="#333333">Three mechanisms for handing a conversation to a second agent</text>
+  <text x="20" y="52" font-size="13" fill="#333333">Same task in each row. Shaded blocks are what the receiving agent's model actually gets.</text>
+
+  <!-- Row 1: OpenAI Agents SDK -->
+  <text x="20" y="92" font-size="14" font-weight="bold" fill="#333333">OpenAI Agents SDK — tool call swaps the agent, item list continues</text>
+  <rect x="20" y="104" width="120" height="44" fill="#f0f0f0" stroke="#333333"/>
+  <text x="80" y="126" font-size="12" fill="#333333" text-anchor="middle">user msg</text>
+  <text x="80" y="141" font-size="11" fill="#333333" text-anchor="middle">25 tok</text>
+
+  <rect x="150" y="104" width="130" height="44" fill="#f0f0f0" stroke="#333333"/>
+  <text x="215" y="126" font-size="12" fill="#333333" text-anchor="middle">function_call</text>
+  <text x="215" y="141" font-size="11" fill="#333333" text-anchor="middle">lookup_order</text>
+
+  <rect x="290" y="104" width="150" height="44" fill="#e0e0e0" stroke="#333333"/>
+  <text x="365" y="126" font-size="12" fill="#333333" text-anchor="middle">function_call_output</text>
+  <text x="365" y="141" font-size="11" fill="#333333" text-anchor="middle">order record, 310 tok</text>
+
+  <rect x="450" y="104" width="170" height="44" fill="#f0f0f0" stroke="#333333"/>
+  <text x="535" y="126" font-size="12" fill="#333333" text-anchor="middle">transfer_to_refund_agent</text>
+  <text x="535" y="141" font-size="11" fill="#333333" text-anchor="middle">call + output</text>
+
+  <path d="M 625 126 L 665 126" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="670" y="100" width="200" height="52" fill="#ffffff" stroke="#333333" stroke-width="2"/>
+  <text x="770" y="121" font-size="12" font-weight="bold" fill="#333333" text-anchor="middle">Refund agent receives</text>
+  <text x="770" y="139" font-size="12" fill="#333333" text-anchor="middle">all 5 items — 574 tokens</text>
+
+  <!-- Row 2: Agent Framework -->
+  <text x="20" y="216" font-size="14" font-weight="bold" fill="#333333">Microsoft Agent Framework — clean_conversation_for_handoff() drops all non-text</text>
+  <rect x="20" y="228" width="120" height="44" fill="#f0f0f0" stroke="#333333"/>
+  <text x="80" y="250" font-size="12" fill="#333333" text-anchor="middle">user msg</text>
+  <text x="80" y="265" font-size="11" fill="#333333" text-anchor="middle">text</text>
+
+  <rect x="150" y="228" width="130" height="44" fill="#ffffff" stroke="#333333" stroke-dasharray="4 3"/>
+  <text x="215" y="250" font-size="12" fill="#333333" text-anchor="middle">function_call</text>
+  <text x="215" y="265" font-size="11" fill="#333333" text-anchor="middle">stripped</text>
+
+  <rect x="290" y="228" width="150" height="44" fill="#ffffff" stroke="#333333" stroke-dasharray="4 3"/>
+  <text x="365" y="250" font-size="12" fill="#333333" text-anchor="middle">function_result</text>
+  <text x="365" y="265" font-size="11" fill="#333333" text-anchor="middle">stripped</text>
+
+  <rect x="450" y="228" width="170" height="44" fill="#f0f0f0" stroke="#333333"/>
+  <text x="535" y="250" font-size="12" fill="#333333" text-anchor="middle">assistant text</text>
+  <text x="535" y="265" font-size="11" fill="#333333" text-anchor="middle">author=triage</text>
+
+  <path d="M 625 250 L 665 250" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="670" y="224" width="200" height="52" fill="#ffffff" stroke="#333333" stroke-width="2"/>
+  <text x="770" y="245" font-size="12" font-weight="bold" fill="#333333" text-anchor="middle">Refund agent receives</text>
+  <text x="770" y="263" font-size="12" fill="#333333" text-anchor="middle">2 messages — 122 tokens</text>
+
+  <!-- Row 3: LangGraph -->
+  <text x="20" y="340" font-size="14" font-weight="bold" fill="#333333">LangGraph — Command(goto, graph=PARENT) carries only its own update dict</text>
+
+  <rect x="20" y="352" width="420" height="86" fill="#ffffff" stroke="#333333" stroke-dasharray="4 3"/>
+  <text x="230" y="372" font-size="12" font-style="italic" fill="#333333" text-anchor="middle">triage subgraph — never returns its state</text>
+  <rect x="36" y="382" width="120" height="42" fill="#f0f0f0" stroke="#333333"/>
+  <text x="96" y="403" font-size="11" fill="#333333" text-anchor="middle">AIMessage</text>
+  <text x="96" y="417" font-size="11" fill="#333333" text-anchor="middle">lookup_order</text>
+  <rect x="166" y="382" width="150" height="42" fill="#e0e0e0" stroke="#333333"/>
+  <text x="241" y="403" font-size="11" fill="#333333" text-anchor="middle">ToolMessage</text>
+  <text x="241" y="417" font-size="11" fill="#333333" text-anchor="middle">order record, 310 tok</text>
+  <rect x="326" y="382" width="100" height="42" fill="#f0f0f0" stroke="#333333"/>
+  <text x="376" y="403" font-size="11" fill="#333333" text-anchor="middle">AIMessage</text>
+  <text x="376" y="417" font-size="11" fill="#333333" text-anchor="middle">transfer call</text>
+
+  <path d="M 445 395 L 500 395" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="472" y="388" font-size="10" fill="#333333" text-anchor="middle">only</text>
+  <rect x="505" y="366" width="115" height="58" fill="#f0f0f0" stroke="#333333"/>
+  <text x="562" y="388" font-size="12" fill="#333333" text-anchor="middle">update dict</text>
+  <text x="562" y="404" font-size="11" fill="#333333" text-anchor="middle">AIMessage +</text>
+  <text x="562" y="418" font-size="11" fill="#333333" text-anchor="middle">ToolMessage</text>
+
+  <path d="M 625 395 L 665 395" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="670" y="369" width="200" height="52" fill="#ffffff" stroke="#333333" stroke-width="2"/>
+  <text x="770" y="390" font-size="12" font-weight="bold" fill="#333333" text-anchor="middle">Refund agent receives</text>
+  <text x="770" y="408" font-size="12" fill="#333333" text-anchor="middle">4 messages — 233 tokens</text>
+
+  <text x="20" y="478" font-size="12" fill="#333333">Token counts: GPT-2 BPE over a canonical JSON dump of each framework's own request payload. Each framework serializes</text>
+  <text x="20" y="496" font-size="12" fill="#333333">differently and only LangGraph's count includes a 37-token system prompt, so compare rows directionally, not exactly.</text>
+
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#333333"/>
+    </marker>
+  </defs>
+</svg>
