@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="380" viewBox="0 0 560 380" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="560" height="380" fill="#ffffff"/>
+  <text x="280" y="28" font-size="16" font-weight="bold" fill="#333333" text-anchor="middle">Same query, opposite winners: squared L2 vs cosine</text>
+
+  <!-- arrowhead marker -->
+  <defs>
+    <marker id="ah" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#333333"/>
+    </marker>
+  </defs>
+
+  <!-- axes: origin at (70,300), x to 500, y up to 60 -->
+  <line x1="70" y1="300" x2="510" y2="300" stroke="#333333" stroke-width="1.5" marker-end="url(#ah)"/>
+  <line x1="70" y1="300" x2="70" y2="55" stroke="#333333" stroke-width="1.5" marker-end="url(#ah)"/>
+  <text x="515" y="304" font-size="12" fill="#333333">x</text>
+  <text x="64" y="52" font-size="12" fill="#333333">y</text>
+
+  <!-- gridline references (light) -->
+  <line x1="140" y1="300" x2="140" y2="175" stroke="#e0e0e0" stroke-width="1" stroke-dasharray="3,3"/>
+  <line x1="70" y1="180" x2="140" y2="180" stroke="#e0e0e0" stroke-width="1" stroke-dasharray="3,3"/>
+
+  <!-- vectors: origin (70,300); scale x 70px/unit, y 120px/unit -->
+  <!-- Query (1,0) -> (140,300) -->
+  <line x1="70" y1="300" x2="140" y2="300" stroke="#333333" stroke-width="3" marker-end="url(#ah)"/>
+  <!-- A on-topic long (5,0) -> (420,300) -->
+  <line x1="70" y1="300" x2="420" y2="300" stroke="#333333" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#ah)"/>
+  <!-- B off-topic short (1,1) -> (140,180) -->
+  <line x1="70" y1="300" x2="140" y2="180" stroke="#333333" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#ah)"/>
+
+  <!-- point dots -->
+  <circle cx="140" cy="300" r="4" fill="#333333"/>
+  <circle cx="420" cy="300" r="4" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <circle cx="140" cy="180" r="4" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+
+  <!-- labels -->
+  <text x="146" y="292" font-size="12" font-weight="bold" fill="#333333">query [1, 0]</text>
+  <text x="426" y="304" font-size="12" fill="#333333">A on-topic, long  [5, 0]</text>
+  <text x="146" y="176" font-size="12" fill="#333333">B off-topic, short  [1, 1]</text>
+
+  <!-- verdict boxes -->
+  <rect x="300" y="120" width="230" height="70" fill="#f0f0f0" stroke="#333333" stroke-width="1"/>
+  <text x="315" y="142" font-size="12" fill="#333333">squared L2 (default):</text>
+  <text x="315" y="160" font-size="12" font-weight="bold" fill="#333333">B wins  (dist 1.0 &lt; 16.0)</text>
+  <text x="315" y="180" font-size="12" fill="#333333">cosine:  A wins (0.0 &lt; 0.2929)</text>
+
+  <text x="70" y="345" font-size="11" fill="#333333">Origin (0,0). Longer on-topic vector A sits far in raw coordinates but points the same way as the query.</text>
+  <text x="70" y="362" font-size="11" fill="#333333">Squared L2 penalises its magnitude; cosine ignores magnitude and ranks direction.</text>
+</svg>
