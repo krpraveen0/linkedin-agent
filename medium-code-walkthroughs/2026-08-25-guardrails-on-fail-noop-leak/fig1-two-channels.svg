@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="360" viewBox="0 0 720 360" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="720" height="360" fill="#ffffff"/>
+  <text x="360" y="30" text-anchor="middle" font-size="16" fill="#333333" font-weight="bold">One ValidationOutcome, two separate signals</text>
+
+  <!-- input -->
+  <rect x="24" y="150" width="150" height="60" rx="4" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="99" y="176" text-anchor="middle" font-size="13" fill="#333333">failing output</text>
+  <text x="99" y="196" text-anchor="middle" font-size="12" fill="#333333">"...sk-abc123"</text>
+
+  <!-- arrow to guard -->
+  <line x1="174" y1="180" x2="228" y2="180" stroke="#333333" stroke-width="1.5"/>
+  <polygon points="228,180 218,175 218,185" fill="#333333"/>
+
+  <!-- guard -->
+  <rect x="230" y="140" width="170" height="80" rx="4" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="315" y="170" text-anchor="middle" font-size="13" fill="#333333" font-weight="bold">Guard.validate()</text>
+  <text x="315" y="192" text-anchor="middle" font-size="12" fill="#333333">validator + on_fail</text>
+
+  <!-- split arrows -->
+  <line x1="400" y1="165" x2="470" y2="110" stroke="#333333" stroke-width="1.5"/>
+  <polygon points="470,110 459,112 464,120" fill="#333333"/>
+  <line x1="400" y1="195" x2="470" y2="250" stroke="#333333" stroke-width="1.5"/>
+  <polygon points="470,250 464,240 459,248" fill="#333333"/>
+
+  <!-- channel 1: verdict -->
+  <rect x="472" y="82" width="224" height="58" rx="4" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="584" y="106" text-anchor="middle" font-size="13" fill="#333333" font-weight="bold">validation_passed</text>
+  <text x="584" y="126" text-anchor="middle" font-size="12" fill="#333333">the verdict: False</text>
+
+  <!-- channel 2: value -->
+  <rect x="472" y="222" width="224" height="58" rx="4" fill="#f0f0f0" stroke="#333333" stroke-width="1.5"/>
+  <text x="584" y="246" text-anchor="middle" font-size="13" fill="#333333" font-weight="bold">validated_output</text>
+  <text x="584" y="266" text-anchor="middle" font-size="12" fill="#333333">the value: depends on on_fail</text>
+
+  <!-- caption note -->
+  <text x="360" y="320" text-anchor="middle" font-size="12" fill="#333333">The verdict says it failed. What the value contains is a separate decision.</text>
+  <text x="360" y="340" text-anchor="middle" font-size="12" fill="#333333">Read only the value, and the verdict never stops anything.</text>
+</svg>

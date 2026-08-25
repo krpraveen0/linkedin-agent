@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="360" viewBox="0 0 720 360" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="720" height="360" fill="#ffffff"/>
+  <text x="360" y="30" text-anchor="middle" font-size="16" fill="#333333" font-weight="bold">What each on_fail returns for the SAME failing value</text>
+  <text x="360" y="50" text-anchor="middle" font-size="12" fill="#333333">input: "sure, your key is sk-abc123"</text>
+
+  <!-- table header -->
+  <rect x="40" y="70" width="200" height="36" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <rect x="240" y="70" width="160" height="36" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <rect x="400" y="70" width="280" height="36" fill="#e0e0e0" stroke="#333333" stroke-width="1.5"/>
+  <text x="140" y="93" text-anchor="middle" font-size="13" fill="#333333" font-weight="bold">on_fail</text>
+  <text x="320" y="93" text-anchor="middle" font-size="13" fill="#333333" font-weight="bold">validation_passed</text>
+  <text x="540" y="93" text-anchor="middle" font-size="13" fill="#333333" font-weight="bold">validated_output</text>
+
+  <!-- rows -->
+  <!-- exception / default -->
+  <rect x="40" y="106" width="200" height="34" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <rect x="240" y="106" width="160" height="34" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <rect x="400" y="106" width="280" height="34" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <text x="140" y="128" text-anchor="middle" font-size="12" fill="#333333">exception (default)</text>
+  <text x="320" y="128" text-anchor="middle" font-size="12" fill="#333333">—</text>
+  <text x="540" y="128" text-anchor="middle" font-size="12" fill="#333333">raises, nothing returns</text>
+
+  <!-- fix -->
+  <rect x="40" y="140" width="200" height="34" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <rect x="240" y="140" width="160" height="34" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <rect x="400" y="140" width="280" height="34" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <text x="140" y="162" text-anchor="middle" font-size="12" fill="#333333">fix</text>
+  <text x="320" y="162" text-anchor="middle" font-size="12" fill="#333333">True</text>
+  <text x="540" y="162" text-anchor="middle" font-size="12" fill="#333333">'[REDACTED]'  (safe)</text>
+
+  <!-- filter -->
+  <rect x="40" y="174" width="200" height="34" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <rect x="240" y="174" width="160" height="34" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <rect x="400" y="174" width="280" height="34" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <text x="140" y="196" text-anchor="middle" font-size="12" fill="#333333">filter</text>
+  <text x="320" y="196" text-anchor="middle" font-size="12" fill="#333333">False</text>
+  <text x="540" y="196" text-anchor="middle" font-size="12" fill="#333333">None</text>
+
+  <!-- refrain -->
+  <rect x="40" y="208" width="200" height="34" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <rect x="240" y="208" width="160" height="34" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <rect x="400" y="208" width="280" height="34" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+  <text x="140" y="230" text-anchor="middle" font-size="12" fill="#333333">refrain</text>
+  <text x="320" y="230" text-anchor="middle" font-size="12" fill="#333333">False</text>
+  <text x="540" y="230" text-anchor="middle" font-size="12" fill="#333333">None</text>
+
+  <!-- noop (emphasized with darker border) -->
+  <rect x="40" y="242" width="200" height="36" fill="#e0e0e0" stroke="#333333" stroke-width="2.5"/>
+  <rect x="240" y="242" width="160" height="36" fill="#e0e0e0" stroke="#333333" stroke-width="2.5"/>
+  <rect x="400" y="242" width="280" height="36" fill="#e0e0e0" stroke="#333333" stroke-width="2.5"/>
+  <text x="140" y="265" text-anchor="middle" font-size="12" fill="#333333" font-weight="bold">noop</text>
+  <text x="320" y="265" text-anchor="middle" font-size="12" fill="#333333" font-weight="bold">False</text>
+  <text x="540" y="265" text-anchor="middle" font-size="12" fill="#333333" font-weight="bold">'...sk-abc123'  (unsafe)</text>
+
+  <text x="360" y="308" text-anchor="middle" font-size="12" fill="#333333">Only noop hands back the original unsafe value while looking like it acted.</text>
+  <text x="360" y="328" text-anchor="middle" font-size="12" fill="#333333">Its failure is recorded in validation_passed — a field you must read on purpose.</text>
+</svg>
