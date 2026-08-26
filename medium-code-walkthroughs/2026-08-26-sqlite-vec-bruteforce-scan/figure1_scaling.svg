@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="380" viewBox="0 0 640 380" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="640" height="380" fill="#ffffff"/>
+  <text x="320" y="30" font-size="17" fill="#333333" text-anchor="middle" font-weight="bold">sqlite-vec v0.1.9 KNN query latency vs table size</text>
+  <text x="320" y="50" font-size="13" fill="#333333" text-anchor="middle">384-dim vectors, k=10, 200 queries averaged — latency doubles as rows double</text>
+
+  <!-- Y axis -->
+  <line x1="80" y1="90" x2="80" y2="320" stroke="#333333" stroke-width="1.5"/>
+  <!-- X axis / baseline -->
+  <line x1="80" y1="320" x2="600" y2="320" stroke="#333333" stroke-width="1.5"/>
+  <text x="28" y="210" font-size="13" fill="#333333" text-anchor="middle" transform="rotate(-90 28 210)">ms per query</text>
+
+  <!-- gridline labels (0,50,100,140 ms), scale: 230px maps 140ms => 1.643 px/ms, baseline y=320 -->
+  <line x1="80" y1="320" x2="600" y2="320" stroke="#e0e0e0" stroke-width="1"/>
+  <line x1="80" y1="238.8" x2="600" y2="238.8" stroke="#e0e0e0" stroke-width="1"/>
+  <text x="72" y="243" font-size="12" fill="#333333" text-anchor="end">50</text>
+  <line x1="80" y1="157.7" x2="600" y2="157.7" stroke="#e0e0e0" stroke-width="1"/>
+  <text x="72" y="162" font-size="12" fill="#333333" text-anchor="end">100</text>
+  <text x="72" y="325" font-size="12" fill="#333333" text-anchor="end">0</text>
+
+  <!-- Bars: heights = ms * 1.643 ; baseline 320 -->
+  <!-- 10k: 6.57ms -> 10.8px -->
+  <rect x="110" y="309.2" width="70" height="10.8" fill="#e0e0e0" stroke="#333333" stroke-width="1.2"/>
+  <text x="145" y="304" font-size="12" fill="#333333" text-anchor="middle">6.6</text>
+  <text x="145" y="338" font-size="12" fill="#333333" text-anchor="middle">10k</text>
+  <!-- 25k: 17.32 -> 28.5px -->
+  <rect x="200" y="291.5" width="70" height="28.5" fill="#e0e0e0" stroke="#333333" stroke-width="1.2"/>
+  <text x="235" y="286" font-size="12" fill="#333333" text-anchor="middle">17.3</text>
+  <text x="235" y="338" font-size="12" fill="#333333" text-anchor="middle">25k</text>
+  <!-- 50k: 34.06 -> 56.0px -->
+  <rect x="290" y="264.0" width="70" height="56.0" fill="#e0e0e0" stroke="#333333" stroke-width="1.2"/>
+  <text x="325" y="258" font-size="12" fill="#333333" text-anchor="middle">34.1</text>
+  <text x="325" y="338" font-size="12" fill="#333333" text-anchor="middle">50k</text>
+  <!-- 100k: 67.25 -> 110.5px -->
+  <rect x="380" y="209.5" width="70" height="110.5" fill="#d9d9d9" stroke="#333333" stroke-width="1.2"/>
+  <text x="415" y="204" font-size="12" fill="#333333" text-anchor="middle">67.3</text>
+  <text x="415" y="338" font-size="12" fill="#333333" text-anchor="middle">100k</text>
+  <!-- 200k: 131.75 -> 216.5px -->
+  <rect x="470" y="103.5" width="70" height="216.5" fill="#c9c9c9" stroke="#333333" stroke-width="1.2"/>
+  <text x="505" y="98" font-size="12" fill="#333333" text-anchor="middle">131.7</text>
+  <text x="505" y="338" font-size="12" fill="#333333" text-anchor="middle">200k</text>
+
+  <text x="340" y="362" font-size="13" fill="#333333" text-anchor="middle">rows in table (constant ~670 microseconds per 1,000 rows = full scan)</text>
+</svg>
